@@ -1,5 +1,6 @@
 package com.paicli.render;
 
+import com.paicli.brand.ForgePilotBrand;
 import com.paicli.render.inline.InlineRenderer;
 import com.paicli.render.inline.TerminalCapabilities;
 import org.jline.terminal.Terminal;
@@ -30,11 +31,13 @@ public final class RendererFactory {
     }
 
     public static Mode resolveMode() {
-        String prop = System.getProperty("paicli.renderer");
+        String prop = ForgePilotBrand.firstNonBlank(
+                "forgepilot.renderer", "paicli.renderer", System::getProperty);
         if (prop != null && !prop.isBlank()) {
             return parse(prop);
         }
-        String env = System.getenv("PAICLI_RENDERER");
+        String env = ForgePilotBrand.firstNonBlank(
+                "FORGEPILOT_RENDERER", "PAICLI_RENDERER", System::getenv);
         if (env != null && !env.isBlank()) {
             return parse(env);
         }

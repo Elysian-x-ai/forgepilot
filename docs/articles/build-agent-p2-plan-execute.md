@@ -1,8 +1,8 @@
 ---
 title: 手搓 Java 版 Claude Code 第 2 期，先出计划再动手，按 DAG 分批并行执行
 shortTitle: Plan-and-Execute与DAG调度
-description: PaiCLI 第 2 期，按最新源码拆解 Plan-and-Execute：任务和依赖怎么建模，模型给的计划怎么严格校验，DAG 怎么按轮并行执行，上游结果怎么交给下游，任务失败后怎么重规划和收场。
-keywords: Plan-and-Execute, DAG, 拓扑排序, 任务规划, PaiCLI
+description: ForgePilot 第 2 期，按最新源码拆解 Plan-and-Execute：任务和依赖怎么建模，模型给的计划怎么严格校验，DAG 怎么按轮并行执行，上游结果怎么交给下游，任务失败后怎么重规划和收场。
+keywords: Plan-and-Execute, DAG, 拓扑排序, 任务规划, ForgePilot
 tag:
   - Agent
   - Java
@@ -20,7 +20,7 @@ date: 2026-04-19
 
 ![](https://cdn.paicoding.com/stutymore/build-agent-p2-plan-execute-20260924182030-166934ea.png)
 
-这一期我们给 PaiCLI 加上 Plan-and-Execute。模型先出一份带依赖关系的任务清单，我们确认之后，执行器按依赖分批执行，互不依赖的任务可以并行。
+这一期我们给 ForgePilot 加上 Plan-and-Execute。模型先出一份带依赖关系的任务清单，我们确认之后，执行器按依赖分批执行，互不依赖的任务可以并行。
 
 ## 01、先规划再执行
 
@@ -208,7 +208,7 @@ if (!plan.computeExecutionOrder()) {
 
 解析分两遍。模型可能先写 task_2，再写 task_1，而 task_2 依赖 task_1。第一遍只登记 id，第二遍再连依赖，前向引用就不会误判。不管模型给的 id 叫什么，最后都按数组顺序重新编号成 `task_1` 到 `task_N`，依赖里却必须写模型自己声明的原 id，写成新编号也算未声明。
 
-JSON 解析开了两个严格选项，JSON 后面跟着一段说明文字、同一个键出现两次，都判为不合法。Jackson 默认会忽略这两种情况，PaiCLI 的评测重放器用 Python 的 `json.loads` 重新解析同一份回复，两边标准不一样，同一份计划就会一边能跑一边报错。
+JSON 解析开了两个严格选项，JSON 后面跟着一段说明文字、同一个键出现两次，都判为不合法。Jackson 默认会忽略这两种情况，ForgePilot 的评测重放器用 Python 的 `json.loads` 重新解析同一份回复，两边标准不一样，同一份计划就会一边能跑一边报错。
 
 ![](https://cdn.paicoding.com/stutymore/build-agent-p2-plan-execute-20260924182549-5438f8da.png)
 
@@ -265,9 +265,9 @@ ExecutorService executor = Executors.newFixedThreadPool(Math.min(executableTasks
 
 按轮调度有个明显的代价。某个任务的依赖早就完成了，也得等这一轮最慢的那个任务结束才能开始。改成事件驱动，哪个任务的依赖一到齐就立刻派发，总耗时能更短。
 
-PaiCLI 选按轮，是因为每一轮的边界很清楚。哪些任务在同一轮开始，失败发生时哪些结果已经提交，都能按轮复现出来。PaiCLI 的评测重放器就按这套语义逐条核对执行记录，比如“触发重新规划之后不能再有新任务开始”。换成就绪即派发，失败时兄弟任务还在跑，重规划和跳过的规则都要重新定义。
+ForgePilot 选按轮，是因为每一轮的边界很清楚。哪些任务在同一轮开始，失败发生时哪些结果已经提交，都能按轮复现出来。ForgePilot 的评测重放器就按这套语义逐条核对执行记录，比如“触发重新规划之后不能再有新任务开始”。换成就绪即派发，失败时兄弟任务还在跑，重规划和跳过的规则都要重新定义。
 
-对 PaiCLI 这种计划通常只有几个到十几个任务的场景，多等一轮的代价可以接受。
+对 ForgePilot 这种计划通常只有几个到十几个任务的场景，多等一轮的代价可以接受。
 
 ### 并行输出和写冲突
 
@@ -404,7 +404,7 @@ return createPlan(context.toString());
 
 模型只知道哪些任务做完了，看不到它们的结果。新计划是一份全新的计划，不继承旧计划的完成状态，所以没法保证只重做失败的那一步。审阅新计划时要留意有没有重复操作。
 
-为什么不把结果也带上？规划请求要保持小而固定。结果一带上，读过大文件的任务会把规划请求撑得很长，而这份请求的格式也是评测重放器逐字核对的内容。这是 PaiCLI 目前明确保留的限制，要改得连重放器一起改。
+为什么不把结果也带上？规划请求要保持小而固定。结果一带上，读过大文件的任务会把规划请求撑得很长，而这份请求的格式也是评测重放器逐字核对的内容。这是 ForgePilot 目前明确保留的限制，要改得连重放器一起改。
 
 ### 用户取消的时候
 
@@ -431,7 +431,7 @@ return createPlan(context.toString());
 
 ## 08、怎么进入计划模式，计划怎么审
 
-PaiCLI 启动后默认走 ReAct。进入 Plan-and-Execute 有三种方式。
+ForgePilot 启动后默认走 ReAct。进入 Plan-and-Execute 有三种方式。
 
 - `/plan`：只有下一条任务走计划模式，执行完回到原来的模式
 - `/plan <任务>`：这一条任务直接走计划模式
@@ -531,7 +531,7 @@ java -jar target/paicli-1.0-SNAPSHOT.jar
 
 ## 简历怎么写
 
-### PaiCLI｜Java 终端 Coding Agent｜核心开发 第 2 期
+### ForgePilot｜Java 终端 Coding Agent｜核心开发 第 2 期
 
 项目简介：在 ReAct Agent 的基础上实现 Plan-and-Execute 执行模式，由模型先生成带依赖关系的任务计划，用户审阅确认后按 DAG 分批并行执行，并支持计划修改、失败重规划与部分结果汇总，适用于步骤多、依赖明确的本地研发任务。
 

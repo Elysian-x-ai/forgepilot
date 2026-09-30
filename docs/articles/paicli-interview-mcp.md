@@ -1,7 +1,7 @@
 ---
 title: AI Agent 面试题第四弹：MCP、Chrome DevTools、CDP 会话复用
 shortTitle: 面试题：MCP 协议与生态
-description: 围绕 PaiCLI 实战，精选 13 道 MCP 协议面试题，覆盖 stdio/HTTP 传输、工具注册、resources、Chrome DevTools 集成和 CDP 会话复用，口述版答案+面试官视角分析。
+description: 围绕 ForgePilot 实战，精选 13 道 MCP 协议面试题，覆盖 stdio/HTTP 传输、工具注册、resources、Chrome DevTools 集成和 CDP 会话复用，口述版答案+面试官视角分析。
 tag:
   - Agent
   - 面试题
@@ -52,7 +52,7 @@ Streamable HTTP 走的是网络。Host 通过 HTTP POST 发 JSON-RPC 请求，Se
 
 适合云端工具、团队共享的 MCP Server。
 
-配置文件里怎么区分？也简单，有 command 字段就走 stdio，有 url 字段就走 HTTP，PaiCLI 自己判断。
+配置文件里怎么区分？也简单，有 command 字段就走 stdio，有 url 字段就走 HTTP，ForgePilot 自己判断。
 
 ![](https://cdn.paicoding.com/paicoding/68c1df6fc1a320e6a8a1e982f1a9aa53.png)
 
@@ -84,7 +84,7 @@ Host 先发 initialize 协商版本和能力 → Server 回应 → Host 发 init
 
 ### 04、MCP 工具注册到 Agent 后，命名空间怎么设计的
 
-PaiCLI 给每个 MCP 工具注册的时候，用的是 `mcp__server名__tool名` 这种格式。比如 chrome-devtools 这个 Server 的 navigate_page 工具，注册完就叫 `mcp__chrome-devtools__navigate_page`。
+ForgePilot 给每个 MCP 工具注册的时候，用的是 `mcp__server名__tool名` 这种格式。比如 chrome-devtools 这个 Server 的 navigate_page 工具，注册完就叫 `mcp__chrome-devtools__navigate_page`。
 
 ![](https://cdn.paicoding.com/paicoding/830c4515516d5744f240a24919a89f79.jpg)
 
@@ -108,17 +108,17 @@ PaiCLI 给每个 MCP 工具注册的时候，用的是 `mcp__server名__tool名`
 
 ![](https://cdn.paicoding.com/paicoding/5e36a638fac8f228bd5d334dd08b6dec.jpg)
 
-所以 PaiCLI 做了两件事来填这个坑。
+所以 ForgePilot 做了两件事来填这个坑。
 
 一是**把 resources 包装成工具**。给每个支持 resources 的 Server 自动注册两个虚拟工具——list_resources 和 read_resource。LLM 可以像调普通工具一样调用它们，先查有哪些资源，再按 URI 读取内容。
 
-二是**支持用户直接 @ 指定**。用户在输入里写 `@server:protocol://path`，PaiCLI 在提交给 Agent 之前自动把资源内容展开塞进去，不经过 LLM 决策。
+二是**支持用户直接 @ 指定**。用户在输入里写 `@server:protocol://path`，ForgePilot 在提交给 Agent 之前自动把资源内容展开塞进去，不经过 LLM 决策。
 
 两种方式各有适用场景：LLM 需要主动探索数据的时候走工具，用户已经知道要读什么资源的时候直接 @ 指定。
 
 ### 06、MCP Server 启动失败或超时怎么处理
 
-这个问题实际开发中真的经常遇到，PaiCLI 做了好几层兜底。
+这个问题实际开发中真的经常遇到，ForgePilot 做了好几层兜底。
 
 首先，initialize 设了 60 秒超时，不能让一个 Server 卡住把整个 Agent 的启动流程都堵了。
 
@@ -140,7 +140,7 @@ Chrome DevTools MCP 是 Google 官方出的 MCP Server，一口气提供了 28 �
 
 web_fetch 本质就是一个 HTTP 请求，只能拿到静态 HTML。碰到 SPA、JS 渲染的页面、有防爬的站点，就彻底抓瞎了。浏览器 MCP 不一样，它是真正跑了一个 Chrome 实例，JavaScript 照跑，登录态照保，什么页面都拿得到。
 
-PaiCLI 在 system prompt 里有一张决策表，LLM 会根据任务特征自己判断走哪条路：静态页面走 web_fetch，便宜又快；SPA 和 JS 渲染走浏览器的 take_snapshot；防爬站点也走浏览器；需要登录的页面走浏览器加 CDP 会话复用；需要填表提交的走 fill_form + click。
+ForgePilot 在 system prompt 里有一张决策表，LLM 会根据任务特征自己判断走哪条路：静态页面走 web_fetch，便宜又快；SPA 和 JS 渲染走浏览器的 take_snapshot；防爬站点也走浏览器；需要登录的页面走浏览器加 CDP 会话复用；需要填表提交的走 fill_form + click。
 
 ### 08、CDP 会话复用是怎么实现的
 
@@ -148,15 +148,15 @@ Chrome DevTools MCP 默认是 isolated 模式，每次启动都创建一个全�
 
 ![](https://cdn.paicoding.com/paicoding/2c7214f0d07a853cb68e34d79a916ea4.jpg)
 
-所以 PaiCLI 做了 CDP（Chrome DevTools Protocol）会话复用。
+所以 ForgePilot 做了 CDP（Chrome DevTools Protocol）会话复用。
 
-流程是这样的：用户在自己的 Chrome 里正常登录各种网站，然后在 PaiCLI 里执行 `/browser connect`，把 MCP 从 isolated 模式切到 autoConnect 模式。MCP Server 连接到用户已有的 Chrome 实例，复用全部登录态。这样 Agent 就能直接访问已登录的页面了。
+流程是这样的：用户在自己的 Chrome 里正常登录各种网站，然后在 ForgePilot 里执行 `/browser connect`，把 MCP 从 isolated 模式切到 autoConnect 模式。MCP Server 连接到用户已有的 Chrome 实例，复用全部登录态。这样 Agent 就能直接访问已登录的页面了。
 
 ### 09、MCP 的通知机制有几种？
 
 三种：**tools/list_changed** 工具列表变了、**resources/list_changed** 资源列表变了、**resources/updated** 某个资源的内容更新了。
 
-PaiCLI 收到 tools/list_changed 就自动重新拉取工具列表，收到 resources 相关的通知就清掉对应缓存，保持数据新鲜。
+ForgePilot 收到 tools/list_changed 就自动重新拉取工具列表，收到 resources 相关的通知就清掉对应缓存，保持数据新鲜。
 
 #### 通知的 handler 为什么要异步执行
 
@@ -164,7 +164,7 @@ PaiCLI 收到 tools/list_changed 就自动重新拉取工具列表，收到 reso
 
 因为读取线程被占着，新的响应进了缓冲区但没人读，等待的响应永远读不到。典型场景就是 Server 推送 tools/list_changed，处理逻辑要调 tools/list 重新拉工具列表，结果自己等自己，死锁了。
 
-所以 PaiCLI 用一个独立的单线程做异步派发，通知处理和消息读取完全隔离，彻底避免了这个问题。
+所以 ForgePilot 用一个独立的单线程做异步派发，通知处理和消息读取完全隔离，彻底避免了这个问题。
 
 ![](https://cdn.paicoding.com/stutymore/paicli-interview-mcp-20260525185650.png)
 
@@ -190,7 +190,7 @@ MCP 是工具提供方的协议，解决的是"工具从哪来、长什么样、
 
 ![](https://cdn.paicoding.com/stutymore/paicli-interview-mcp-20260525190320.png)
 
-串起来看就清楚了：MCP Server 通过 tools/list 返回工具定义 → PaiCLI 把这些定义转成 Function Calling 格式 → 塞进 LLM 请求的 tools 字段 → LLM 返回 tool_calls 说"我要调某个 MCP 工具" → PaiCLI 通过 MCP 的 tools/call 去执行 → 结果再喂回给 LLM。
+串起来看就清楚了：MCP Server 通过 tools/list 返回工具定义 → ForgePilot 把这些定义转成 Function Calling 格式 → 塞进 LLM 请求的 tools 字段 → LLM 返回 tool_calls 说"我要调某个 MCP 工具" → ForgePilot 通过 MCP 的 tools/call 去执行 → 结果再喂回给 LLM。
 
 ![](https://cdn.paicoding.com/stutymore/paicli-interview-mcp-20260525190446.png)
 
@@ -206,7 +206,7 @@ MCP Server 返回的工具参数是标准 JSON Schema，但 LLM 不是 JSON Sche
 - **`anyOf`/`oneOf` 联合类型**，参数可以是 string 也可以是 number，LLM 选错类型的概率很高。
 - **超长 `description`**，有些 MCP Server 的工具描述写了几千字，把整个 API 文档塞进去了，LLM 被信息淹没反而搞不清核心参数。
 
-所以 PaiCLI 在注册工具时会自动做一轮清洗：`$ref` 直接展开或移除，`anyOf`/`oneOf` 转成自然语言描述放到 description 里，超长描述做截断。清洗后的 schema 对 LLM 更友好，参数生成的准确率也更高。
+所以 ForgePilot 在注册工具时会自动做一轮清洗：`$ref` 直接展开或移除，`anyOf`/`oneOf` 转成自然语言描述放到 description 里，超长描述做截断。清洗后的 schema 对 LLM 更友好，参数生成的准确率也更高。
 
 ![](https://cdn.paicoding.com/stutymore/paicli-interview-mcp-20260525191537.png)
 

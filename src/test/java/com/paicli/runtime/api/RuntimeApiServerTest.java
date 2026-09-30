@@ -58,6 +58,23 @@ class RuntimeApiServerTest {
         }
     }
 
+    @Test
+    void acceptsForgePilotApiKeyHeader(@TempDir Path tempDir) throws Exception {
+        try (RuntimeThreadStore store = new RuntimeThreadStore(tempDir.resolve("runtime.db"));
+             RuntimeApiServer server = new RuntimeApiServer(store, prompt -> "x", 0, "secret")) {
+            server.start();
+            HttpRequest request = HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + server.port() + "/v1/threads"))
+                    .header("X-ForgePilot-API-Key", "secret")
+                    .POST(HttpRequest.BodyPublishers.noBody())
+                    .timeout(Duration.ofSeconds(3))
+                    .build();
+
+            HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+
+            assertEquals(200, response.statusCode());
+        }
+    }
+
     private static HttpRequest.Builder request(String url, String method, String body) {
         HttpRequest.BodyPublisher publisher = body == null || body.isEmpty()
                 ? HttpRequest.BodyPublishers.noBody()

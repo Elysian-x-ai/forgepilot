@@ -1,4 +1,4 @@
-# PaiCLI 迭代路线图（21 期）
+# ForgePilot 迭代路线图（21 期）
 
 从零开始，逐步构建生产级 Java Agent CLI
 
@@ -126,7 +126,7 @@
 
 **为什么不叫沙箱**：
 - 真正的沙箱是隔离的执行环境（Docker / microVM / chroot），本地 Agent CLI（参考 Claude Code / Cursor / Aider）默认都不做沙箱——沙箱削弱 Agent 能力、给虚假安全感、体验更差
-- PaiCLI 的安全模型是 **HITL + 路径校验 + 命令快速拒绝 + 审计**，不是隔离
+- ForgePilot 的安全模型是 **HITL + 路径校验 + 命令快速拒绝 + 审计**，不是隔离
 - 想做容器隔离的请参考 Pro 升级版本章节，或自行实现 `SandboxDriver` 接口
 
 **核心知识点**：
@@ -213,7 +213,7 @@
 
 **已完成**
 
-**目标**：把 PaiCLI 接入 MCP 生态。stdio 子进程 server 与 Streamable HTTP 远程 server 都能用，工具自动注册到 ToolRegistry，与 HITL / AuditLog 协同。
+**目标**：把 ForgePilot 接入 MCP 生态。stdio 子进程 server 与 Streamable HTTP 远程 server 都能用，工具自动注册到 ToolRegistry，与 HITL / AuditLog 协同。
 
 **功能迭代**：
 - 手写 `JsonRpcClient`：JSON-RPC 2.0 客户端，请求-响应配对、通知、错误码、超时
@@ -373,7 +373,7 @@
 
 **前置依赖**：第 9 期 web 工具、第 13 期 Chrome DevTools MCP、第 14 期 CDP 会话复用全部就绪
 
-**目标**：做出 PaiCLI 自己的 Skill 加载机制，把零散的工具与决策指引打包成可复用单元，并以 web-access 作为首个落地 Skill
+**目标**：做出 ForgePilot 自己的 Skill 加载机制，把零散的工具与决策指引打包成可复用单元，并以 web-access 作为首个落地 Skill
 
 **功能迭代**（详细开发任务见 `docs/phase-15-skill-system.md`）：
 - Skill 加载机制：三层目录扫描（jar 内置 / 用户级 `~/.paicli/skills/` / 项目级 `<project>/.paicli/skills/`），按 name 整体覆盖，frontmatter 走手写 YAML 子集解析（不引 SnakeYAML）
@@ -454,7 +454,7 @@
 - TUI 展示：inline 模式下诊断块以红色/黄色 ANSI 渲染，用户可以直观看到 Agent 引入的编译问题
 - 优雅降级：LSP server 启动失败或超时时只打 trace 日志，不阻塞 Agent 主流程；没有对应 LSP server 的语言跳过
 
-**设计参考**：DeepSeek TUI `crates/tui/src/lsp/`——`LspManager`（惰性 transport pool）+ `lsp_hooks.rs`（post-edit 挂钩）+ `diagnostics.rs`（诊断类型与渲染）。PaiCLI 的 Java 生态可以用 Eclipse JDT LS（`org.eclipse.jdt.ls`）或直接复用已有的 `CodeAnalyzer` 做轻量版。
+**设计参考**：DeepSeek TUI `crates/tui/src/lsp/`——`LspManager`（惰性 transport pool）+ `lsp_hooks.rs`（post-edit 挂钩）+ `diagnostics.rs`（诊断类型与渲染）。ForgePilot 的 Java 生态可以用 Eclipse JDT LS（`org.eclipse.jdt.ls`）或直接复用已有的 `CodeAnalyzer` 做轻量版。
 
 **核心知识点**：
 - LSP（Language Server Protocol）的 JSON-RPC 子集
@@ -530,7 +530,7 @@
 
 **前置依赖**：第 13 期 Chrome DevTools MCP 已能产出截图等 image content；第 12 期长上下文工程已就绪。
 
-**目标**：用户可以在 TUI 里提交后台任务（如"重构整个模块"），关掉终端走人，回来查看结果。同时暴露 HTTP/SSE Runtime API，让 PaiCLI 可以嵌入 CI/CD、IDE 插件、Web 面板。
+**目标**：用户可以在 TUI 里提交后台任务（如"重构整个模块"），关掉终端走人，回来查看结果。同时暴露 HTTP/SSE Runtime API，让 ForgePilot 可以嵌入 CI/CD、IDE 插件、Web 面板。
 
 **功能迭代**：
 
@@ -579,7 +579,7 @@
 
 **前置依赖**：第 13 期 Chrome DevTools MCP 已能产出截图等 image content；第 12 期长上下文工程已就绪；第 17–20 期安全网与架构已就绪。
 
-**目标**：让 PaiCLI 真正"看见"图片——浏览器截图、用户粘贴的图片、文档中的图表，都能直接喂给 LLM 让它理解，而不是 fallback 成"[此工具返回了 image]"占位。此期排在安全网（LSP + 快照）和架构重构（Prompt + Task）之后，确保模型生态成熟时再做。
+**目标**：让 ForgePilot 真正"看见"图片——浏览器截图、用户粘贴的图片、文档中的图表，都能直接喂给 LLM 让它理解，而不是 fallback 成"[此工具返回了 image]"占位。此期排在安全网（LSP + 快照）和架构重构（Prompt + Task）之后，确保模型生态成熟时再做。
 
 **功能迭代**：
 
@@ -602,7 +602,7 @@
 
 **不做**：
 - 视频 / 音频输入（再独立期）
-- 图像生成（PaiCLI 是 Agent 不是绘图工具）
+- 图像生成（ForgePilot 是 Agent 不是绘图工具）
 - TUI sixel 协议显示截图（依赖第 16 期 TUI 是否实现，留作扩展）
 
 **核心知识点**：
@@ -672,9 +672,9 @@ E2 原生观察接口已接线：默认关闭的 13 类角色/输入/工具/审�
 ---
 ## 下一阶段升级计划（对标 MiniMax Code，2026-09-25）
 
-来源：对 MiniMax Code（`MiniMax-AI/minimax-code`，commit 8b55164）源码的对照调研，结合 2026-09-24 的 PaiCLI 代码审查。路径均相对 minimax-code 仓库。按批次推进，批内按顺序做。
+来源：对 MiniMax Code（`MiniMax-AI/minimax-code`，commit 8b55164）源码的对照调研，结合 2026-09-24 的 ForgePilot 代码审查。路径均相对 minimax-code 仓库。按批次推进，批内按顺序做。
 
-**PaiCLI 已领先、保持并作为卖点**：自建评测集（对方无公开评测）、工具结果统一的不可信数据边界（对方零散处理）、URL 来源授权、长期记忆冲突检测与新鲜度。项目级 MCP 信任确认双方都没有，补上即领先。
+**ForgePilot 已领先、保持并作为卖点**：自建评测集（对方无公开评测）、工具结果统一的不可信数据边界（对方零散处理）、URL 来源授权、长期记忆冲突检测与新鲜度。项目级 MCP 信任确认双方都没有，补上即领先。
 
 ### 第一批：安全与正确性（优先）
 
@@ -689,7 +689,7 @@ E2 原生观察接口已接线：默认关闭的 13 类角色/输入/工具/审�
 
 ### 第二批：体验与能力
 
-- ⬜ 会话恢复：`--continue` / `--session <id>`，`/sessions` 管理面板，`/fork`、`/rewind`、`/retry`。PaiCLI 已有原始会话账本，缺恢复入口。参考 `packages/tui/src/features/session/manager.ts`
+- ⬜ 会话恢复：`--continue` / `--session <id>`，`/sessions` 管理面板，`/fork`、`/rewind`、`/retry`。ForgePilot 已有原始会话账本，缺恢复入口。参考 `packages/tui/src/features/session/manager.ts`
 - ⬜ 按轮次回滚：可选“只回退对话 / 对话连同文件”，还原前比对哈希，文件已被别处改过则跳过并说明。参考 `packages/local-runtime/src/turns/file-changes.ts`
 - ✅ `edit_file` 容错：精确匹配失败后做 Unicode、行尾空白、引号归一化再匹配；剥掉从 read 输出带来的行号前缀；支持 `replace_all`（2026-09-25）
 - ⬜ 运行中插话：Enter 插话改变当前方向，Alt+Enter 排到下一轮，`/btw` 只读旁路会话；同时修掉 ESC 取消的线程竞态。参考 `packages/tui/src/tui/shell/keybindings.ts`

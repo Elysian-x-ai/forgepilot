@@ -15,7 +15,7 @@ class ProjectMemoryInitializerTest {
     Path tempDir;
 
     @Test
-    void generatesConcisePaiCliProjectMemory() throws Exception {
+    void generatesConciseForgePilotProjectMemory() throws Exception {
         Files.writeString(tempDir.resolve("README.md"), "# PaiCLI\n\nJava Agent CLI");
         Files.writeString(tempDir.resolve("AGENTS.md"), "项目名：PaiCLI\n改命令入口要联动");
         Files.writeString(tempDir.resolve("pom.xml"), "<project></project>");
@@ -25,7 +25,7 @@ class ProjectMemoryInitializerTest {
         String content = Files.readString(tempDir.resolve("PAI.md"));
         assertTrue(result.written());
         assertTrue(content.contains("# PAI.md"));
-        assertTrue(content.contains("PaiCLI 是面向商业使用的 Java Agent CLI 产品"));
+        assertTrue(content.contains("ForgePilot 是面向商业使用的 Java Agent CLI 产品"));
         assertTrue(content.contains("mvn test -Pquick"));
         assertTrue(content.contains("不要为某个模式创建孤立能力"));
         assertTrue(content.lines().count() < 45, content);

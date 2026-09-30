@@ -12,21 +12,21 @@ date: 2026-04-24
 
 
 
-PaiCLI 已经更新到第7期了，ReAct、Plan-and-Execute、Memory、RAG、Multi-Agent、HITL，该有的都有了。
+ForgePilot 已经更新到第7期了，ReAct、Plan-and-Execute、Memory、RAG、Multi-Agent、HITL，该有的都有了。
 
 但有一个问题一直没解决——串行。
 
-我们让 PaiCLI 帮忙读三个文件，它会老老实实读完第一个，再读第二个，再读第三个。三个文件之间没有任何依赖关系，完全可以同时读，但 Agent 偏偏要排队。
+我们让 ForgePilot 帮忙读三个文件，它会老老实实读完第一个，再读第二个，再读第三个。三个文件之间没有任何依赖关系，完全可以同时读，但 Agent 偏偏要排队。
 
 Plan-and-Execute 模式下更明显。五个任务拆出来，前两个互相不依赖，第三个依赖前两个的结果。按道理前两个应该同时跑，但现在是第一个跑完才轮到第二个。
 
 Multi-Agent 也一样，两个 Worker 都闲着，但编排器只分配给其中一个，另一个干等。
 
-今天，我们就把 PaiCLI 从串行改造成并行。改完之后，三条执行路径——ReAct、Plan-and-Execute、Multi-Agent——全部支持并行执行，效率直接拉满。
+今天，我们就把 ForgePilot 从串行改造成并行。改完之后，三条执行路径——ReAct、Plan-and-Execute、Multi-Agent——全部支持并行执行，效率直接拉满。
 
 ## 01、并行的切入点有哪些？
 
-PaiCLI 里有三个可以并行的场景。
+ForgePilot 里有三个可以并行的场景。
 
 第一个是工具调用的并行。大模型在一次响应里返回多个 `tool_calls`，这几个工具之间没有依赖，可以同时执行。
 
@@ -553,7 +553,7 @@ Executors.newFixedThreadPool(parallelism, r -> {
 });
 ```
 
-daemon 线程在所有非 daemon 线程退出后会自动终止。这意味着用户按 Ctrl+C 退出 PaiCLI 的时候，工具执行线程不会阻止 JVM 关闭。
+daemon 线程在所有非 daemon 线程退出后会自动终止。这意味着用户按 Ctrl+C 退出 ForgePilot 的时候，工具执行线程不会阻止 JVM 关闭。
 
 每个方法结束时都有 `executor.shutdownNow()`，在 `finally` 块里调用：
 
@@ -630,10 +630,10 @@ LLM 有时候为了“全面了解项目”会试图扫描整个磁盘，这在�
 
 ## 11、跑一遍看效果
 
-启动 PaiCLI，用 `/plan` 模式执行一个有多步骤的任务：
+启动 ForgePilot，用 `/plan` 模式执行一个有多步骤的任务：
 
 ```
-> /plan 分析 PaiCLI 项目：读取 pom.xml 了解依赖，读取 README.md 了解功能，读取 ROADMAP.md 了解规划
+> /plan 分析 ForgePilot 项目：读取 pom.xml 了解依赖，读取 README.md 了解功能，读取 ROADMAP.md 了解规划
 ```
 
 
@@ -696,9 +696,9 @@ Multi-Agent 模式更明显。`/team` 模式下，编排器发现两个独立步
 ![](https://cdn.paicoding.com/paicoding/0dbcbf9fbf17a661b3782575512b5a89.jpg)
 
 
-## PaiCLI如何写到简历上？
+## ForgePilot如何写到简历上？
 
-**项目名称**：PaiCLI — Java Agent CLI
+**项目名称**：ForgePilot — Java Agent CLI
 
 **项目简介**：基于 ReAct 范式从零实现的 Java Agent 命令行工具，集成 Plan-and-Execute、Memory、RAG、Multi-Agent、HITL 人工审批和异步并行执行，完整覆盖 AI Agent 核心技术栈。
 

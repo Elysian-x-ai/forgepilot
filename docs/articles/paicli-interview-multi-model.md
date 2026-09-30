@@ -1,7 +1,7 @@
 ---
 title: AI Agent 面试题第七弹：多模型适配、运行时切换、成本控制 12 题
 shortTitle: 面试题：多模型与成本
-description: 围绕 PaiCLI 实战，精选 12 道多模型适配与成本控制面试题，覆盖 Provider 抽象、模板方法模式、OpenAI 兼容协议、Token 计费和 Prompt Caching，每道题结合源码深度拆解。
+description: 围绕 ForgePilot 实战，精选 12 道多模型适配与成本控制面试题，覆盖 Provider 抽象、模板方法模式、OpenAI 兼容协议、Token 计费和 Prompt Caching，每道题结合源码深度拆解。
 tag:
   - Agent
   - 面试题
@@ -12,7 +12,7 @@ author: 沉默王二
 date: 2026-05-11
 ---
 
-> 2026-09-25 更新：PaiCLI 的 DeepSeek 默认模型已升级为 `deepseek-flash`（V4.1 Flash），支持 1M 上下文、思考模式、工具调用和图片输入。已有配置可用 `/model deepseek-flash` 切换并保存；旧 Flash 别名继续兼容。正文中的 V4 发布数据和运行记录保留为历史背景，当前模型与价格以[官方文档](https://api-docs.deepseek.com/zh-cn/quick_start/pricing/)为准。
+> 2026-09-25 更新：ForgePilot 的 DeepSeek 默认模型已升级为 `deepseek-flash`（V4.1 Flash），支持 1M 上下文、思考模式、工具调用和图片输入。已有配置可用 `/model deepseek-flash` 切换并保存；旧 Flash 别名继续兼容。正文中的 V4 发布数据和运行记录保留为历史背景，当前模型与价格以[官方文档](https://api-docs.deepseek.com/zh-cn/quick_start/pricing/)为准。
 
 模型列表按供应商分组，用表格展示模型 ID、上下文（如 `1M`）、输入能力和状态，`●` 标记当前选择。模板、思考模式等配置可用 `/model info [模型ID]` 查看。窄终端会下移状态列或转成纵向条目。
 
@@ -22,7 +22,7 @@ date: 2026-05-11
 
 当前 DeepSeek 内置列表只列官方推荐的 `deepseek-flash`（V4.1 Flash）和 `deepseek-v4-pro`；两个旧 Flash 名称是官方继续接受的兼容入口，原模型已下线，请求由 V4.1 Flash 提供服务。刷新不会把旧名重新登记成独立模型，也不会改写已有选择。已有配置里的旧名会标注“兼容旧名 → deepseek-flash”，可用 `/model deepseek-flash` 切换并保存。新增 0 个时，只说明没有新增模型，不再提示新模型能力待配置。
 
-老王这次没废话，直接开问：“PaiCLI 接了几家大模型？”
+老王这次没废话，直接开问：“ForgePilot 接了几家大模型？”
 
 “目前支持 GLM、DeepSeek、Kimi、StepFun。”
 
@@ -184,7 +184,7 @@ Prompt Caching 缓存命中的输入 token 会按更低价格计费，但不同 
 - **DeepSeek**：服务端自动前缀缓存，客户端不需要做任何操作。服务端自动检测多次请求的公共前缀并持久化到硬盘，缓存命中后 usage 里返回 `prompt_cache_hit_tokens` 和 `prompt_cache_miss_tokens`。
 - **GLM**：也是自动上下文缓存，客户端不需要手动配置。GLM-5.1 按输入长度分两档计费，`[0, 32k)` 档缓存命中 1.3 元/百万 token，`[32k, 200k]` 档缓存命中 2 元/百万 token。
 - **StepFun**：自动前缀缓存，输入超过 256 token 自动启用，缓存命中按原价 20% 计费，用 LRU 策略淘汰。
-- **Kimi**：K2.5/K2.6 官方文档明确支持自动上下文缓存。Moonshot/Kimi 历史上也提供过显式 Context Caching API，可以通过 `role="cache"` 引用已创建缓存，但 PaiCLI 当前按自动缓存处理即可。
+- **Kimi**：K2.5/K2.6 官方文档明确支持自动上下文缓存。Moonshot/Kimi 历史上也提供过显式 Context Caching API，可以通过 `role="cache"` 引用已创建缓存，但 ForgePilot 当前按自动缓存处理即可。
 - **Claude**：需要在 message 里显式加 cache_control 标记，指定哪些内容需要缓存。
 
 对 Agent 客户端来说，国产四家都不需要在请求里注入缓存相关参数，只需要在 prompt 布局上保持“不变的在前面”原则，让服务端自动匹配前缀。
@@ -285,7 +285,7 @@ LLM 的 max_tokens 限制或者网络中断都可能导致参数 JSON 不完整�
 
 第二种是中间层适配。在客户端和模型 API 之间加一个适配层，对上游完全透明，Agent 以为自己在和一个支持 Function Calling 的模型对话。适配层负责把 tools 定义转成 prompt 文本注入，再从模型的文本输出中解析出工具调用转成标准的 tool_calls 结构。
 
-PaiCLI 目前只接入支持 Function Calling 的模型，没做 Prompt 注入适配。但面试时了解这个思路很重要，如果面试官追问“怎么扩展到不支持 FC 的模型”，你可以说出 Prompt 注入法并分析其局限：解析成功率依赖 LLM 的格式遵循能力，比原生 Function Calling 低；多个工具并行调用时格式更容易出错；LLM 可能在工具调用标记外还输出一段解释文字，增加了解析复杂度。
+ForgePilot 目前只接入支持 Function Calling 的模型，没做 Prompt 注入适配。但面试时了解这个思路很重要，如果面试官追问“怎么扩展到不支持 FC 的模型”，你可以说出 Prompt 注入法并分析其局限：解析成功率依赖 LLM 的格式遵循能力，比原生 Function Calling 低；多个工具并行调用时格式更容易出错；LLM 可能在工具调用标记外还输出一段解释文字，增加了解析复杂度。
 
 
 
@@ -336,7 +336,7 @@ Claude 的工具调用最稳定，推理能力强，适合复杂推理和架构�
 
 ## 简历参考
 
-**项目名称**：PaiCLI - Java AI Agent CLI
+**项目名称**：ForgePilot - Java AI Agent CLI
 
 **项目简介**：对标 Claude Code 的 Java 实现 AI Agent CLI，支持多模型适配、ReAct/Plan-and-Execute/Multi-Agent 多种推理模式、MCP 协议集成、长上下文管理和流式终端渲染。
 

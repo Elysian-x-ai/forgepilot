@@ -1,7 +1,7 @@
 ---
 title:
 shortTitle:
-description: PaiCLI 第 11 期，MCP 高级能力实现：resources 双轨读取、@-mention 展开、被动通知、运行中取消，附源码解析和简历包装。
+description: ForgePilot 第 11 期，MCP 高级能力实现：resources 双轨读取、@-mention 展开、被动通知、运行中取消，附源码解析和简历包装。
 tag:
   - Agent
   - MCP
@@ -13,7 +13,7 @@ date: 2026-04-29
 
 大家好，我是二哥呀。
 
-上一期我们给 PaiCLI 接入了 MCP 协议的核心能力，能调用外部工具了。但用了几天之后我就发现，光能调工具还不够。
+上一期我们给 ForgePilot 接入了 MCP 协议的核心能力，能调用外部工具了。但用了几天之后我就发现，光能调工具还不够。
 
 MCP Server 除了暴露工具，还能暴露数据。比如一个文件系统 Server，它不光能帮你读写文件（工具），还能把整个目录结构作为资源列表暴露出来（resources）。再比如一个数据库 Server，工具是执行 SQL，resources 是表结构和字段说明。
 
@@ -27,9 +27,9 @@ MCP Server 除了暴露工具，还能暴露数据。比如一个文件系统 Se
 
 ## 01、先看效果
 
-先不讲原理，看看这期做完之后 PaiCLI 能干什么。
+先不讲原理，看看这期做完之后 ForgePilot 能干什么。
 
-第一个能力，resources 工具层。如果 MCP Server 声明了 resources 能力，PaiCLI 会自动注册两个虚拟工具：`list_resources` 和 `read_resource`。Agent 在执行任务时可以主动调用这两个工具来浏览和读取 Server 暴露的资源。
+第一个能力，resources 工具层。如果 MCP Server 声明了 resources 能力，ForgePilot 会自动注册两个虚拟工具：`list_resources` 和 `read_resource`。Agent 在执行任务时可以主动调用这两个工具来浏览和读取 Server 暴露的资源。
 
 第二个能力，@-mention。我们可以在输入的时候直接引用资源：
 
@@ -37,9 +37,9 @@ MCP Server 除了暴露工具，还能暴露数据。比如一个文件系统 Se
 帮我看下 @filesystem:file://README.md 这份文档
 ```
 
-PaiCLI 会在提交给 Agent 之前，自动把 `@filesystem:file://README.md` 展开成文档的实际内容，用 `<resource>` 标签包裹起来。Agent 拿到的就是真实的文件内容，不需要再额外调工具去读。
+ForgePilot 会在提交给 Agent 之前，自动把 `@filesystem:file://README.md` 展开成文档的实际内容，用 `<resource>` 标签包裹起来。Agent 拿到的就是真实的文件内容，不需要再额外调工具去读。
 
-第三个能力，被动通知。Server 如果更新了工具列表或者资源内容，会主动推送通知过来，PaiCLI 收到后自动刷新缓存，不需要重启。
+第三个能力，被动通知。Server 如果更新了工具列表或者资源内容，会主动推送通知过来，ForgePilot 收到后自动刷新缓存，不需要重启。
 
 第四个能力，运行中取消。任务执行期间输入 `/cancel` 就能中断当前任务，Agent 不会继续往下执行了。以前如果 Agent 跑偏了，要么等它自己结束，要么 Ctrl+C 退出整个程序丢掉所有上下文。现在可以优雅中断，Agent 停下来之后上下文还在，可以继续对话。
 
@@ -47,7 +47,7 @@ PaiCLI 会在提交给 Agent 之前，自动把 `@filesystem:file://README.md` �
 
 ![](https://cdn.paicoding.com/stutymore/paicli-mcp-advanced-20260924202805-6ce28b81.png)
 
-这四个能力加在一起，PaiCLI 对 MCP 协议的实现就从"能用"进化到"好用"了。上一期只有 Tools，这一期补齐了 Resources 和 Notifications，MCP 协议三大核心概念（Tools、Resources、Prompts）我们已经覆盖了两个半（Prompts 只做了查看，还没做注入）。
+这四个能力加在一起，ForgePilot 对 MCP 协议的实现就从"能用"进化到"好用"了。上一期只有 Tools，这一期补齐了 Resources 和 Notifications，MCP 协议三大核心概念（Tools、Resources、Prompts）我们已经覆盖了两个半（Prompts 只做了查看，还没做注入）。
 
 ## 02、Resources 到底是什么
 
@@ -65,13 +65,13 @@ Resources 和 Tools 的区别在哪？一句话：Tools 是动作，Resources �
 
 MCP 协议里 Resources 有自己的 URI 体系，格式跟我们熟悉的 URL 类似：`file://README.md`、`postgres://users/schema`、`git://HEAD/src/main`。每个 Resource 有 URI、名称、MIME 类型和描述，Client 可以通过 `resources/list` 拿到完整列表，通过 `resources/read` 拿到具体内容。
 
-PaiCLI 实现 Resources 用了"双轨"的方式。
+ForgePilot 实现 Resources 用了"双轨"的方式。
 
 ![](https://cdn.paicoding.com/stutymore/paicli-mcp-advanced-20260924203109-760960a9.png)
 
 ### 工具层：自动注册虚拟工具
 
-PaiCLI 在启动 MCP Server 的时候，会检查 Server 在 `initialize` 握手时返回的 capabilities 字段。如果声明了 `resources` 能力，PaiCLI 会做两件事：
+ForgePilot 在启动 MCP Server 的时候，会检查 Server 在 `initialize` 握手时返回的 capabilities 字段。如果声明了 `resources` 能力，ForgePilot 会做两件事：
 
 第一，调用 `resources/list` 拿到资源列表，缓存起来。
 
@@ -115,13 +115,13 @@ PaiCLI 在启动 MCP Server 的时候，会检查 Server 在 `initialize` 握手
 @db:postgres://users/schema 这个表结构有什么问题
 ```
 
-PaiCLI 在把用户输入提交给 Agent 之前，会先经过 `AtMentionExpander` 处理。它做的事情很简单：找到所有 @-mention，依次调用对应 Server 的 `readResource` 拿到内容，然后把原文中的 @-mention 替换成展开后的 `<resource>` 块。
+ForgePilot 在把用户输入提交给 Agent 之前，会先经过 `AtMentionExpander` 处理。它做的事情很简单：找到所有 @-mention，依次调用对应 Server 的 `readResource` 拿到内容，然后把原文中的 @-mention 替换成展开后的 `<resource>` 块。
 
 展开后 Agent 看到的是这样的：
 
 ```xml
 <resource server="filesystem" uri="file://README.md" mimeType="text/markdown">
-# PaiCLI
+# ForgePilot
 一个基于 Java 的 AI Agent 命令行工具...
 </resource>
 ```
@@ -130,11 +130,11 @@ PaiCLI 在把用户输入提交给 Agent 之前，会先经过 `AtMentionExpande
 
 ![](https://cdn.paicoding.com/stutymore/paicli-mcp-advanced-20260924205836-e080b306.png)
 
-`AtMentionExpander` 展开时还有一个 20 万字符的截断保护。如果某个资源内容超过 200,000 字符，会截断并在末尾加上 `[resource truncated by PaiCLI at 200000 chars]`。这是为了防止一个巨大的资源把上下文撑爆。
+`AtMentionExpander` 展开时还有一个 20 万字符的截断保护。如果某个资源内容超过 200,000 字符，会截断并在末尾加上 `[resource truncated by ForgePilot at 200000 chars]`。这是为了防止一个巨大的资源把上下文撑爆。
 
 为什么是 @-mention 而不是自动注入？因为自动注入的问题是：你不知道 Agent 当前任务需要哪些资源。全部注入太浪费上下文，按需注入又需要额外的推理判断。@-mention 把选择权交给用户，用户知道 Agent 这次需要看什么，直接指定就行。
 
-这个设计参考了 Claude Code 的做法。Claude Code 里用 `@` 可以引用文件，Cursor 里也有类似的语法。但 PaiCLI 的 @-mention 不只是引用本地文件，它引用的是 MCP Server 暴露的任意资源。文件系统、数据库、Git 仓库、API 文档，只要 Server 把数据暴露成 Resource，用户就能用 @-mention 引用。
+这个设计参考了 Claude Code 的做法。Claude Code 里用 `@` 可以引用文件，Cursor 里也有类似的语法。但 ForgePilot 的 @-mention 不只是引用本地文件，它引用的是 MCP Server 暴露的任意资源。文件系统、数据库、Git 仓库、API 文档，只要 Server 把数据暴露成 Resource，用户就能用 @-mention 引用。
 
 另外，@-mention 只在用户输入里识别，不识别模型输出。这个限制是故意的，防止模型在回复中构造 @-mention 来偷偷读取资源。Plan 模式和 Team 模式的单键交互也不接 @-mention 的自动补全，避免干扰 ESC 和 Ctrl+O 这些快捷键。
 
@@ -144,12 +144,12 @@ PaiCLI 在把用户输入提交给 Agent 之前，会先经过 `AtMentionExpande
 
 MCP 协议是双向的，这一点很多人忽略了。Client 可以调 Server 的方法（request），Server 也可以主动推消息给 Client（notification）。
 
-这种 Server 主动推过来的消息叫 Notification（通知）。PaiCLI 目前处理两种通知：
+这种 Server 主动推过来的消息叫 Notification（通知）。ForgePilot 目前处理两种通知：
 
 - `notifications/tools/list_changed`：Server 的工具列表变了
 - `notifications/resources/list_changed` 和 `notifications/resources/updated`：Server 的资源列表变了或某个资源内容更新了
 
-收到工具列表变更通知后，PaiCLI 会重新调 `tools/list`，拿到最新的工具列表，然后用 `ToolRegistry.replaceMcpToolsForServer()` 做原子替换，不影响其他 Server 的工具。
+收到工具列表变更通知后，ForgePilot 会重新调 `tools/list`，拿到最新的工具列表，然后用 `ToolRegistry.replaceMcpToolsForServer()` 做原子替换，不影响其他 Server 的工具。
 
 收到资源变更通知后，标记对应缓存为 stale，下次访问时重拉。
 
@@ -180,13 +180,13 @@ reader 线程：收到 tools/list_changed → 丢到 executor 队列 → 继续�
 executor 线程：从队列取出 handler → 调 tools/list → reader 线程读到响应 → 完成
 ```
 
-`NotificationRouter` 实现了 `Consumer<JsonNode>` 接口，同时实现了 `AutoCloseable`。PaiCLI 退出时会调用 `close()` 来 `shutdownNow()` executor，避免 daemon 线程泄漏。handler 执行失败也不会影响 transport 的消息流，这是 best-effort 的设计。
+`NotificationRouter` 实现了 `Consumer<JsonNode>` 接口，同时实现了 `AutoCloseable`。ForgePilot 退出时会调用 `close()` 来 `shutdownNow()` executor，避免 daemon 线程泄漏。handler 执行失败也不会影响 transport 的消息流，这是 best-effort 的设计。
 
 ## 05、运行中取消
 
-之前 PaiCLI 有个问题：Agent 开始执行任务后，没有办法中途叫停。如果 Agent 理解错了需求，或者正在执行一个耗时很长的操作，只能等它自己跑完，或者直接 Ctrl+C 退出整个程序。
+之前 ForgePilot 有个问题：Agent 开始执行任务后，没有办法中途叫停。如果 Agent 理解错了需求，或者正在执行一个耗时很长的操作，只能等它自己跑完，或者直接 Ctrl+C 退出整个程序。
 
-这一期加了 `/cancel` 命令。任务执行期间输入 `/cancel` 并回车，PaiCLI 就会尝试中断当前任务。
+这一期加了 `/cancel` 命令。任务执行期间输入 `/cancel` 并回车，ForgePilot 就会尝试中断当前任务。
 
 实现方式用了两个类：`CancellationToken` 和 `CancellationContext`。
 
@@ -200,7 +200,7 @@ ReAct 循环、Plan-and-Execute 的任务分发、Multi-Agent 编排、工具批
 
 需要说明的是，取消是 best-effort 的。如果 Agent 正在等 LLM 的流式响应，Java 的 interrupt 不一定能立刻中断 HTTP 连接。OkHttp 的流式读取在收到 interrupt 后会抛 `InterruptedIOException`，但这取决于操作系统的网络栈，不能保证每次都立刻生效。
 
-所以 PaiCLI 的取消策略是"两道防线"：第一道是 Thread.interrupt()，尝试中断底层 IO；第二道是 CancellationToken 的 flag 检查，即使 interrupt 没生效，下一个循环边界也会检测到 flag 然后退出。两道防线至少有一道会生效，确保 Agent 不会在用户明确取消之后继续执行高风险操作，比如写文件或者执行命令。
+所以 ForgePilot 的取消策略是"两道防线"：第一道是 Thread.interrupt()，尝试中断底层 IO；第二道是 CancellationToken 的 flag 检查，即使 interrupt 没生效，下一个循环边界也会检测到 flag 然后退出。两道防线至少有一道会生效，确保 Agent 不会在用户明确取消之后继续执行高风险操作，比如写文件或者执行命令。
 
 ![](https://cdn.paicoding.com/stutymore/paicli-mcp-advanced-20260924204247-430919c9.png)
 
@@ -210,7 +210,7 @@ ReAct 循环、Plan-and-Execute 的任务分发、Multi-Agent 编排、工具批
 
 `/mcp resources <server>` 列出指定 Server 暴露的资源列表，包括 URI、名称、MIME 类型和描述。
 
-`/mcp prompts <server>` 列出指定 Server 暴露的 Prompt 模板。Prompt 模板是 MCP 协议里的第三个核心概念，Server 可以预定义一些 Prompt 模板供 Client 使用。比如一个代码审查 Server 可能会暴露一个叫 `review-pr` 的 Prompt 模板，里面包含了代码审查的评审标准和输出格式。目前 PaiCLI 只做了查看功能，只调 `prompts/list` 展示名称、标题和描述，不调 `prompts/get` 拿具体内容，也不把 Prompt 注入到对话流里。这个能力留到后续版本，到时候可以做成 `/mcp use-prompt <server> <prompt-name>` 这样的命令。
+`/mcp prompts <server>` 列出指定 Server 暴露的 Prompt 模板。Prompt 模板是 MCP 协议里的第三个核心概念，Server 可以预定义一些 Prompt 模板供 Client 使用。比如一个代码审查 Server 可能会暴露一个叫 `review-pr` 的 Prompt 模板，里面包含了代码审查的评审标准和输出格式。目前 ForgePilot 只做了查看功能，只调 `prompts/list` 展示名称、标题和描述，不调 `prompts/get` 拿具体内容，也不把 Prompt 注入到对话流里。这个能力留到后续版本，到时候可以做成 `/mcp use-prompt <server> <prompt-name>` 这样的命令。
 
 这两个命令的 CLI 解析复用了上一期做的 `CliCommandParser`，新增了 `MCP_RESOURCES`、`MCP_PROMPTS` 和 `CANCEL` 三个命令类型。解析逻辑跟之前一样，根据空格分词后匹配命令前缀。
 
@@ -233,7 +233,7 @@ runtime/           ← 取消上下文和 Token
 
 如果你在做类似的 MCP 高级能力，简历上可以这样写：
 
-**项目名称**：PaiCLI — MCP-Native Agent CLI
+**项目名称**：ForgePilot — MCP-Native Agent CLI
 
 **项目简介**：基于 Java 实现的 AI Agent 命令行工具，完整实现 MCP 协议（工具 + 资源 + 通知 + 取消），支持多模型接入和交互式对话。
 
@@ -251,7 +251,7 @@ runtime/           ← 取消上下文和 Token
 
 ## ending
 
-MCP 的高级能力做完之后，PaiCLI 已经不只是一个"能调工具的 Agent"了。
+MCP 的高级能力做完之后，ForgePilot 已经不只是一个"能调工具的 Agent"了。
 
 它能读数据、能收通知、能被中断。
 这三个能力加在一起，

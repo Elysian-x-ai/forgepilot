@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 256" role="img" aria-labelledby="title desc">
+  <title id="title">ForgePilot wordmark</title>
+  <desc id="desc">The ForgePilot name paired with the four-point compass mark.</desc>
+  <g transform="translate(16 16) scale(.875)">
+    <path fill="#2F6BFF" d="M128 16 151 105 240 128l-89 23-23 89-23-89-89-23 89-23z"/>
+    <path fill="#F2B84B" d="m128 82 46 46-46 46-46-46z"/>
+    <path fill="#10141C" d="m128 105 23 23-23 23-23-23z"/>
+    <circle cx="128" cy="128" r="94" fill="none" stroke="#EEF2F7" stroke-opacity=".18" stroke-width="4"/>
+  </g>
+  <text x="260" y="151" fill="#EEF2F7" font-family="Inter,IBM Plex Sans,Segoe UI,Arial,sans-serif" font-size="86" font-weight="700" letter-spacing="-2">Forge<tspan fill="#2F6BFF">Pilot</tspan></text>
+  <rect x="264" y="174" width="262" height="6" rx="3" fill="#F2B84B"/>
+</svg>

@@ -2,6 +2,7 @@ package com.paicli.runtime.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.paicli.brand.ForgePilotBrand;
 import com.paicli.runtime.task.TaskRunner;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
@@ -28,7 +29,7 @@ public class RuntimeApiServer implements AutoCloseable {
 
     public RuntimeApiServer(RuntimeThreadStore store, TaskRunner runner, int port, String apiKey) throws IOException {
         if (apiKey == null || apiKey.isBlank()) {
-            throw new IllegalArgumentException("Runtime API 需要配置 PAICLI_RUNTIME_API_KEY 或 -Dpaicli.runtime.api.key");
+            throw new IllegalArgumentException("Runtime API 需要配置 FORGEPILOT_RUNTIME_API_KEY（兼容 PAICLI_RUNTIME_API_KEY）");
         }
         this.store = store;
         this.runner = runner;
@@ -39,9 +40,11 @@ public class RuntimeApiServer implements AutoCloseable {
     }
 
     public static String configuredApiKey() {
-        String configured = System.getProperty("paicli.runtime.api.key");
+        String configured = ForgePilotBrand.firstNonBlank(
+                "forgepilot.runtime.api.key", "paicli.runtime.api.key", System::getProperty);
         if (configured == null || configured.isBlank()) {
-            configured = System.getenv("PAICLI_RUNTIME_API_KEY");
+            configured = ForgePilotBrand.firstNonBlank(
+                    "FORGEPILOT_RUNTIME_API_KEY", "PAICLI_RUNTIME_API_KEY", System::getenv);
         }
         return configured;
     }
@@ -129,7 +132,10 @@ public class RuntimeApiServer implements AutoCloseable {
 
     private boolean authorized(HttpExchange exchange) {
         String auth = exchange.getRequestHeaders().getFirst("Authorization");
-        String direct = exchange.getRequestHeaders().getFirst("X-PaiCLI-API-Key");
+        String direct = exchange.getRequestHeaders().getFirst("X-ForgePilot-API-Key");
+        if (direct == null || direct.isBlank()) {
+            direct = exchange.getRequestHeaders().getFirst("X-PaiCLI-API-Key");
+        }
         return ("Bearer " + apiKey).equals(auth) || apiKey.equals(direct);
     }
 

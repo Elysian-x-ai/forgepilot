@@ -1,9 +1,9 @@
 ---
-title: PaiCLI 学习路线：手搓一个 Java 版 Claude Code
-shortTitle: PaiCLI学习路线
-description: PaiCLI 是一个从零手写的 Java Agent CLI，对标 Claude Code。这篇给出完整学习路线与学习周期，从跑通项目、包装简历到深挖源码、背面试题，五步搞定。
+title: ForgePilot 学习路线：手搓一个 Java 版 Claude Code
+shortTitle: ForgePilot学习路线
+description: ForgePilot 是一个从零手写的 Java Agent CLI，对标 Claude Code。这篇给出完整学习路线与学习周期，从跑通项目、包装简历到深挖源码、背面试题，五步搞定。
 keywords:
-  - PaiCLI
+  - ForgePilot
   - Java Agent CLI
   - Claude Code 原理
   - ReAct
@@ -20,9 +20,9 @@ date: 2026-06-03
 
 大家好，我是二哥呀。
 
-星球里有个球友来问我：“二哥，PaiCLI 我想跟着学，我该从哪下手？大概要学多久才能拿出去面试？”
+星球里有个球友来问我：“二哥，ForgePilot 我想跟着学，我该从哪下手？大概要学多久才能拿出去面试？”
 
-所以今天这篇，我就把 PaiCLI 的学习路线从头到尾捋一遍。看完之后你应该能搞清楚三件事：
+所以今天这篇，我就把 ForgePilot 的学习路线从头到尾捋一遍。看完之后你应该能搞清楚三件事：
 
 - 这个项目能学到什么
 - 按什么顺序学最省力
@@ -38,11 +38,11 @@ date: 2026-06-03
 
 建议大家养成看文档、看源码、看注释就能上手的习惯，这个习惯对你以后进团队快速接手别人的代码，帮助大到你难以想象。真实工作场景里没人给你录视频。
 
-## 01、先把 PaiCLI 跑起来
+## 01、先把 ForgePilot 跑起来
 
-这是最重要、也是最有成就感的一步。在你分析任何一行代码之前，你必须先让 PaiCLI 在你自己的电脑上跑起来。
+这是最重要、也是最有成就感的一步。在你分析任何一行代码之前，你必须先让 ForgePilot 在你自己的电脑上跑起来。
 
-PaiCLI 是一个纯 Java 写的 Agent 命令行工具，参考了 Claude Code 和 Qoder CLI，所以交互非常友好。
+ForgePilot 是一个纯 Java 写的 Agent 命令行工具，参考了 Claude Code 和 Qoder CLI，所以交互非常友好。
 
 第一步拉取项目源码，目前我们托管在gitcode上。
 
@@ -67,7 +67,7 @@ cp .env.example .env
 # 编辑 .env，填入你的 GLM_API_KEY
 ```
 
-PaiCLI 支持的模型非常多，GLM、DeepSeek、阶跃星辰、Kimi、讯飞星辰 MaaS 都能接，任何一个都可以。
+ForgePilot 支持的模型非常多，GLM、DeepSeek、阶跃星辰、Kimi、讯飞星辰 MaaS 都能接，任何一个都可以。
 
 第四步是编译。先产出一个能手工验收的 jar 包。
 
@@ -99,7 +99,7 @@ java -jar target/paicli-1.0-SNAPSHOT.jar
 
 如果你想把 RAG 代码检索也跑通，需要本地装个 Ollama 拉一个 embedding 模型，这个[RAG 代码检索](https://paicoding.com/paismart-rag-search)的教程里写得很清楚，不强求一开始就搞定。
 
-## 02、把PaiCLI抄到简历上
+## 02、把ForgePilot抄到简历上
 
 项目跑通了，第二步不是马上扎进源码，而是先打开你的简历。
 
@@ -113,7 +113,7 @@ java -jar target/paicli-1.0-SNAPSHOT.jar
 
 千万别一上来就想把整个项目吃透，更别想着从零到一把它重写一遍。我再强调一遍，实际工作中根本没有这种场景，你进了团队接手的都是已经在跑的系统。
 
-那 PaiCLI 哪些模块适合写进简历？
+那 ForgePilot 哪些模块适合写进简历？
 
 ![](https://cdn.paicoding.com/stutymore/paicli-xuexiluxian-20260603071138.png)
 
@@ -154,14 +154,14 @@ java -jar target/paicli-1.0-SNAPSHOT.jar
 
 ![](https://cdn.paicoding.com/stutymore/paicli-xuexiluxian-20260603071627.png)
 
-这一步我特别推荐你找一个趁手的 AI 助手一起学。Claude Code、Qoder、Codex、PaiCLI 这些都行。
+这一步我特别推荐你找一个趁手的 AI 助手一起学。Claude Code、Qoder、Codex、ForgePilot 这些都行。
 
 但用 AI 助手有个关键技巧：当你定位到一个关键类或方法时，别只让它给你“总结一下”。正确的姿势是问它更具体的问题。
 
 比如针对 ReAct，你可以这么问：
 
 - 请解释一下 Agent 类的主循环是怎么实现“思考-行动-观察”这三步的，循环的退出条件是什么？
-- 同一轮模型返回了多个工具调用时，PaiCLI 是怎么并行执行又保证结果顺序的？
+- 同一轮模型返回了多个工具调用时，ForgePilot 是怎么并行执行又保证结果顺序的？
 - 请画出从用户输入一句话，到 Agent 调用工具，再到输出最终结果的完整时序图。
 
 ![](https://cdn.paicoding.com/stutymore/paicli-xuexiluxian-20260603071844.png)
@@ -172,7 +172,7 @@ java -jar target/paicli-1.0-SNAPSHOT.jar
 
 记住这一点：**面试的核心目的不是向面试官证明你每个细节都记得，而是你能跟他就这个话题来回掰扯、有来有回**。
 
-PaiCLI 围绕 Agent 的面试题密度很高，随便拎几个出来你感受一下：
+ForgePilot 围绕 Agent 的面试题密度很高，随便拎几个出来你感受一下：
 
 - ReAct 和 Plan-and-Execute 的区别和适用场景
 - Function Calling 的本质是什么
@@ -182,11 +182,11 @@ PaiCLI 围绕 Agent 的面试题密度很高，随便拎几个出来你感受一
 - MCP 解决了什么问题
 - Multi-Agent 里规划者执行者检查者怎么分工
 
-这些题你要是能结合 PaiCLI 的实现讲出自己的理解，面试官会眼前一亮。
+这些题你要是能结合 ForgePilot 的实现讲出自己的理解，面试官会眼前一亮。
 
 拿“模型到底执不执行代码”这道题给你示范一下怎么掰扯：https://paicoding.com/tool-call-hitl
 
-标准答案是模型本身不执行任何代码，它在 Function Calling 里返回的只是一个结构化的调用意图，告诉 Agent 要调哪个函数、传什么参数，真正去执行的是 PaiCLI 自己的工具层，执行完再把结果喂回模型。
+标准答案是模型本身不执行任何代码，它在 Function Calling 里返回的只是一个结构化的调用意图，告诉 Agent 要调哪个函数、传什么参数，真正去执行的是 ForgePilot 自己的工具层，执行完再把结果喂回模型。
 
 ![](https://cdn.paicoding.com/stutymore/paicli-xuexiluxian-20260603072130.png)
 
@@ -200,7 +200,7 @@ PaiCLI 围绕 Agent 的面试题密度很高，随便拎几个出来你感受一
 
 很多球友背八股张嘴就有，一到自己写就不知道从哪下手，根源就在于从来没真正在这个项目里设过一个断点、跑过一次调试。
 
-第一，设断点。挑你简历相关的入口下断点，比如在 Agent 主循环每一轮请求模型的地方、在工具注册表分发工具调用的地方、在 MCP 客户端发起初始化握手的地方。然后给 PaiCLI 一个简单任务，让程序停在断点上，一行一行看它怎么走。
+第一，设断点。挑你简历相关的入口下断点，比如在 Agent 主循环每一轮请求模型的地方、在工具注册表分发工具调用的地方、在 MCP 客户端发起初始化握手的地方。然后给 ForgePilot 一个简单任务，让程序停在断点上，一行一行看它怎么走。
 
 第二个，观察变量。停在断点上的时候，重点盯着几个关键变量的变化：模型这一轮返回了哪些工具调用、上下文里现在攒了多少条消息、Token 预算还剩多少、工具执行完返回了什么。
 
@@ -210,13 +210,13 @@ PaiCLI 围绕 Agent 的面试题密度很高，随便拎几个出来你感受一
 
 这一步看着简单，但它把“改代码 → 编译 → 运行 → 验证”这一套最基本的流程走通了。
 
-再进一步，加个小功能。比如给 PaiCLI 加一个新的内置工具。
+再进一步，加个小功能。比如给 ForgePilot 加一个新的内置工具。
 
 最有价值的，是改 bug。这个项目你认真跑起来，是会遇到 bug 的，这太正常了，任何真实项目都有 bug。你能定位一个 bug、想明白它为什么发生、再把它修掉，这个完整过程走一遍，你的工程能力会有一次实打实的跃迁。
 
 测试也别落下。
 
-PaiCLI 留了几个测试 profile，日常回归用 `mvn test -Pquick` 跳过那些慢测试，改动大了再 `mvn test -DskipTests=false` 跑全量。
+ForgePilot 留了几个测试 profile，日常回归用 `mvn test -Pquick` 跳过那些慢测试，改动大了再 `mvn test -DskipTests=false` 跑全量。
 
 ```bash
 # 常规快速回归
@@ -237,7 +237,7 @@ mvn test -Pquick
 
 具体怎么积累？我给你几个方向。
 
-第一，写踩坑贴。你跑 PaiCLI、调试 PaiCLI 的过程中，一定踩过坑——某个依赖装不上、Ollama 没配对、MCP server 起不来、某个模型的 Key 格式不对。把这些坑和你的解决办法记下来，就是一篇有价值的经验贴。别小看这种文章，它对后来人帮助极大，对你自己也是一次复盘。
+第一，写踩坑贴。你跑 ForgePilot、调试 ForgePilot 的过程中，一定踩过坑——某个依赖装不上、Ollama 没配对、MCP server 起不来、某个模型的 Key 格式不对。把这些坑和你的解决办法记下来，就是一篇有价值的经验贴。别小看这种文章，它对后来人帮助极大，对你自己也是一次复盘。
 
 第二，整理你自己的面试题库。你在面试里真实遇到的问题，按模块归归类，整理成一份只属于你的知识库。
 
@@ -249,7 +249,7 @@ mvn test -Pquick
 
 ## ending
 
-最后我想说，这套学习方法，其实不只适用于 PaiCLI。
+最后我想说，这套学习方法，其实不只适用于 ForgePilot。
 
 先跑起来，
 
@@ -265,6 +265,6 @@ mvn test -Pquick
 
 学习这件事，最怕的不是难，是没有方向感。
 
-希望大家都能靠 PaiCLI 这个项目，开一个大包。
+希望大家都能靠 ForgePilot 这个项目，开一个大包。
 
 记得回来给二哥报喜，笔芯。

@@ -1,7 +1,7 @@
 ---
 title: AI Agent 面试题第五弹：Prompt 分层架构、Skill 系统、提示词工程 13 题
 shortTitle: 面试题：Prompt 与 Skill
-description: 围绕 PaiCLI 实战，精选 13 道 Prompt 工程与 Skill 系统面试题，覆盖 system prompt 分层、KV Cache 优化、Skill 加载、Skill 缓冲区容量控制和提示词最佳实践。
+description: 围绕 ForgePilot 实战，精选 13 道 Prompt 工程与 Skill 系统面试题，覆盖 system prompt 分层、KV Cache 优化、Skill 加载、Skill 缓冲区容量控制和提示词最佳实践。
 tag:
   - Agent
   - 面试题
@@ -26,9 +26,9 @@ Prompt 是 Agent 的灵魂。
 
 ## 01、Agent 的 system prompt 一般包含哪些内容？
 
-PaiCLI 的 system prompt 可以概括为四个核心模块。
+ForgePilot 的 system prompt 可以概括为四个核心模块。
 
-首先是**角色定义**，告诉 LLM 你是谁、能做什么。PaiCLI 的 base.md 第一段就写了：你是 PaiCLI，一个面向代码库工作的智能编程 Agent。
+首先是**角色定义**，告诉 LLM 你是谁、能做什么。ForgePilot 的 base.md 第一段就写了：你是 ForgePilot，一个面向代码库工作的智能编程 Agent。
 
 ![](https://cdn.paicoding.com/stutymore/paicli-interview-prompt-skill-20260528104912.png)
 
@@ -40,7 +40,7 @@ PaiCLI 的 system prompt 可以概括为四个核心模块。
 
 ## 02、Prompt 分层架构是怎么设计的？
 
-PaiCLI 早期的 system prompt 是硬编码在 Java 代码里的，改一句话要重新编译。后来做了分层改造，把 system prompt 拆分成独立的 Markdown 文件，按职责分目录存放。
+ForgePilot 早期的 system prompt 是硬编码在 Java 代码里的，改一句话要重新编译。后来做了分层改造，把 system prompt 拆分成独立的 Markdown 文件，按职责分目录存放。
 
 先看目录结构：
 
@@ -63,7 +63,7 @@ src/main/resources/prompts/
     └── context-management.md # 上下文管理策略
 ```
 
-PaiCLI 启动时会把这些 Markdown 文件按固定顺序拼装成最终的 system prompt。
+ForgePilot 启动时会把这些 Markdown 文件按固定顺序拼装成最终的 system prompt。
 
 组装顺序是固定的：先拼核心规则，再拼语调风格，然后是当前模式的指令，接着是审批策略、项目上下文、Skill、上下文，最后是本轮对话的交接信息。
 
@@ -73,9 +73,9 @@ PaiCLI 启动时会把这些 Markdown 文件按固定顺序拼装成最终的 sy
 
 LLM 推理时，每个 token 会计算出一对 Key-Value（KV），缓存起来。如果连续两次请求的 prompt 前缀完全相同，服务端可以**复用上次的 KV Cache**，跳过重复计算。前缀越稳定，cache 命中率越高，推理越快、成本越低。
 
-### PaiCLI 的排列策略
+### ForgePilot 的排列策略
 
-PaiCLI 的组装顺序严格遵循**“不变内容放前，动态内容放后”**的原则。
+ForgePilot 的组装顺序严格遵循**“不变内容放前，动态内容放后”**的原则。
 
 这样排列后，越靠前的稳定内容越容易持续命中 cache，动态变化的内容集中在后段，服务端只需要重点处理新增或变化的上下文。反过来，如果把 Skill、项目上下文这类动态内容放到前面，即使 base.md 没有变化，也可能破坏前缀一致性，导致缓存收益下降，推理延迟和 token 成本都会受到影响。
 
@@ -83,7 +83,7 @@ PaiCLI 的组装顺序严格遵循**“不变内容放前，动态内容放后�
 
 ## 04、用户怎么覆盖内置 prompt？
 
-PaiCLI 支持三层覆盖，优先级从低到高：
+ForgePilot 支持三层覆盖，优先级从低到高：
 
 ![](https://cdn.paicoding.com/stutymore/paicli-interview-prompt-skill-20260528120242.png)
 
@@ -99,7 +99,7 @@ PaiCLI 支持三层覆盖，优先级从低到高：
 
 既然项目级可以覆盖内置 prompt，就存在通过恶意项目配置注入提示词的风险。
 
-PaiCLI 在路径加载时做了两层校验：一是文件路径不能以 `/` 开头、不能包含 `..`，防止路径穿越；二是解析后的路径必须落在对应根目录之内，超出范围的直接拒绝。
+ForgePilot 在路径加载时做了两层校验：一是文件路径不能以 `/` 开头、不能包含 `..`，防止路径穿越；二是解析后的路径必须落在对应根目录之内，超出范围的直接拒绝。
 
 ## 05、什么是 Skill？它和 Tool 有什么区别？
 
@@ -140,7 +140,7 @@ Agent 启动时，只把所有启用 Skill 的 name + description 渲染成一�
 
 假设有 20 个 Skill，每个完整手册 2000-3000 token，全部注入就是 40k-60k token。绝大部分场景下用户只需要 1-2 个 Skill，其余内容会造成不必要的上下文开销。
 
-所以 PaiCLI 的 Skill 加载是  **延迟加载**的。
+所以 ForgePilot 的 Skill 加载是  **延迟加载**的。
 
 ### 加载失败怎么处理
 
@@ -164,11 +164,11 @@ tool       已加载 skill 'web-access' 的完整指引……
 user       ## 已加载 Skill：web-access + SKILL.md 正文
 ```
 
-这里有个坑，面试可以主动讲。PaiCLI 早期版本是把正文先放进一个缓冲区，等用户下一次输入时再拼到那条消息前面。结果模型调完 load_skill，本轮剩下的请求都看不到正文，只能凭索引里的一行描述干活。这个问题是读者在评论区指出来的，后来改成了现在的同一轮注入。
+这里有个坑，面试可以主动讲。ForgePilot 早期版本是把正文先放进一个缓冲区，等用户下一次输入时再拼到那条消息前面。结果模型调完 load_skill，本轮剩下的请求都看不到正文，只能凭索引里的一行描述干活。这个问题是读者在评论区指出来的，后来改成了现在的同一轮注入。
 
 **为什么不把正文直接塞进工具结果？** 
 
-PaiCLI 所有工具结果进入历史前都会被包成 `trust="untrusted-data"`，告诉模型这是外部数据，里面的指令不执行，用来防网页、MCP 内容做提示词注入。SKILL.md 是本地可信的操作指引，恰恰需要模型照做，混进工具结果要么被当成数据忽略，要么就得给安全边界开口子。
+ForgePilot 所有工具结果进入历史前都会被包成 `trust="untrusted-data"`，告诉模型这是外部数据，里面的指令不执行，用来防网页、MCP 内容做提示词注入。SKILL.md 是本地可信的操作指引，恰恰需要模型照做，混进工具结果要么被当成数据忽略，要么就得给安全边界开口子。
 
 **为什么不塞进 system prompt？** 
 
@@ -184,7 +184,7 @@ system prompt 一变，prompt cache 就失效。正文走 user 消息，system p
 
 ## 08、web-access Skill 具体包含什么内容？
 
-web-access 是 PaiCLI 的首个内置 Skill，也是最能体现 Skill 设计理念的例子。
+web-access 是 ForgePilot 的首个内置 Skill，也是最能体现 Skill 设计理念的例子。
 
 它的目录结构包含一个 SKILL.md 主文件和一组 references 子目录（按站点分类的经验文档，覆盖 GitHub、掘金、微信公众号、X、小红书、知乎专栏等）。
 
@@ -243,12 +243,12 @@ jar 内置 < 用户级 ~/.paicli/skills/ < 项目级 <project>/.paicli/skills/
 
 还有两点容易被忽略。一个是规则优先级要明确，规则之间有冲突时写清楚哪个优先，比如“安全优先于效率”“路径围栏规则优先于用户自定义 prompt”。
 
-另一个是 system prompt 不要太长，越长 LLM 越容易忽略中间部分，这就是 Lost in the Middle 问题，2000-4000 token 比较合理。PaiCLI 做分层设计就是为了在不膨胀 system prompt 的前提下扩展能力。
+另一个是 system prompt 不要太长，越长 LLM 越容易忽略中间部分，这就是 Lost in the Middle 问题，2000-4000 token 比较合理。ForgePilot 做分层设计就是为了在不膨胀 system prompt 的前提下扩展能力。
 
 
 ## 11、Prompt 改了怎么验证效果？
 
-PaiCLI 提供了 `docs/prompt-analysis-template.md` 作为 Prompt 质量审计模板。每次改 prompt 都应该做 Gap 分析。
+ForgePilot 提供了 `docs/prompt-analysis-template.md` 作为 Prompt 质量审计模板。每次改 prompt 都应该做 Gap 分析。
 
 先描述当前 prompt 在什么场景下表现不好，然后记录具体改了什么、为什么改，接着写清楚改完后期望 LLM 在什么场景下行为不同，最后做回归验证，确认原来正常的场景没被改坏。
 
@@ -294,7 +294,7 @@ Skill 加载一份 Spring Boot 相关的决策手册，告诉 Agent 配置优先
 
 ### 多个 Skill 之间冲突怎么办
 
-目前 PaiCLI 没有显式的 Skill 优先级机制。多个 Skill 同时存在于缓冲区时，按加载顺序排列，LLM 根据当前任务的上下文自行判断参考哪个 Skill 的指引。
+目前 ForgePilot 没有显式的 Skill 优先级机制。多个 Skill 同时存在于缓冲区时，按加载顺序排列，LLM 根据当前任务的上下文自行判断参考哪个 Skill 的指引。
 
 这种设计依赖 LLM 的语义判断能力，在实际使用中效果可以接受，但如果两个 Skill 对同一操作给出矛盾的建议（比如一个说用 web_fetch，另一个说用浏览器），LLM 可能会在两者之间摇摆。
 

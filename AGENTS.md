@@ -1,6 +1,8 @@
 # AGENTS.md
 
-PaiCLI 仓库给 Agent / 新线程的首读入口，Codex 直接读取，Claude Code 通过 `CLAUDE.md` 的 `@AGENTS.md` 导入。这里只放每次改动都要遵守的规则；实现细节见 `docs/agents-reference.md`，评测历史见 `benchmarks/paicli-native-agentbench-v0.1/AGENTS-SNAPSHOT-ARCHIVE.md`。本文件保持在 200 行以内，新增内容优先写进上面两个文件。
+ForgePilot 仓库给 Agent / 新线程的首读入口，Codex 直接读取，Claude Code 通过 `CLAUDE.md` 的 `@AGENTS.md` 导入。这里只放每次改动都要遵守的规则；实现细节见 `docs/agents-reference.md`，评测历史见 `benchmarks/paicli-native-agentbench-v0.1/AGENTS-SNAPSHOT-ARCHIVE.md`。本文件保持在 200 行以内，新增内容优先写进上面两个文件。
+
+公开产品名是 ForgePilot，定位语是 “A controlled engineering agent for the terminal”。`com.paicli`、`.paicli`、`PAICLI_*`、`paicli.*`、`PAI.md` 和 benchmark 标识是稳定兼容契约；新品牌别名只在对应配置入口明确支持时优先使用。
 
 ## 信息优先级
 
@@ -18,7 +20,7 @@ PaiCLI 仓库给 Agent / 新线程的首读入口，Codex 直接读取，Claude 
 
 - 2026-09-05 起用户因 Token 消耗暂停评测：**不主动恢复评测实现、真实模型调用或 Docker 运行**，只按用户逐阶段明确授权单次执行，默认不启子代理
 - generator 已接 25/28 题（原权重 88/100），缺 D5/E3/E4；`formalScores=null`、`publishable=false`、`NOT_INTEGRATED` 不变，不得宣传为正式榜单
-- 正式评测只评 DeepSeek V4 Flash 与 GLM-5.3-Flash；证据缺失属于评测无效，不计成 PaiCLI 的 0 分；零 provider 调用是有效失败；禁止 best-of、挑子集、自动重试
+- 正式评测只评 DeepSeek V4 Flash 与 GLM-5.3-Flash；证据缺失属于评测无效，不计成 ForgePilot 的 0 分；零 provider 调用是有效失败；禁止 best-of、挑子集、自动重试
 - 已知问题：E2 的 `validators/final/E2` 输出原始判定 JSON，不是统一的 `VerifierScoringReport`，`FinalSourceGeneratorTest.referencePrototypes…` 因此失败，修复需授权
 - 评测工具证据从 `ToolRegistry.onPolicyToolResults` 采集（含策略拒绝、保持原顺序），不能只看 `executeTools` 的已放行子集
 - 细节：`benchmarks/paicli-native-agentbench-v0.1/` 下的 RUNBOOK、FINAL-DATASET-RUNBOOK 与 AGENTS-SNAPSHOT-ARCHIVE
@@ -150,7 +152,7 @@ src/main/java/com/paicli/
 
 ## 已知边界
 
-- 未交付：通用产品级容器/VM 沙箱、MCP OAuth + sampling + server 自动重启；benchmark 的 `DOCKER_RELAY` 只是评测隔离，不改变交互式 PaiCLI 的安全模型
+- 未交付：通用产品级容器/VM 沙箱、MCP OAuth + sampling + server 自动重启；benchmark 的 `DOCKER_RELAY` 只是评测隔离，不改变交互式 ForgePilot 的安全模型
 - 命令沙箱默认 off：沙箱无网络且看不到 `~/.m2`、`~/.gitconfig`，`mvn` / `npm install` / `git push` 会失败；Seatbelt 内 `java -version` 仍以 139 退出
 - 不要把 `ROADMAP.md` 里“将来要做”读成“现在已有”
 

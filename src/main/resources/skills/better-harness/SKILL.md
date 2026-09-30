@@ -1,19 +1,19 @@
 ---
 name: better-harness
-description: 审查 PaiCLI 编码 Agent 的任务理解、受控执行、变更验证、可靠交付与经验沉淀；只通过 /better-harness 原生命令调用。
+description: 审查 ForgePilot 编码 Agent 的任务理解、受控执行、变更验证、可靠交付与经验沉淀；只通过 /better-harness 原生命令调用。
 version: 0.1.0
-author: PaiCLI
+author: ForgePilot
 tags: [harness, review, workflow]
 ---
 
-# PaiCLI Better Harness
+# ForgePilot Better Harness
 
-这是 QoderAI Better Harness 方法在 PaiCLI 中的原生适配。审查对象是编码 Agent
+这是 QoderAI Better Harness 方法在 ForgePilot 中的原生适配。审查对象是编码 Agent
 外层工作流，不是单次代码 diff，也不是模型能力排行榜。
 
 必须把三类证据保持独立，直到 lead 汇总：
 
-1. Session Evidence：当前 PaiCLI `ConversationLedger` 的脱敏元数据，只证明被观察到的
+1. Session Evidence：当前 ForgePilot `ConversationLedger` 的脱敏元数据，只证明被观察到的
    调用、模式和生命周期信号；未提供正文时，不得推断任务是否正确完成。
 2. Project Harness：`AGENTS.md`、`PAI.md`、README、测试、CI 和交付约束，只证明机制
    存在；是否真正执行需要会话或结果证据。

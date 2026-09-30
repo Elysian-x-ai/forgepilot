@@ -40,7 +40,7 @@ class SkillBuiltinExtractorTest {
         var parsed = SkillFrontmatterParser.parse(Files.readString(harness.resolve("SKILL.md")));
         assertTrue(parsed.warnings().isEmpty(), parsed.warnings().toString());
         assertEquals(List.of("harness", "review", "workflow"), parsed.frontmatter().get("tags"));
-        assertTrue(parsed.body().contains("# PaiCLI Better Harness"));
+        assertTrue(parsed.body().contains("# ForgePilot Better Harness"));
     }
 
     @Test

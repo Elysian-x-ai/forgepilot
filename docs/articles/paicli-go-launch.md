@@ -1,9 +1,9 @@
 ---
-title: Go 版终端 Agent PaiCLI 上线了，一个二进制搞定一切
-shortTitle: Go 版 PaiCLI 上线
-description: Go 版 PaiCLI 正式上线，6167 行代码实现完整终端 Agent CLI，基于 Bubble Tea 全屏 TUI、Go AST 级别 RAG 代码索引、goroutine 并行工具执行，go build 编译即部署，附简历包装模板。
+title: Go 版终端 Agent ForgePilot 上线了，一个二进制搞定一切
+shortTitle: Go 版 ForgePilot 上线
+description: Go 版 ForgePilot 正式上线，6167 行代码实现完整终端 Agent CLI，基于 Bubble Tea 全屏 TUI、Go AST 级别 RAG 代码索引、goroutine 并行工具执行，go build 编译即部署，附简历包装模板。
 keywords:
-  - PaiCLI Go
+  - ForgePilot Go
   - Go AI Agent
   - 终端 Agent CLI
   - Bubble Tea TUI
@@ -19,9 +19,9 @@ date: 2026-07-09
 
 大家好，我是二哥呀。
 
-PaiCLI 的 Go 版本上线了。
+ForgePilot 的 Go 版本上线了。
 
-到这里，PaiCLI 已经集齐了 Java、Python、TypeScript、Go 四个版本，核心架构完全一致，都是 ReAct + Tool Use + MCP + Memory + RAG + Skill 这一套。
+到这里，ForgePilot 已经集齐了 Java、Python、TypeScript、Go 四个版本，核心架构完全一致，都是 ReAct + Tool Use + MCP + Memory + RAG + Skill 这一套。
 
 ![](https://cdn.paicoding.com/stutymore/paicli-go-launch-20260709152756.png)
 
@@ -35,13 +35,13 @@ PaiCLI 的 Go 版本上线了。
 
 ## 01、Go 版有什么不一样
 
-PaiCLI-Go 的核心依赖只有 2 个库。
+ForgePilot-Go 的核心依赖只有 2 个库。
 
 **Charm 全家桶**（Bubble Tea + Bubbles + Lip Gloss + Glamour），终端 UI 框架。
 
 Bubble Tea 是 Go 生态里最成熟的 TUI 框架，基于 Elm 架构，状态驱动渲染。
 
-PaiCLI 用它做了一个全屏终端应用，不是简单的命令行问答，而是有 ASCII Logo、thinking 可视化流式输出、鼠标滚轮翻页、滚动条、上下文窗口使用进度条的完整界面。
+ForgePilot 用它做了一个全屏终端应用，不是简单的命令行问答，而是有 ASCII Logo、thinking 可视化流式输出、鼠标滚轮翻页、滚动条、上下文窗口使用进度条的完整界面。
 
 ![](https://cdn.paicoding.com/stutymore/bytedance-performance-ai-agent-20260709150826.png)
 
@@ -49,7 +49,7 @@ Lip Gloss 负责终端样式渲染——颜色、边框、布局，Glamour 负�
 
 **cobra**，CLI 框架。Go 生态的事实标准，kubectl、docker、Hugo 用的都是它。
 
-PaiCLI 用 cobra 定义了 8 个子命令：`doctor`（环境检查）、`index`（构建代码索引）、`search`（搜索代码）、`graph`（打印代码关系图）、`serve`（启动 Runtime API）、`wechat`（微信通道）、`snapshot`（快照管理）、`version`。
+ForgePilot 用 cobra 定义了 8 个子命令：`doctor`（环境检查）、`index`（构建代码索引）、`search`（搜索代码）、`graph`（打印代码关系图）、`serve`（启动 Runtime API）、`wechat`（微信通道）、`snapshot`（快照管理）、`version`。
 
 加上 doublestar 做 glob 匹配，Go 版的直接依赖总共 3 个。
 
@@ -63,7 +63,7 @@ Go 在这个场景下最大的优势是**单二进制部署**。
 
 还有一个 Go 独有的能力：**Go AST 级别的代码索引**。
 
-PaiCLI-Go 的 RAG 模块不只是按行拆分文本，它会调用 `go/ast` 和 `go/parser` 标准库解析 Go 源码，提取出函数级别的符号信息，包括函数名、接收者类型（比如 `*Agent.Run`），并且建立 import 关系和 contains 关系的代码关系图。
+ForgePilot-Go 的 RAG 模块不只是按行拆分文本，它会调用 `go/ast` 和 `go/parser` 标准库解析 Go 源码，提取出函数级别的符号信息，包括函数名、接收者类型（比如 `*Agent.Run`），并且建立 import 关系和 contains 关系的代码关系图。
 
 ```go
 ast.Inspect(file, func(n ast.Node) bool {
@@ -141,13 +141,13 @@ Skill 加载后注入下一轮用户消息的上下文，和 Claude Code 的机�
 
 SearXNG 是自部署搜索引擎，隐私性最好。SerpAPI 是商用搜索服务，结果最稳定。DuckDuckGo 是纯 HTML 解析兜底，不需要任何 API Key，直接解析搜索结果页面的 DOM 提取标题、链接和摘要。三个方案覆盖了从“什么都没配”到“全配齐”的所有场景。web_fetch 工具还做了安全过滤，屏蔽 file://、回环地址和私有网段的请求，防止 SSRF。
 
-## 03、如何把 PaiCLI 写到简历上
+## 03、如何把 ForgePilot 写到简历上
 
-对照目前市面上 AI Agent 岗位的 JD，PaiCLI 的功能模块基本全覆盖了。
+对照目前市面上 AI Agent 岗位的 JD，ForgePilot 的功能模块基本全覆盖了。
 
 下面是简历上可以直接用的项目描述模板。
 
-项目名称：PaiCLI-Go 终端 Agent CLI（2026.05 - 2026.07）
+项目名称：ForgePilot-Go 终端 Agent CLI（2026.05 - 2026.07）
 
 项目描述：类似 Claude Code 的终端 Agent 命令行工具（Go 版），支持 ReAct 推理、Plan-and-Execute 任务规划、Multi-Agent 多角色编排、MCP 协议接入、Skill 系统、Go AST 代码索引、Snapshot 快照回滚，编译为单二进制文件，可在终端中通过自然语言驱动代码开发和调试。
 

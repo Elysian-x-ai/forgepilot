@@ -10,10 +10,12 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 class RendererFactoryTest {
 
     private String savedProp;
+    private String savedForgePilotProp;
 
     @BeforeEach
     void saveProp() {
         savedProp = System.getProperty("paicli.renderer");
+        savedForgePilotProp = System.getProperty("forgepilot.renderer");
     }
 
     @AfterEach
@@ -23,43 +25,62 @@ class RendererFactoryTest {
         } else {
             System.setProperty("paicli.renderer", savedProp);
         }
+        if (savedForgePilotProp == null) {
+            System.clearProperty("forgepilot.renderer");
+        } else {
+            System.setProperty("forgepilot.renderer", savedForgePilotProp);
+        }
     }
 
     @Test
     void defaultsToInlineWhenUnset() {
         System.clearProperty("paicli.renderer");
+        System.clearProperty("forgepilot.renderer");
         // We can't easily clear env vars in tests; only verify property path
         assertEquals(RendererFactory.Mode.INLINE, RendererFactory.resolveMode());
     }
 
     @Test
     void propertyValueLanternaResolves() {
+        System.clearProperty("forgepilot.renderer");
         System.setProperty("paicli.renderer", "lanterna");
         assertEquals(RendererFactory.Mode.LANTERNA, RendererFactory.resolveMode());
     }
 
     @Test
     void propertyValuePlainResolves() {
+        System.clearProperty("forgepilot.renderer");
         System.setProperty("paicli.renderer", "plain");
         assertEquals(RendererFactory.Mode.PLAIN, RendererFactory.resolveMode());
     }
 
     @Test
     void propertyValueIsCaseInsensitive() {
+        System.clearProperty("forgepilot.renderer");
         System.setProperty("paicli.renderer", "LANTERNA");
         assertEquals(RendererFactory.Mode.LANTERNA, RendererFactory.resolveMode());
     }
 
     @Test
     void unknownValueFallsBackToInline() {
+        System.clearProperty("forgepilot.renderer");
         System.setProperty("paicli.renderer", "weird");
         assertEquals(RendererFactory.Mode.INLINE, RendererFactory.resolveMode());
     }
 
     @Test
     void tuiAliasResolvesToLanterna() {
+        System.clearProperty("forgepilot.renderer");
         System.setProperty("paicli.renderer", "tui");
         assertEquals(RendererFactory.Mode.LANTERNA, RendererFactory.resolveMode());
+    }
+
+    @Test
+    void forgePilotPropertyWinsOverLegacyProperty() {
+        System.setProperty("forgepilot.renderer", "inline");
+        System.setProperty("paicli.renderer", "plain");
+
+        assertEquals(RendererFactory.Mode.INLINE, RendererFactory.resolveMode());
     }
 
     @Test

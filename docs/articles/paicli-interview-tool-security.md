@@ -1,7 +1,7 @@
 ---
 title: AI Agent 面试题第三弹：Tool Call、HITL、安全策略
 shortTitle: 面试题：工具与安全
-description: 围绕 PaiCLI 第 6、9 期源码，精选 10 道工具系统与安全策略面试题，覆盖 Function Calling、Schema 设计、HITL 拦截层、联网安全、prompt 注入防护和 edit_file 局部编辑，口述版答案+面试官视角分析。
+description: 围绕 ForgePilot 第 6、9 期源码，精选 10 道工具系统与安全策略面试题，覆盖 Function Calling、Schema 设计、HITL 拦截层、联网安全、prompt 注入防护和 edit_file 局部编辑，口述版答案+面试官视角分析。
 tag:
   - Agent
   - 面试题
@@ -28,7 +28,7 @@ Function Calling 是一个协议约定。
 
 所以本质上 LLM 是一个“决策者”，它决定用什么工具、传什么参数，但真正的“执行权”在客户端。
 
-PaiCLI 的 ToolRegistry 维护了工具名到执行函数的映射表，LLM 说“我要调 read_file”，Agent 就从注册表里找到 read_file 的处理逻辑去执行。
+ForgePilot 的 ToolRegistry 维护了工具名到执行函数的映射表，LLM 说“我要调 read_file”，Agent 就从注册表里找到 read_file 的处理逻辑去执行。
 
 这里还有一个容易踩的坑：要不要按用户的措辞决定给不给工具。如果用动作词表判断“这是不是一个任务”，没命中就一个工具都不给，那么用户回一句“1”选择上一条的选项，或者说“进入 demo 目录，编译并运行 Hello.java”，都可能因为漏判拿不到工具，模型只好把调用写成正文，任务不声不响地没做成。中文的说法千变万化，词表永远补不全。
 
@@ -55,7 +55,7 @@ PaiCLI 的 ToolRegistry 维护了工具名到执行函数的映射表，LLM 说�
 
 第二，参数名表达准确。file_path 比 p 好，max_lines 比 n 好。LLM 生成参数的时候会参考参数名的语义。
 
-第三，如果某个参数只接受几个特定值，最好用 enum 约束。要是不加 enum，LLM 自由发挥，大小写还不对，后端直接就报错了。这一条 PaiCLI 自己还没做到，它生成参数定义的辅助方法不支持 enum，`create_project` 的项目类型只写在描述里，算是一个待改进的地方。
+第三，如果某个参数只接受几个特定值，最好用 enum 约束。要是不加 enum，LLM 自由发挥，大小写还不对，后端直接就报错了。这一条 ForgePilot 自己还没做到，它生成参数定义的辅助方法不支持 enum，`create_project` 的项目类型只写在描述里，算是一个待改进的地方。
 
 第四，描述里加示例。“项目类型，如 java、python、node”比光写“项目类型”准确率高。
 
@@ -74,7 +74,7 @@ PaiCLI 的 ToolRegistry 维护了工具名到执行函数的映射表，LLM 说�
 为什么需要它？
 
 - 第一，LLM 会犯错，幻觉率虽然在下降但永远到不了零。
-- 第二，文件写入会覆盖原内容，命令执行（删文件、推代码、调接口）的副作用更难撤回。PaiCLI 后来加了按轮的 Side-Git 快照，文件改动可以用 `revert_turn` 回到这一轮开始之前，但命令对外部系统造成的影响回滚不了。
+- 第二，文件写入会覆盖原内容，命令执行（删文件、推代码、调接口）的副作用更难撤回。ForgePilot 后来加了按轮的 Side-Git 快照，文件改动可以用 `revert_turn` 回到这一轮开始之前，但命令对外部系统造成的影响回滚不了。
 - 第三，生产环境需要审计，没有审批机制的 Agent 过不了安全合规审查。
 
 ### 04、HITL 的拦截层是怎么实现的
@@ -119,7 +119,7 @@ web_fetch 能抓哪些 URL 是有限制的。URL 只能来自用户本轮亲手�
 
 我说：“SPA 是 JavaScript 动态渲染的，Jsoup 只能解析静态 HTML，拿不到渲染后的 DOM。微信公众号、知乎、小红书这些防爬站点也一样，返回不了实际内容。”
 
-PaiCLI 没有在代码里写 fallback 逻辑，靠 system prompt 里的工具选择决策表引导 LLM 自己判断。
+ForgePilot 没有在代码里写 fallback 逻辑，靠 system prompt 里的工具选择决策表引导 LLM 自己判断。
 
 LLM 看到 web_fetch 拿不到正文，就会自动切换到 Chrome DevTools MCP 的浏览器工具——先 navigate_page 打开页面，然后 take_snapshot 拿到完整的 DOM 文本。
 
@@ -217,6 +217,6 @@ LLM 看到 web_fetch 拿不到正文，就会自动切换到 Chrome DevTools MCP
 
 它和 write_file 的分工也很清楚。edit_file 只改已有的普通文件，新建文件还是用 write_file。两者受同样的约束，路径必须在项目根目录以内，写入后文件不超过 5MB，都属于中危操作，要过 HITL 审批、记审计日志、展示 diff，写入后还会触发一次语法诊断。
 
-还没做的是读前校验。Claude Code 的编辑工具要求模型先读过文件才能改，PaiCLI 目前只在提示词里要求“失败时先重新读取相关片段，不要猜测原文”，代码层面没有记录哪些文件读过。写入方式是直接覆盖原文件，中途崩溃可能留下写了一半的文件。
+还没做的是读前校验。Claude Code 的编辑工具要求模型先读过文件才能改，ForgePilot 目前只在提示词里要求“失败时先重新读取相关片段，不要猜测原文”，代码层面没有记录哪些文件读过。写入方式是直接覆盖原文件，中途崩溃可能留下写了一半的文件。
 
 > **为什么这样回答**：这道题考的是工具设计的取舍。能讲出“唯一匹配宁可拒绝”的理由，再主动说出换行符、并发这些真实踩过的坑，面试官会觉得你是真的写过这个工具。

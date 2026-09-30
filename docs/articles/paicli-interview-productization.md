@@ -1,10 +1,10 @@
 ---
 title: AI Agent 面试题第六弹：TUI 渲染、LSP 诊断注入、Git 快照、Runtime API 13 题
 shortTitle: 面试题：产品化工程
-description: 围绕 PaiCLI 实战，精选 13 道 Agent 产品化工程面试题，覆盖 TUI 终端渲染、DECSTBM 状态栏、LSP 诊断注入、Git Side-History 快照、异步后台任务、Runtime API 和图片输入。
+description: 围绕 ForgePilot 实战，精选 13 道 Agent 产品化工程面试题，覆盖 TUI 终端渲染、DECSTBM 状态栏、LSP 诊断注入、Git Side-History 快照、异步后台任务、Runtime API 和图片输入。
 keywords:
   - Agent CLI
-  - PaiCLI 面试题
+  - ForgePilot 面试题
   - TUI 终端渲染
   - LSP 诊断注入
   - Git Side-History
@@ -26,13 +26,13 @@ date: 2026-05-28
 
 直接 print。好的地方是兼容性最强，任何终端都能正常显示。不好的地方也很明显，没有颜色、没有折叠、没有状态栏，信息密度低，用户体验差。
 
-第二种是 Inline 流式输出，也是 PaiCLI 的默认方案。底部固定一个状态栏，显示当前模型、token 用量、上下文窗口占比、运行耗时。
+第二种是 Inline 流式输出，也是 ForgePilot 的默认方案。底部固定一个状态栏，显示当前模型、token 用量、上下文窗口占比、运行耗时。
 
 最关键的是工具调用可以折叠。比如说 Agent 读了 3 个文件，终端只显示一行折叠摘要，按 Ctrl+O 展开可以查看具体内容。文件修改也有行内 diff 对比，改了什么一目了然。
 
 ![](https://cdn.paicoding.com/stutymore/paicli-interview-productization-20260529075735.png)
 
-第三种是全屏 TUI。独占整个终端窗口，可以做文件树、分栏布局、弹窗。用户体验最丰富，但需要全屏模式。PaiCLI 基于 Lanterna 库实现了这个方案，有对话区、状态栏和模态弹窗做审批确认。
+第三种是全屏 TUI。独占整个终端窗口，可以做文件树、分栏布局、弹窗。用户体验最丰富，但需要全屏模式。ForgePilot 基于 Lanterna 库实现了这个方案，有对话区、状态栏和模态弹窗做审批确认。
 
 最终我们选择了 Inline 作为默认的交互方式，因为它在信息密度和用户体验之间达到了一个不错的平衡。比较接近Claude Code和Qoder CLI的交互方式。
 
@@ -44,7 +44,7 @@ DECSTBM 全称是 DEC Set Top and Bottom Margins，是 VT100 终端定义的转�
 
 ![](https://cdn.paicoding.com/stutymore/paicli-interview-productization-20260529080844.png)
 
-PaiCLI 通过 JLine `Status` 在终端底部保留两行状态和一行分隔线。主内容在上方滚动输出。
+ForgePilot 通过 JLine `Status` 在终端底部保留两行状态和一行分隔线。主内容在上方滚动输出。
 
 滚动区域只能约束滚动，不能阻止“清除到屏幕底部”的 ANSI 指令擦掉状态栏。代码块折叠和 Ctrl+O 重绘因此只逐行清理自身占用的区域。如果直接清屏到底，JLine 的显示缓存还以为模型名等内容存在，下一次只重画变化的数据，就会出现右侧统计还在、左侧模型名空白的现象。
 
@@ -54,7 +54,7 @@ PaiCLI 通过 JLine `Status` 在终端底部保留两行状态和一行分隔线
 
 注意，不是所有终端都支持 DECSTBM。
 
-PaiCLI 在初始化时会检测终端能力，检查是否支持 ANSI、终端尺寸是否足够（至少 5 行 20 列），以及用户是否通过环境变量 `PAICLI_NO_STATUSBAR` 手动禁用了状态栏。
+ForgePilot 在初始化时会检测终端能力，检查是否支持 ANSI、终端尺寸是否足够（至少 5 行 20 列），以及用户是否通过环境变量 `PAICLI_NO_STATUSBAR` 手动禁用了状态栏。
 
 #### 状态栏的更新频率怎么控制
 
@@ -66,7 +66,7 @@ PaiCLI 在初始化时会检测终端能力，检查是否支持 ANSI、终端�
 
 “Agent 改了代码，编译出错了怎么办？”
 
-PaiCLI 的 LSP 诊断注入就是解决这个问题的。
+ForgePilot 的 LSP 诊断注入就是解决这个问题的。
 
 整个流程是这样的：Agent 执行文件写入操作后，系统的 edit hook 会自动触发。
 
@@ -92,7 +92,7 @@ Agent 改文件是有风险的，所以快照和回滚机制是必须做的。
 - 第二，用户可能正在做 rebase 或者 merge，Agent 的 commit 会直接干扰 git 的状态机。
 - 第三，快照不是有意义的 commit，混在正式分支里只会增加噪音。
 
-PaiCLI 的解决方案是建一个完全独立的 side-git 仓库。
+ForgePilot 的解决方案是建一个完全独立的 side-git 仓库。
 
 快照数据存储在 `~/.paicli/snapshots/` 目录下，按项目路径的哈希值组织目录结构，完全不碰用户的 `.git` 目录。底层用 JGit 完成所有操作，不依赖本机安装的 git 命令。
 
@@ -110,7 +110,7 @@ PaiCLI 的解决方案是建一个完全独立的 side-git 仓库。
 
 #### 快照的提交身份是什么
 
-所有快照的提交者信息统一为 `PaiCLI Snapshot <snapshot@paicli.local>`，和用户的 git 身份完全隔离。
+所有快照的提交者信息统一为 `ForgePilot Snapshot <snapshot@paicli.local>`，和用户的 git 身份完全隔离。
 
 ### 05、快照恢复会影响用户的 .git 吗
 
@@ -138,7 +138,7 @@ Side-git 仓库和用户的 `.git` 是完全独立的两套系统。恢复操作
 
 不需要。
 
-PaiCLI 有一套后台任务系统，用户通过 `/task add "增加一个hello 二哥"` 提交任务后就可以做其他事情了。
+ForgePilot 有一套后台任务系统，用户通过 `/task add "增加一个hello 二哥"` 提交任务后就可以做其他事情了。
 
 ![](https://cdn.paicoding.com/stutymore/paicli-interview-productization-20260529082514.png)
 
@@ -160,9 +160,9 @@ worker 捕获到异常后，把任务状态标记为 failed，错误信息写入
 
 用户通过 `/task log <id>` 可以查看具体的执行摘要和错误详情。如果是线程中断（比如用户手动取消），状态标记为 canceled。无论哪种情况，worker 都会继续处理队列中的下一个任务，不会因为一个任务失败导致整个系统停摆。
 
-### 07、PaiCLI 不就是个命令行工具吗？为什么还需要 HTTP API？
+### 07、ForgePilot 不就是个命令行工具吗？为什么还需要 HTTP API？
 
-加了 HTTP API 之后，PaiCLI 就变成了一个可编程的 Agent 引擎。CI/CD 流水线可以调用 PaiCLI 做自动代码审查或测试生成，IDE 插件可以通过 HTTP 接口集成 Agent 能力，Web 面板可以用浏览器替代终端做交互。
+加了 HTTP API 之后，ForgePilot 就变成了一个可编程的 Agent 引擎。CI/CD 流水线可以调用 ForgePilot 做自动代码审查或测试生成，IDE 插件可以通过 HTTP 接口集成 Agent 能力，Web 面板可以用浏览器替代终端做交互。
 
 核心有三个端点：
 
@@ -230,7 +230,7 @@ curl http://127.0.0.1:8080/v1/threads/thread_0c25b7d80f8f/events \
 
 第一层，只监听 127.0.0.1，不接受外部连接，从网络层面隔离了攻击面。
 
-第二层，必须配置 API Key，每次请求都要在 Authorization 头或 X-PaiCLI-API-Key 头中带上密钥，校验不通过直接返回 401。
+第二层，必须配置 API Key，每次请求都要在 Authorization 头或 X-ForgePilot-API-Key 头中带上密钥，校验不通过直接返回 401。
 
 第三层，基于 JDK 内置的 HttpServer 实现，不引入 Netty、不引入 Spring Web，零额外依赖，减少了潜在的安全漏洞面。
 
@@ -242,7 +242,7 @@ curl http://127.0.0.1:8080/v1/threads/thread_0c25b7d80f8f/events \
 
 可以。
 
-用户贴一张截图，PaiCLI可以识别出图片内容。
+用户贴一张截图，ForgePilot可以识别出图片内容。
 
 ![](https://cdn.paicoding.com/stutymore/paicli-interview-productization-20260529085047.png)
 
@@ -250,7 +250,7 @@ curl http://127.0.0.1:8080/v1/threads/thread_0c25b7d80f8f/events \
 
 ![](https://cdn.paicoding.com/stutymore/paicli-interview-productization-20260529085158.png)
 
-#### PaiCLI 是怎么实现的？
+#### ForgePilot 是怎么实现的？
 
 首先是协议适配。
 
@@ -258,7 +258,7 @@ OpenAI 兼容协议的 content 字段需要从纯文本字符串扩展为内容�
 
 其次是图片压缩。
 
-图片按 tile 数计算 token，一张截图可能消耗几千 token。PaiCLI 的处理策略分几步：
+图片按 tile 数计算 token，一张截图可能消耗几千 token。ForgePilot 的处理策略分几步：
 
 先检查文件大小是否超过 50MB 的输入上限，然后判断 base64 编码后是否超过 5MB 的 API 限制。如果不超限且没有透明通道，直接使用原始数据。如果有透明通道，先把背景统一填充为白色再编码，因为不同模型对 alpha 通道的处理不一致。如果超过大小限制，先按比例缩放到 2000x2000 以内，然后尝试 PNG 无损编码。如果 PNG 仍然超限，就逐级降低 JPEG 质量（从 0.85 到 0.25 共五档），直到文件大小满足要求。
 
@@ -272,7 +272,7 @@ OpenAI 兼容协议的 content 字段需要从纯文本字符串扩展为内容�
 
 经典的策略模式。
 
-PaiCLI 定义了一个统一的 Renderer 接口，所有渲染相关的操作都会到这个接口上。
+ForgePilot 定义了一个统一的 Renderer 接口，所有渲染相关的操作都会到这个接口上。
 
 ![](https://cdn.paicoding.com/stutymore/paicli-interview-productization-20260529085928.png)
 
@@ -317,7 +317,7 @@ Agent 的 LSP 诊断注入，消费者是 LLM。诊断结果被格式化成结�
 
 我们通过四个策略把影响控制在了可接受范围内。
 
-第一个是排除大文件目录。默认排除 `.git`、`node_modules`、`target`、`dist`、`.idea`、`*.class`、`*.jar`，以及 PaiCLI 自身的快照目录。用户可以通过配置项追加自定义排除规则。排除匹配支持精确匹配、目录前缀匹配和 glob 模式三种方式。
+第一个是排除大文件目录。默认排除 `.git`、`node_modules`、`target`、`dist`、`.idea`、`*.class`、`*.jar`，以及 ForgePilot 自身的快照目录。用户可以通过配置项追加自定义排除规则。排除匹配支持精确匹配、目录前缀匹配和 glob 模式三种方式。
 
 第二个是区分同步和异步。推理前快照必须同步执行，因为 Agent 改文件之前的基线必须确保已经保存。推理后快照异步执行，不阻塞下一轮用户输入。
 
@@ -345,7 +345,7 @@ SSE 在这个场景下有三个优势。
 
 ![](https://cdn.paicoding.com/stutymore/paicli-interview-productization-20260529090930.png)
 
-PaiCLI 的 SSE 实现也做了细节处理。
+ForgePilot 的 SSE 实现也做了细节处理。
 
 每个事件带有自增 id，客户端断线重连时通过 `?after=<lastId>` 参数做增量拉取，不会丢失断线期间的事件。
 
@@ -355,7 +355,7 @@ PaiCLI 的 SSE 实现也做了细节处理。
 
 “最后一个开放题。你觉得一个好用的 Agent CLI 应该具备哪些特质？”
 
-**可预测性**。用户能预期 Agent 下一步会做什么。PaiCLI 的 Plan-and-Execute 模式在执行前先展示计划，HITL 审批让用户对危险操作有确认权。Agent 不是黑箱，它要改什么文件、执行什么命令，用户得清楚。
+**可预测性**。用户能预期 Agent 下一步会做什么。ForgePilot 的 Plan-and-Execute 模式在执行前先展示计划，HITL 审批让用户对危险操作有确认权。Agent 不是黑箱，它要改什么文件、执行什么命令，用户得清楚。
 
 **可恢复性**。Agent 搞砸了能回滚。Git Side-History 快照就是这个目的，一条 `/restore <N>` 命令就能回到改动之前的状态。
 
@@ -363,13 +363,13 @@ PaiCLI 的 SSE 实现也做了细节处理。
 
 ![](https://cdn.paicoding.com/stutymore/paicli-interview-productization-20260529090810.png)
 
-**渐进式**。新用户用 ReAct 模式就能完成基本任务，进阶用户按需解锁 Plan 模式、Team 协作、Skill 机制、MCP 扩展。PaiCLI 的 slash 命令面板（输入 `/` 触发）也是这个思路，常用的放在前面。
+**渐进式**。新用户用 ReAct 模式就能完成基本任务，进阶用户按需解锁 Plan 模式、Team 协作、Skill 机制、MCP 扩展。ForgePilot 的 slash 命令面板（输入 `/` 触发）也是这个思路，常用的放在前面。
 
 **容错性**。网络断了、MCP Server 挂了、LLM 超时了，每种故障都有优雅的降级路径，不会直接崩溃退出。
 
-## PaiCLI如何写到简历上？
+## ForgePilot如何写到简历上？
 
-**项目名称**：PaiCLI -- AI Agent 命令行工具
+**项目名称**：ForgePilot -- AI Agent 命令行工具
 
 **项目简介**：基于 Java 17 的 AI Agent CLI 产品，对标 Claude Code，从 ReAct 循环演进到完整 Agent 产品形态，覆盖 TUI 终端渲染、LSP 诊断注入、Git 快照回滚、异步任务、Runtime API 和多模态输入。
 

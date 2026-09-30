@@ -16,7 +16,7 @@ import java.util.List;
  *       和运行时目录（JAVA_HOME、PATH 里的 bin/sbin/shims），不挂载用户 HOME；</li>
  *   <li>只有工作区以读写方式 {@code --bind}，/tmp 是沙箱私有 tmpfs；</li>
  *   <li>{@code --unshare-all} 包含独立 network namespace，沙箱内只有 loopback，没有外网；</li>
- *   <li>{@code --die-with-parent} / {@code --new-session} 防止子进程脱离 PaiCLI 或向终端注入输入。</li>
+ *   <li>{@code --die-with-parent} / {@code --new-session} 防止子进程脱离 ForgePilot 或向终端注入输入。</li>
  * </ul>
  *
  * <p>每个路径和命令都是独立 argv，不拼 shell 字符串；命令只作为 {@code /bin/bash -c} 的一个参数。</p>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">ForgePilot compass mark</title>
+  <desc id="desc">A four-point blue compass with an amber center diamond.</desc>
+  <path fill="#2F6BFF" d="M128 16 151 105 240 128l-89 23-23 89-23-89-89-23 89-23z"/>
+  <path fill="#F2B84B" d="m128 82 46 46-46 46-46-46z"/>
+  <path fill="#10141C" d="m128 105 23 23-23 23-23-23z"/>
+  <circle cx="128" cy="128" r="94" fill="none" stroke="#EEF2F7" stroke-opacity=".18" stroke-width="4"/>
+</svg>

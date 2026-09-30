@@ -111,7 +111,7 @@ scheme 白名单(http/https) / 主机黑名单(localhost/loopback/link-local/sit
 - `ConversationLedger` 与可变 conversationHistory 解耦：默认 CLI 的 ReAct、Plan、Team（含 planner / worker / reviewer）共享一个 append-only JSONL。每行带 schemaVersion / sessionId / sequence / timestamp / event / mode / actor / source，并保留完整 `LlmClient.Message`；最终响应的 reasoning 也只在账本中完整保留，不改变 provider 的发送视图语义
 - `/clear`、历史图片 payload 裁剪和 conversationHistory 压缩只能追加 boundary event，不能覆盖或删除账本旧行。原始工具参数、工具结果和图片 payload 可能敏感；POSIX 下 `history/raw` 为 0700、账本文件为 0600
 - 交互式 CLI 默认在已完成的 ReAct / Plan / Team 任务后从用户实际提交的原文自动挑选项目级稳定事实（`PAICLI_MEMORY_AUTO_EXTRACT_ENABLED=false` 关闭；嵌入式 Agent 默认关闭）。候选必须逐字来自原文，最多 3 条；自动条目标注待核实，重复/冲突不写且不刷新旧条目的核实时间。显式保存仍走 `/save` 或用户要求后的 `save_memory`
-- 外部上下文防护：`ExternalContextTracker` 挂在共享 ToolRegistry 上（Agent / PlanExecuteAgent / AgentOrchestrator 通过 `MemoryManager.setExternalContextTracker` 绑定）。`TurnToolPolicy.execute()` 执行前从会话 tracker 同步状态，执行后把 `web_search` / `web_fetch` / `browser_*` / `mcp__*` 结果和 curl/wget 命令记为外部来源；Agent 另把用户输入中展开的 MCP resource 记为 `mcp_resource_mention`。开关 `paicli.memory.disable.on.external.context` / `PAICLI_MEMORY_DISABLE_ON_EXTERNAL_CONTEXT`（默认 true）。开启且有外部来源时：`ExplicitMemoryHints` 登录态自动写入跳过；`save_memory` 在当前轮用户原文没有“记一下 / 记住 / 以后记得 / 保存到长期记忆”等明确意图时由策略层拒绝（`ReasonCode.MEMORY_EXTERNAL_CONTEXT`）。任何显式写入都会在 metadata 记 `external_context=true` 和最多 8 个来源，关闭开关也照记。`/clear` 重置。Codex 的同名配置默认关闭，并按 MCP server 的 `pollutes_memory` 细分；PaiCLI 默认开启，且所有 MCP 一律视为外部内容
+- 外部上下文防护：`ExternalContextTracker` 挂在共享 ToolRegistry 上（Agent / PlanExecuteAgent / AgentOrchestrator 通过 `MemoryManager.setExternalContextTracker` 绑定）。`TurnToolPolicy.execute()` 执行前从会话 tracker 同步状态，执行后把 `web_search` / `web_fetch` / `browser_*` / `mcp__*` 结果和 curl/wget 命令记为外部来源；Agent 另把用户输入中展开的 MCP resource 记为 `mcp_resource_mention`。开关 `paicli.memory.disable.on.external.context` / `PAICLI_MEMORY_DISABLE_ON_EXTERNAL_CONTEXT`（默认 true）。开启且有外部来源时：`ExplicitMemoryHints` 登录态自动写入跳过；`save_memory` 在当前轮用户原文没有“记一下 / 记住 / 以后记得 / 保存到长期记忆”等明确意图时由策略层拒绝（`ReasonCode.MEMORY_EXTERNAL_CONTEXT`）。任何显式写入都会在 metadata 记 `external_context=true` 和最多 8 个来源，关闭开关也照记。`/clear` 重置。Codex 的同名配置默认关闭，并按 MCP server 的 `pollutes_memory` 细分；ForgePilot 默认开启，且所有 MCP 一律视为外部内容
 - 长期记忆只保存跨会话稳定事实，不保存临时指令；默认项目级作用域，跨项目通用偏好才用 global
 - 长期记忆去重以 `type + scope + project` 为边界，内容使用确定性的 Unicode/格式规范化和保守语法助词近似匹配；不同数字、代码符号或实质内容不会被去重合并；显式重复保存等价内容刷新核实时间，自动提取重复内容跳过
 - 冲突检测（`MemoryConflictDetector`）作用于显式写入 `LongTermMemory.write()` 和自动提取 `writeAutomatic()`：同域内仅数字/版本号不同，或字符二元组 Dice 系数 ≥ `paicli.memory.conflict.threshold` / `PAICLI_MEMORY_CONFLICT_THRESHOLD`（默认 0.8）且非重复时不写入。显式路径返回 `MemoryWriteResult.Status.CONFLICT` 并列出新旧两条供用户选择；自动路径静默跳过，不替换也不核实旧条目。`replace_id` 只能指向当前项目可见条目。底层 `store()` 保持只去重的存储语义
@@ -175,7 +175,7 @@ scheme 白名单(http/https) / 主机黑名单(localhost/loopback/link-local/sit
 - Prompt 不包含 Freshness Policy，也不对“最新/当前/今天”等关键词做自动 `web_search` 预检。模型只能在顶层用户目标明确时主动选择联网工具；明确“不要联网”始终优先。
 - 工具默认开放；自然语言判断只能收紧，不能授予能力。顶层输入命中高精度标题标记（`《…》`、`# `、“（附…面试题）”后缀、“X：Y？”）且无请求前缀和 URL 时，本轮收掉联网工具（与禁网同一套 `webForbidden` 执行），拒绝原因 `NO_ACTION`，Agent 在终端提示用户补充意图；本地工具照常开放。没有标记的裸标题由提示词要求模型先澄清。模型不得根据标题、记忆或自己的 reasoning 猜测 URL。
 - 用户明确要求查找但没有 URL 时，先 `web_search`；`web_fetch` 或 Chrome / MCP 导航 URL 只能来自用户实际提交的顶层原文（不能是 `@path` / MCP resource 展开正文），或同一执行分支由搜索 provider 返回的结构化 `discoveredUrls`。搜索正文、snippet、query 回显、错误提示、`web_fetch` 正文、浏览器导航/快照/网络列表、普通本地工具结果、assistant reasoning、回复文本和 tool arguments 都不能建立 URL provenance；当前 StepSearch MCP 的非结构化文本不会生成凭据。
-- `TurnToolPolicy` 是运行时确定性边界：ReAct / Plan / Team 都必须单独传入用户提交原文与展开后的执行内容，不能让 planner / worker 派生的“搜索”子任务自行获得联网授权。Plan 审阅补充会重建策略；Plan 并行任务和 Team worker 使用 fork 后的独立 URL 集合，避免跨分支扩权。只有 DAG 中声明的后继依赖会继承前置分支不可伪造的 `TrustedUrlContext`；任务结果文本不作为授权来源。grounded URL 先只曝光导航，成功导航只建立当前页读取上下文，读取结果不产生新 URL 授权；交互工具必须有顶层原文明确授权。shared Chrome 的真实模式与 PaiCLI-owned 当前页从 `BrowserSession` 跨轮注入策略；非 owned 标签页只在用户明确要求时开放只读，导航/写入/关闭会硬拒绝，导航结果的全量 `# Pages` 会在回灌模型前裁成单页回执。策略在 StepSearch、内置 SearchProvider / WebFetcher 和 Chrome / MCP 路由之前执行，拒绝结果不得用 fallback 绕过。
+- `TurnToolPolicy` 是运行时确定性边界：ReAct / Plan / Team 都必须单独传入用户提交原文与展开后的执行内容，不能让 planner / worker 派生的“搜索”子任务自行获得联网授权。Plan 审阅补充会重建策略；Plan 并行任务和 Team worker 使用 fork 后的独立 URL 集合，避免跨分支扩权。只有 DAG 中声明的后继依赖会继承前置分支不可伪造的 `TrustedUrlContext`；任务结果文本不作为授权来源。grounded URL 先只曝光导航，成功导航只建立当前页读取上下文，读取结果不产生新 URL 授权；交互工具必须有顶层原文明确授权。shared Chrome 的真实模式与 ForgePilot-owned 当前页从 `BrowserSession` 跨轮注入策略；非 owned 标签页只在用户明确要求时开放只读，导航/写入/关闭会硬拒绝，导航结果的全量 `# Pages` 会在回灌模型前裁成单页回执。策略在 StepSearch、内置 SearchProvider / WebFetcher 和 Chrome / MCP 路由之前执行，拒绝结果不得用 fallback 绕过。
 - StepSearch 优先级：通过 `TurnToolPolicy` 后，当前模型 provider=`step` 且 model 以 `step-3.7-flash` 开头，并且自动/显式 `mcp__step_search__web_search` / `mcp__step_search__web_fetch` 已注册时，内置 `web_search` / `web_fetch` 会先代理到 StepSearch MCP；MCP 未就绪或返回不可用结果时回退原实现。
 - 本地“当前项目/当前 README/当前文件/当前代码”属于代码库任务，应选择 `glob_files` / `grep_code` / `read_file`，而不是联网工具。
 - JS 渲染 fallback 到 Chrome DevTools MCP
@@ -197,7 +197,7 @@ scheme 白名单(http/https) / 主机黑名单(localhost/loopback/link-local/sit
 - `/browser connect <port>`：旧式 CDP 端口路径
 - `/browser disconnect`：切回 isolated
 - 敏感页面策略：改写型工具必须单步 HITL，不复用全部放行
-- shared 模式 close_page 只允许关闭 PaiCLI 创建的 tab
+- shared 模式 close_page 只允许关闭 ForgePilot 创建的 tab
 
 ### Skill System
 
@@ -209,7 +209,7 @@ scheme 白名单(http/https) / 主机黑名单(localhost/loopback/link-local/sit
 
 ### Better Harness
 
-- `/better-harness [quick|normal] [--inline]` 是 PaiCLI 原生命令，不调用 Node sidecar
+- `/better-harness [quick|normal] [--inline]` 是 ForgePilot 原生命令，不调用 Node sidecar
 - `BetterHarnessEvidenceCollector` 先冻结三路证据：当前 ConversationLedger 脱敏元数据、Project Harness、Agent Customize
 - 三个 specialist 使用同一 LLM 并行调用，但不暴露任何工具；它们只能分析各自证据 lane
 - 进度以 5 个确定性工作单元展示：证据冻结 1 个、三个 specialist 各 1 个、Lead 汇总 1 个；并行结果按完成顺序收集，谁先完成谁先刷新活动面板
@@ -305,7 +305,7 @@ scheme 白名单(http/https) / 主机黑名单(localhost/loopback/link-local/sit
 - 当前可运行集是 `benchmarks/paicli-native-agentbench-v0.1/dev-suite.json`：8 个公开 sibling case，默认使用 `FILE_ONLY`（`read_file` / `write_file` / `list_dir` / `glob_files` / `grep_code` / `create_project`）工具面。
 - Worker 按 suite mode 分发 ReAct / Plan / Team，三个入口都使用 Runner 已确认的 explicit-task envelope；静态工具 profile 另有零工具 `REASONING_ONLY`、无写能力的 `READ_ONLY` 和 `LOCAL_COMMAND`。宿主路径的本地命令仍要求 fail-closed Seatbelt；Docker relay 中的本地命令依赖 network none、只读根、唯一 workspace 写挂载和统一资源限额。当前 dev suite 不含 Plan / Team；正式 E1 / E2 仍需要 DAG、并发时序和角色归属证据。
 - Coordinator 只接受三个精确 provider/model 组合：`deepseek/deepseek-v4-flash`、`hunyuan/hy4-preview`、`glm/glm-5.3-flash`，并拒绝把其他模型 ID 冒充为评测候选项。
-- OpenAI-compatible SSE 解析器只把同时含非负整型 `prompt_tokens` / `completion_tokens` 的 usage 视为证据；HOST / Docker / Coordinator 共用同一门禁。成功调用的 resolved model、usage、请求指纹、1M context 或 16384 output 证据无法证明时，episode 属于 evaluation-invalid 并要求对称重跑，不能计成 PaiCLI 0 分；没有 provider call 则是 Candidate 有效失败。较早出现的 evidence-invalid 类型必须保留，不能被后续普通 API 错误覆盖。
+- OpenAI-compatible SSE 解析器只把同时含非负整型 `prompt_tokens` / `completion_tokens` 的 usage 视为证据；HOST / Docker / Coordinator 共用同一门禁。成功调用的 resolved model、usage、请求指纹、1M context 或 16384 output 证据无法证明时，episode 属于 evaluation-invalid 并要求对称重跑，不能计成 ForgePilot 0 分；没有 provider call 则是 Candidate 有效失败。较早出现的 evidence-invalid 类型必须保留，不能被后续普通 API 错误覆盖。
 - `DockerBenchmarkWorkerProcess` 使用独立的可信 thin runner + Candidate fat jar、framed stdio relay、`--network none`、只读根、资源限额和严格 container cleanup；provider/API key 不进入容器。`DockerBenchmarkVerifier` 使用独立 digest-pinned 镜像、只读挂载和同样 fail-closed 的 cleanup。DeepSeek / GLM 已各完成一个公开 case 的真实 subset 冒烟；正式批次仍需独立冻结 Worker image，并让 formal preflight 的验证结果成为唯一执行计划。
 - `HOST_DEV` 的父进程硬超时无法从已杀死的子 JVM 回收最后一份内存 metrics，因此只用于开发诊断；正式批次必须走宿主 relay 持有证据的 `DOCKER_RELAY`，它会在 Candidate 超时/异常退出前优先保留已出现的 evaluation-invalid provider 证据。
 - 证据根与每个 episode 目录按 owner-only 权限创建；`manifest.json`、`aggregate.json`、`run.json`、`verifier.json` 与 `answer.md` 会脱敏，`conversation/raw/benchmark-episode.jsonl` 是未脱敏的私有取证材料，不得提交或公开。
@@ -486,7 +486,7 @@ TuiBootstrap / LanternaWindow / TuiSessionController / pane/ / hitl/ / history/ 
 - StepClient：step-3.5-flash，可通过 STEP_BASE_URL 切通道
 - KimiClient：kimi-k2.6，thinking + tool calls 带回 reasoning_content
 - FreeLlmApiClient：auto，默认 http://localhost:5173/v1，OpenAI-compatible 本地网关；可用 `/config provider freellmapi ...` 写入配置后 `/model freellmapi` 切换
-- XfyunMaaSClient：Qwen3.6-35B-A3B，默认 https://maas-api.cn-huabei-1.xf-yun.com/v2，OpenAI-compatible 讯飞星辰 MaaS；可用 `/config provider xfyun ...` 写入配置后 `/model xfyun` 切换。`model` 必须使用 MaaS 服务管控页展示的 modelId；微调模型可配置 `--lora-id <resourceId>`，作为 HTTP header `lora_id` 发出；该 provider 不发送 PaiCLI 内置 tools。
+- XfyunMaaSClient：Qwen3.6-35B-A3B，默认 https://maas-api.cn-huabei-1.xf-yun.com/v2，OpenAI-compatible 讯飞星辰 MaaS；可用 `/config provider xfyun ...` 写入配置后 `/model xfyun` 切换。`model` 必须使用 MaaS 服务管控页展示的 modelId；微调模型可配置 `--lora-id <resourceId>`，作为 HTTP header `lora_id` 发出；该 provider 不发送 ForgePilot 内置 tools。
 - AgnesClient：agnes-2.0-flash，默认 https://apihub.agnes-ai.com/v1，OpenAI-compatible Agnes AI，默认 1M context window；可用 `/config provider agnes ...` 写入配置后 `/model agnes` 切换，支持流式输出和 tools。
 
 ---
@@ -560,7 +560,7 @@ DeepSeek Flash（含官方兼容旧名）通过 `supportsImageInput()` 开启图
 OpenAI-compatible LLM 请求统一由 `LlmRetryPolicy` 做有限重试：默认总尝试 3 次，仅覆盖 `408` / `429` / 可恢复 `5xx` 和瞬时连接 / 读取故障，指数退避 + jitter，并在等待上限内读取 `Retry-After`；`400` / `401` 等确定性错误直接失败。SSE 未出现 `[DONE]` 或非空 `finish_reason` 视为中断；尚未向 `StreamListener` 交付内容时可重发，已交付 reasoning/content 后不得自动重放，避免重复输出。相关系统属性见 `.env.example`。
 
 混元 provider 名为 `hunyuan`，默认模型 `hy4-preview`，默认 Base URL 为 `https://tokenhub.tencentmaas.com/v1`，走 Bearer 鉴权的 OpenAI-compatible Chat Completions，支持流式 tools、1M context window 和 prompt cache；可用 `/model hy4-preview` 明确切换，或用 `/model hunyuan` 读取 provider 配置。
-讯飞星辰 MaaS provider 名为 `xfyun`，默认 Base URL 为 `https://maas-api.cn-huabei-1.xf-yun.com/v2`。`model` 必须使用服务管控页展示的 `modelId`；公开模型名 / Hugging Face 仓库名不一定可直接调用。微调模型用 `/config provider xfyun --lora-id <resourceId>` 配置服务卡片上的 resourceId，PaiCLI 会作为 HTTP header `lora_id` 发出。`xfyun` 当前按 MaaS 文档走纯对话请求，不向上游发送 PaiCLI 内置工具列表。
+讯飞星辰 MaaS provider 名为 `xfyun`，默认 Base URL 为 `https://maas-api.cn-huabei-1.xf-yun.com/v2`。`model` 必须使用服务管控页展示的 `modelId`；公开模型名 / Hugging Face 仓库名不一定可直接调用。微调模型用 `/config provider xfyun --lora-id <resourceId>` 配置服务卡片上的 resourceId，ForgePilot 会作为 HTTP header `lora_id` 发出。`xfyun` 当前按 MaaS 文档走纯对话请求，不向上游发送 ForgePilot 内置工具列表。
 Agnes provider 名为 `agnes`，默认 Base URL 为 `https://apihub.agnes-ai.com/v1`，默认模型 `agnes-2.0-flash`，走 OpenAI-compatible Chat Completions，默认 1M context window，支持流式输出和 tools。
 
 ### 启动与 inline 渲染约定
@@ -586,14 +586,14 @@ Agnes provider 名为 `agnes`，默认 Base URL 为 `https://apihub.agnes-ai.com
 - 启动期会加载 `~/.paicli/PAI.md`、项目根 `PAI.md`、项目根 `.paicli/PAI.md`、`PAI.local.md`、`.paicli/PAI.local.md`，按此顺序注入 Project Context；`@relative/path.md` 可导入项目根内文件，总注入内容有字符预算，避免项目记忆变成 token 噪音。
 - `/init` 会根据当前项目生成短 `PAI.md`，只放 commands / project positioning / architecture / pitfalls / don'ts；默认不覆盖已有文件。
 - `/export` 导出当前 ReAct `conversationHistory` 为 Markdown 到 `~/.paicli/exports/session-*.md`；只支持无参数命令，包含完整 system prompt，便于检查 LLM 实际接收前的指令。
-- `/better-harness` 走 PaiCLI 原生四阶段审查：确定性脱敏证据快照 → 三路无工具 specialist 并行分析 → lead 汇总 → Java 确定性渲染。终端必须实时显示 5 个确定性工作单元、先完成先反馈的三路审查进度、累计耗时和 ESC 取消提示，不能只打印启动文案后静默等待；最终 Markdown 必须经过 `TerminalMarkdownRenderer` 按当前终端宽度渲染，不能直接输出 `#` / `**` 等源码标记。默认只读取当前 ledger 元数据和项目内公开工程资产，不读取消息正文、工具参数/结果、Memory 正文或用户目录配置；`--inline` 不写文件。
+- `/better-harness` 走 ForgePilot 原生四阶段审查：确定性脱敏证据快照 → 三路无工具 specialist 并行分析 → lead 汇总 → Java 确定性渲染。终端必须实时显示 5 个确定性工作单元、先完成先反馈的三路审查进度、累计耗时和 ESC 取消提示，不能只打印启动文案后静默等待；最终 Markdown 必须经过 `TerminalMarkdownRenderer` 按当前终端宽度渲染，不能直接输出 `#` / `**` 等源码标记。默认只读取当前 ledger 元数据和项目内公开工程资产，不读取消息正文、工具参数/结果、Memory 正文或用户目录配置；`--inline` 不写文件。
 - 默认 CLI 会创建一个 `ConversationLedger` 并在 ReAct / Plan / Team 三条路径间共享，原始 `LlmClient.Message` 以 append-only JSONL 写入 `~/.paicli/history/raw/session-*.jsonl`。记录包含 mode / actor / source，以及完整 system / user / assistant / tool_call / tool_result（含 reasoning、工具参数和结果、图片 payload）；`/clear`、图片裁剪和 conversationHistory 压缩只改发送视图，只能向账本追加边界事件，不能改写或删除旧行。该目录在 POSIX 上使用 0700、文件使用 0600；内容可能敏感，不要提交或随意分享。
 - JLine 交互升级计划记录在 `docs/phase-22-jline-interaction-upgrade.md`。
 
 ### Memory 与压缩细节
 
 - 交互式 CLI 默认在 ReAct / Plan / Team 任务完成后，对用户实际提交的原文做一次受约束的事实提取（`PAICLI_MEMORY_AUTO_EXTRACT_ENABLED=false` 关闭；嵌入式 Agent 默认关闭，须显式开启）。模型只能选择原文中逐字存在的稳定偏好/项目事实，最多 3 条；自动条目只写项目级并标注待核实，重复/冲突不写且不刷新旧条目核实时间。用户可 `/memory verify` 或删除。外部内容防护阻止自动提取；不会从 assistant、工具返回、展开的 MCP resource 或压缩摘要提取。显式保存仍走 `/save` / `save_memory`；`ExplicitMemoryHints` 的浏览器登录态提示在用户明确要求记住时可直接保存。会话摘要只重建 conversationHistory
-- 外部上下文防护（参考 Codex `memories.disable_on_external_context`，PaiCLI 默认开启，`PAICLI_MEMORY_DISABLE_ON_EXTERNAL_CONTEXT=false` 关闭）：`web_search` / `web_fetch` / `browser_*` / 任意 `mcp__*` 结果、`execute_command` 的 curl/wget，以及用户输入里展开的 MCP resource，会让共享 ToolRegistry 上的会话级 `ExternalContextTracker` 记下来源。此后浏览器登录态提示不再自动写入；`save_memory` 只有在当前轮用户原文明确要求记住时才放行，否则 `TurnToolPolicy` 以 `[MEMORY_EXTERNAL_CONTEXT]` 拒绝。显式保存（`/save`、用户要求后的 `save_memory`）照常写入，但 metadata 带 `external_context=true` 与 `external_context_sources`，`/memory list` 标注 🌐。防护关闭时仍记录 metadata。`/clear` 重置该标记
+- 外部上下文防护（参考 Codex `memories.disable_on_external_context`，ForgePilot 默认开启，`PAICLI_MEMORY_DISABLE_ON_EXTERNAL_CONTEXT=false` 关闭）：`web_search` / `web_fetch` / `browser_*` / 任意 `mcp__*` 结果、`execute_command` 的 curl/wget，以及用户输入里展开的 MCP resource，会让共享 ToolRegistry 上的会话级 `ExternalContextTracker` 记下来源。此后浏览器登录态提示不再自动写入；`save_memory` 只有在当前轮用户原文明确要求记住时才放行，否则 `TurnToolPolicy` 以 `[MEMORY_EXTERNAL_CONTEXT]` 拒绝。显式保存（`/save`、用户要求后的 `save_memory`）照常写入，但 metadata 带 `external_context=true` 与 `external_context_sources`，`/memory list` 标注 🌐。防护关闭时仍记录 metadata。`/clear` 重置该标记
 - `PAI.md` 管团队共享的项目规则，长期记忆管个人或项目作用域的稳定事实；不要把一次性协作经验写进 `PAI.md`
 - 长期记忆只保存跨会话稳定事实，不保存临时指令；默认项目级作用域，跨项目通用偏好才用 global
 - 长期记忆文件可能被多个实例（ReAct / Plan / Team 各持一个）和多个进程同时读写：`LongTermMemoryFile` 负责进程内路径锁 + `.lock` 文件锁、临时文件原子改名和坏文件备份；`LongTermMemory` 每次变更前在锁内重读磁盘，读取前检测文件变化并刷新。不要绕开 `withStorageLock` 直接写盘
@@ -619,7 +619,7 @@ Agnes provider 名为 `agnes`，默认 Base URL 为 `https://apihub.agnes-ai.com
 - 每轮 system prompt 会注入当前日期/时区，用于相对日期理解；不做基于“最新/当前/今天”等关键词的自动 freshness 预检。模型只能在顶层用户目标明确时选择联网工具，用户明确要求不要联网时优先遵从。
 - 当前顶层输入只是裸标题、主题或摘录，没有动作、问题或目标时，由提示词要求模型先澄清；带明确标题标记时代码层收掉联网工具。不得自行猜测 URL。
 - 用户明确要求查找但没有提供 URL 时，先 `web_search` 再基于结果继续；`web_fetch` 与浏览器导航 URL 只能来自用户实际提交的顶层原文（不含 `@path` / MCP resource 展开正文），或本执行分支成功完成的 `web_search` 结构化 `discoveredUrls`。搜索正文、snippet、query 回显、错误提示、`web_fetch` 正文、浏览器导航/快照/网络列表、普通本地工具输出、模型 reasoning / 回复 / tool arguments 都不能扩充 URL 授权；当前 StepSearch MCP 的非结构化文本不会生成 URL 凭据。
-- 运行时 `TurnToolPolicy` 覆盖 ReAct / Plan / Team，在 StepSearch、内置 Web provider 或 MCP / Chrome 路由之前执行；Plan 审阅补充会重建策略。Plan 并行任务和 Team worker 各用独立策略副本，不能跨分支共享新发现的 URL；只有 DAG 中声明的后继依赖才会继承前置分支的类型化 `web_search` URL 凭据，不从任务回复文本重新提取。grounded URL 只开放导航，成功导航只建立当前页的读取上下文；读取结果不产生新 URL 授权，点击/填写等交互仍需顶层原文明确授权。shared Chrome 状态必须从真实 `BrowserSession` 跨轮读取，非 PaiCLI 创建的标签页只能在用户明确要求时只读，不能由 Agent 导航、改写或关闭；导航结果不得把完整标签页清单回灌模型。策略拒绝不得通过换工具或换 provider 绕过。
+- 运行时 `TurnToolPolicy` 覆盖 ReAct / Plan / Team，在 StepSearch、内置 Web provider 或 MCP / Chrome 路由之前执行；Plan 审阅补充会重建策略。Plan 并行任务和 Team worker 各用独立策略副本，不能跨分支共享新发现的 URL；只有 DAG 中声明的后继依赖才会继承前置分支的类型化 `web_search` URL 凭据，不从任务回复文本重新提取。grounded URL 只开放导航，成功导航只建立当前页的读取上下文；读取结果不产生新 URL 授权，点击/填写等交互仍需顶层原文明确授权。shared Chrome 状态必须从真实 `BrowserSession` 跨轮读取，非 ForgePilot 创建的标签页只能在用户明确要求时只读，不能由 Agent 导航、改写或关闭；导航结果不得把完整标签页清单回灌模型。策略拒绝不得通过换工具或换 provider 绕过。
 - “当前项目/当前 README/当前文件/当前代码”等表达属于本地上下文任务，通常应由模型选择 `glob_files` / `grep_code` / `read_file`，而不是联网工具。
 - 当前模型为 `step-3.7-flash*` 且自动/显式 `step_search` MCP 的 `web_search` / `web_fetch` 已就绪时，内置 `web_search` / `web_fetch` 会优先转调 StepSearch MCP；未就绪或调用失败时回退到原 SearchProvider / WebFetcher。
 - 有可信来源的已知 URL 先 `web_fetch`，SPA/防爬墙 fallback 到 Chrome DevTools MCP

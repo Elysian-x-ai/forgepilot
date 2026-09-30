@@ -1,10 +1,10 @@
 ---
 title: 手把手教你给 Agent 加上联网能力，WebSearch + WebFetch 让 Agent 知道世界发生了什么。
-shortTitle: PaiCLI联网能力
-description: PaiCLI 第 9 期教程，手把手教你给 Java Agent 加上 WebSearch 和 WebFetch 联网能力
+shortTitle: ForgePilot联网能力
+description: ForgePilot 第 9 期教程，手把手教你给 Java Agent 加上 WebSearch 和 WebFetch 联网能力
 tag:
   - Agent
-  - PaiCLI
+  - ForgePilot
 category:
   - AI
 author: 沉默王二
@@ -15,7 +15,7 @@ date: 2026-04-27
 
 大模型本身是没有联网能力的，他的知识库都是基于某一个时刻训练完成的。
 
-像 GLM-5.1，通过 PaiCLI 去问的话，答案是基于 2024 年及之前的公开文本、代码、文档。
+像 GLM-5.1，通过 ForgePilot 去问的话，答案是基于 2024 年及之前的公开文本、代码、文档。
 
 ![](https://cdn.paicoding.com/paicoding/7849bc16cf5d02cd262eb4449dafdcca.png)
 
@@ -27,11 +27,11 @@ date: 2026-04-27
 
 ## 01、Agent 的联网搜索效果
 
-先来看 PaiCLI Agent 加上联网能力之后能干什么。
+先来看 ForgePilot Agent 加上联网能力之后能干什么。
 
 在终端里输入提示词：“搜一下沉默王二是谁”。
 
-PaiCLI Agent 会自动调用 `web_search` 工具，通过智谱搜索 API 获取相关信息。
+ForgePilot Agent 会自动调用 `web_search` 工具，通过智谱搜索 API 获取相关信息。
 
 ![](https://cdn.paicoding.com/stutymore/sucai-20260427142551.png)
 
@@ -47,7 +47,7 @@ PaiCLI Agent 会自动调用 `web_search` 工具，通过智谱搜索 API 获取
 
 再来一个。输入提示词：“paicoding.com 今天有没有更新啊”。
 
-这次 PaiCLI Agent 调用的是 `web_fetch` 工具，直接去抓取网页内容。
+这次 ForgePilot Agent 调用的是 `web_fetch` 工具，直接去抓取网页内容。
 
 ![](https://cdn.paicoding.com/stutymore/sucai-20260427142821.png)
 
@@ -61,11 +61,11 @@ PaiCLI Agent 会自动调用 `web_search` 工具，通过智谱搜索 API 获取
 
 然后对网站整体做了一个非常细致的总结，包括最近的一些更新内容：
 
-> 今天（4 月 27 日）暂无新文章发布，最近的一篇是昨天（4 月 26 日）关于 DeepSeek V4 的深度技术拆解文章。该站近期更新频率很高，几乎每隔 1-2 天就有新内容，主要集中在 PaiCLI、AI Agent、RAG、DeepSeek 等前沿 AI 技术方向。
+> 今天（4 月 27 日）暂无新文章发布，最近的一篇是昨天（4 月 26 日）关于 DeepSeek V4 的深度技术拆解文章。该站近期更新频率很高，几乎每隔 1-2 天就有新内容，主要集中在 ForgePilot、AI Agent、RAG、DeepSeek 等前沿 AI 技术方向。
 
 ![](https://cdn.paicoding.com/stutymore/sucai-20260427143149.png)
 
-这样 PaiCLI Agent 就具备了最基础的 WebSearch 和 WebFetch 能力，可以随时获取最新的网络信息。
+这样 ForgePilot Agent 就具备了最基础的 WebSearch 和 WebFetch 能力，可以随时获取最新的网络信息。
 
 不用手动打开浏览器搜索，不用复制粘帖网页内容，Agent 自己就能搞定。
 
@@ -73,7 +73,7 @@ PaiCLI Agent 会自动调用 `web_search` 工具，通过智谱搜索 API 获取
 
 ## 02、Agent 联网搜索的整体架构
 
-PaiCLI 的联网模块放在 `com.paicli.web` 包下，按搜索 Provider、网页抓取、正文提取和安全策略分工。
+ForgePilot 的联网模块放在 `com.paicli.web` 包下，按搜索 Provider、网页抓取、正文提取和安全策略分工。
 
 ![](https://cdn.paicoding.com/paicoding/de3b6df47b9531be44835c9c06831fd5.jpg)
 
@@ -103,7 +103,7 @@ PaiCLI 的联网模块放在 `com.paicli.web` 包下，按搜索 Provider、网�
 
 ![](https://cdn.paicoding.com/paicoding/9587a4eb7c38131abcddbbdb656072d0.png)
 
-因为 PaiCLI 虽然主要面向国内用户，但不排除二哥装逼给海外用户用。
+因为 ForgePilot 虽然主要面向国内用户，但不排除二哥装逼给海外用户用。
 
 > 最重要的是，能教大家学到东西，比如策略模式 😄
 
@@ -134,7 +134,7 @@ public interface SearchProvider {
 
 ### 智谱搜索
 
-智谱搜索是 PaiCLI 最早接入的默认 Provider。已有 `GLM_API_KEY` 时，搜索和 GLM 推理可以共用这个 Key，不需要额外注册或配置；搜索费用按智谱搜索服务规则计收。现在主模型默认使用 DeepSeek，但为兼容已有配置，自动选择搜索服务时仍优先检查 GLM Key。
+智谱搜索是 ForgePilot 最早接入的默认 Provider。已有 `GLM_API_KEY` 时，搜索和 GLM 推理可以共用这个 Key，不需要额外注册或配置；搜索费用按智谱搜索服务规则计收。现在主模型默认使用 DeepSeek，但为兼容已有配置，自动选择搜索服务时仍优先检查 GLM Key。
 
 调用方式是 POST 请求到 `https://open.bigmodel.cn/api/paas/v4/tools/web_search`，请求体长这样：
 
@@ -329,7 +329,7 @@ HtmlExtractor 有一个已知的边界：JS 渲染的 SPA 页面（比如 React/
 
 工具实现好了，还需要注册到 `ToolRegistry` 里，Agent 才能发现和使用它们。
 
-`ToolRegistry` 是 PaiCLI 的工具中心，所有工具（文件操作、Shell 命令、RAG 检索、联网工具）都在这里注册。注册一个工具需要四样东西：名称、描述、参数定义、执行函数。
+`ToolRegistry` 是 ForgePilot 的工具中心，所有工具（文件操作、Shell 命令、RAG 检索、联网工具）都在这里注册。注册一个工具需要四样东西：名称、描述、参数定义、执行函数。
 
 ```java
 private void registerWebTools() {
@@ -374,7 +374,7 @@ private synchronized SearchProvider searchProvider() {
 }
 ```
 
-加了 `synchronized` 是因为 PaiCLI 支持并行工具调用，多个工具可能同时执行，需要保证只初始化一次。
+加了 `synchronized` 是因为 ForgePilot 支持并行工具调用，多个工具可能同时执行，需要保证只初始化一次。
 
 不加这个关键字的话，两个线程同时进来可能会创建两个 SearchProvider 实例，虽然不会报错但浪费资源，而且状态可能不一致。这是 Java 并发编程里面非常经典的双重检查锁定场景。
 
@@ -386,7 +386,7 @@ private synchronized SearchProvider searchProvider() {
 
 如果你已经有 `GLM_API_KEY`（用来跑 GLM-5.1 模型的），恭喜你，不需要任何额外配置。
 
-PaiCLI 会自动检测到 GLM_API_KEY，用智谱搜索作为默认搜索引擎。
+ForgePilot 会自动检测到 GLM_API_KEY，用智谱搜索作为默认搜索引擎。
 
 在项目根目录的 `.env` 文件里确认一下有这行就行：
 
@@ -405,7 +405,7 @@ DEEPSEEK_API_KEY=你的DeepSeek密钥
 DEEPSEEK_SEARCH_MODEL=deepseek-flash
 ```
 
-修改后重启 PaiCLI，让缓存的搜索 Provider 重新读取配置。当前对话模型是 `step-3.7-flash*` 且 StepSearch 已就绪时，仍会优先使用 StepSearch；这里配置的是普通搜索 Provider。
+修改后重启 ForgePilot，让缓存的搜索 Provider 重新读取配置。当前对话模型是 `step-3.7-flash*` 且 StepSearch 已就绪时，仍会优先使用 StepSearch；这里配置的是普通搜索 Provider。
 
 ### 切换搜索引擎
 
@@ -429,7 +429,7 @@ SEARXNG_URL=http://localhost:8888
 
 ### 实际使用
 
-启动 PaiCLI 后，Agent 会自动识别哪些问题需要联网。你不需要手动指定“用搜索工具”，Agent 自己会判断。
+启动 ForgePilot 后，Agent 会自动识别哪些问题需要联网。你不需要手动指定“用搜索工具”，Agent 自己会判断。
 
 几个典型的使用场景：
 
@@ -447,11 +447,11 @@ SEARXNG_URL=http://localhost:8888
 
 这里有个小技巧：如果你觉得搜索结果不够详细，可以追问一句“帮我打开第一条链接看看详细内容”，Agent 就会自动用 `web_fetch` 去抓取搜索结果里的 URL。搜索 + 抓取的组合拳打法，基本上能覆盖百分之 80 的联网需求了。
 
-## 07、如何把 PaiCLI 写到简历上？
+## 07、如何把 ForgePilot 写到简历上？
 
 学完这一期，大家可以在简历上这样写：
 
-- **项目名称**：PaiCLI - Java Agent CLI
+- **项目名称**：ForgePilot - Java Agent CLI
 - **项目简介**：从零构建的生产级 Java Agent 命令行工具，支持联网搜索、网页抓取、RAG 检索、多 Agent 协作等能力
 - **技术栈**：Java 21、OkHttp、Jsoup、GLM-5.1/DeepSeek V4、策略模式、工厂模式
 - **核心职责**：
@@ -461,13 +461,13 @@ SEARXNG_URL=http://localhost:8888
   - 基于工厂模式实现了 SearchProviderFactory，支持从环境变量、系统属性、.env 文件三级回退读取配置，实现零额外配置的开箱即用体验
   - 将 web_search 和 web_fetch 作为 Function Calling 工具注册到 Agent 的工具链中，实现了 LLM 自主判断联网时机的智能工具选择
 
-项目源码地址：`https://github.com/itwanger/paicli`，第 9 期的代码已经全部提交。
+项目源码地址：`https://github.com/Elysian-x-ai/forgepilot`，第 9 期的代码已经全部提交。
 
 欢迎大家 star、fork、提 issue，一起把这个项目做得更好。
 
 ## ending
 
-从第 1 期的 400 行 ReAct 循环，到现在第 9 期加上联网能力，PaiCLI 已经不再是一个“只会操作本地文件”的 Agent 了。
+从第 1 期的 400 行 ReAct 循环，到现在第 9 期加上联网能力，ForgePilot 已经不再是一个“只会操作本地文件”的 Agent 了。
 
 搜索让它知道世界上正在发生什么，
 
@@ -479,7 +479,7 @@ SEARXNG_URL=http://localhost:8888
 
 ![](https://cdn.paicoding.com/paicoding/4286e3cb5ec5dc787053e4b23dbd9556.jpg)
 
-跟着 PaiCLI 的路线图走就对了。
+跟着 ForgePilot 的路线图走就对了。
 
 每一期都有完整代码、有真实 case、有可以写进简厉的亮点。
 

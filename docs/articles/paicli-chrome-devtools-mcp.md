@@ -1,7 +1,7 @@
 ---
 title: Agent 终于能开浏览器了！Chrome DevTools MCP 接入全解析
-shortTitle: PaiCLI 浏览器 MCP 接入教程
-description: PaiCLI 第 13 期，接入 Google 官方 Chrome DevTools MCP，让 Agent 真正能操控浏览器。含启动体验优化、HITL server 维度全放行、系统提示词决策表源码解析。
+shortTitle: ForgePilot 浏览器 MCP 接入教程
+description: ForgePilot 第 13 期，接入 Google 官方 Chrome DevTools MCP，让 Agent 真正能操控浏览器。含启动体验优化、HITL server 维度全放行、系统提示词决策表源码解析。
 tag:
   - Agent
   - MCP
@@ -15,7 +15,7 @@ date: 2026-04-29
 
 大家好，我是二哥呀。
 
-做了联网搜索，做了 MCP，我发现 PaiCLI 还有一个问题，Agent “看不见”一些固有生态的内容，比如说微信的内容。
+做了联网搜索，做了 MCP，我发现 ForgePilot 还有一个问题，Agent “看不见”一些固有生态的内容，比如说微信的内容。
 
 直接用 web_fetch 去读微信的内容，是读不到的，因为微信生态的内容，外部的搜索引擎无能为力。
 
@@ -25,7 +25,7 @@ date: 2026-04-29
 
 ![](https://cdn.paicoding.com/paicoding/ffb9dc5a75b46a75a1ea8af8a568a445.png)
 
-这一期，我们来接入 Google 官方的 Chrome DevTools MCP，让 PaiCLI 从“能调工具的 Agent”进化成“能开浏览器的 Agent”。
+这一期，我们来接入 Google 官方的 Chrome DevTools MCP，让 ForgePilot 从“能调工具的 Agent”进化成“能开浏览器的 Agent”。
 
 能导航页面、点击元素、填表单、拿 DOM 快照、看网络请求。
 
@@ -133,7 +133,7 @@ chrome-devtools-mcp 内部会订阅这些事件，配合 `wait_for` 工具让 Ag
 
 ## 03、默认接入与启动体验
 
-chrome-devtools 在 PaiCLI 里是默认 enabled 的。
+chrome-devtools 在 ForgePilot 里是默认 enabled 的。
 
 `~/.paicli/mcp.json` 如果不存在，启动时会自动创建一份默认模板，里面就包含 chrome-devtools 的配置：
 
@@ -174,7 +174,7 @@ Chrome 在 isolated 模式下启动时，macOS 可能会请求“辅助功能”
 
 可以用 `/mcp disable chrome-devtools` 随时关闭。
 
-当然了，默认 enabled 会让 PaiCLI 首次启动特别慢。
+当然了，默认 enabled 会让 ForgePilot 首次启动特别慢。
 
 为了减轻用户的等待焦虑，`McpServerManager.startAll()` 里另起了一个 daemon 进度来打印线程，每 5 秒检查一次还没 ready 的 server，把等待时长实时打印出来：
 
@@ -192,7 +192,7 @@ Chrome 在 isolated 模式下启动时，macOS 可能会请求“辅助功能”
 
 ## 04、从 mcp.json 到工具注册
 
-前面讲了 CDP 原理和启动体验，这一节我们把整个接入路径从配置到工具注册串起来，看看 PaiCLI 内部到底做了什么。
+前面讲了 CDP 原理和启动体验，这一节我们把整个接入路径从配置到工具注册串起来，看看 ForgePilot 内部到底做了什么。
 
 ### 第一步，读取配置。
 
@@ -214,7 +214,7 @@ npx 会先在本地缓存里找，找不到就从 npm 拉取，然后执行。�
 
 ### 第四步，拉取工具列表。
 
-chrome-devtools server 在 capabilities 里声明了 `tools` 能力，PaiCLI 就调 `tools/list` 拿到 28 个工具的 schema 定义，每个工具包含名称、描述和参数格式。
+chrome-devtools server 在 capabilities 里声明了 `tools` 能力，ForgePilot 就调 `tools/list` 拿到 28 个工具的 schema 定义，每个工具包含名称、描述和参数格式。
 
 ### 第五步，注册到 ToolRegistry。
 
@@ -226,7 +226,7 @@ chrome-devtools server 在 capabilities 里声明了 `tools` 能力，PaiCLI 就
 
 有一点值得说：chrome-devtools-mcp 的浏览器不是连接时就启动的。
 
-它是在 Agent 第一次调用浏览器相关工具时，才会自动拉起 Chrome 实例。这意味着如果用户只是启动了 PaiCLI 但没让 Agent 操作浏览器，Chrome 进程是不会出现的，不占用资源。
+它是在 Agent 第一次调用浏览器相关工具时，才会自动拉起 Chrome 实例。这意味着如果用户只是启动了 ForgePilot 但没让 Agent 操作浏览器，Chrome 进程是不会出现的，不占用资源。
 
 ## 05、系统提示词升级
 
@@ -272,9 +272,9 @@ chrome-devtools server 在 capabilities 里声明了 `tools` 能力，PaiCLI 就
 
 ![](https://cdn.paicoding.com/paicoding/c2774593b417c8f32608ae07734e3ba8.jpg)
 
-## 07、PaiCLI 如何写到简历上
+## 07、ForgePilot 如何写到简历上
 
-**项目名称**：PaiCLI — Browser-Capable Agent CLI
+**项目名称**：ForgePilot — Browser-Capable Agent CLI
 
 **项目简介**：基于 Java 实现的 AI Agent 命令行工具，接入 Chrome DevTools MCP server，使 Agent 具备完整浏览器自动化能力，覆盖导航、输入、DOM 快照、截图、网络请求监控等 28 个工具。
 

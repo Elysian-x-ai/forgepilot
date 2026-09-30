@@ -1,9 +1,9 @@
 ---
-title: TypeScript 终端 Agent PaiCLI 上线了，类 Claude Code 和Qoder CLI
-shortTitle: TypeScript 版 PaiCLI 上线
-description: TypeScript 版 PaiCLI 正式开源，5396 行代码实现完整终端 Agent CLI，涵盖 ReAct 推理、Ink+React TUI、Plan-and-Execute、Multi-Agent 编排、MCP 协议、Skill 系统等核心能力，附简历包装模板。
+title: TypeScript 终端 Agent ForgePilot 上线了，类 Claude Code 和Qoder CLI
+shortTitle: TypeScript 版 ForgePilot 上线
+description: TypeScript 版 ForgePilot 正式开源，5396 行代码实现完整终端 Agent CLI，涵盖 ReAct 推理、Ink+React TUI、Plan-and-Execute、Multi-Agent 编排、MCP 协议、Skill 系统等核心能力，附简历包装模板。
 keywords:
-  - PaiCLI TypeScript
+  - ForgePilot TypeScript
   - TypeScript AI Agent
   - 终端 Agent CLI
   - Ink React TUI
@@ -19,9 +19,9 @@ date: 2026-07-08
 
 大家好，我是二哥呀。
 
-PaiCLI 的 TypeScript 版本也上线了。目前 PaiCLI 已经有 Java 版、TypeScript 版和 Python 版了，三个版本的核心架构完全一致，区别只在语言和生态层面。
+ForgePilot 的 TypeScript 版本也上线了。目前 ForgePilot 已经有 Java 版、TypeScript 版和 Python 版了，三个版本的核心架构完全一致，区别只在语言和生态层面。
 
-和 Python 版一样，PaiCLI-TS 不是要造一个 Claude Code，咱没那水平。哈哈。
+和 Python 版一样，ForgePilot-TS 不是要造一个 Claude Code，咱没那水平。哈哈。
 
 对于前端背景的小伙伴来说，TS 版就是学习终端 Agent 最好的入口。
 
@@ -33,15 +33,15 @@ PaiCLI 的 TypeScript 版本也上线了。目前 PaiCLI 已经有 Java 版、Ty
 
 ## 01、TypeScript 版有什么值得学的？
 
-PaiCLI-TS 用 Ink + React 搭了一套声明式 TUI，核心依赖有 8 个。
+ForgePilot-TS 用 Ink + React 搭了一套声明式 TUI，核心依赖有 8 个。
 
-**Ink + React**，终端 UI 框架。Ink 让你可以用 React 组件的方式写终端界面，状态变了 UI 自动重渲染，和写 Web 前端的体验一致。PaiCLI 的流式输出、工具调用状态展示、进度面板，全部是 React 组件。对熟悉前端的小伙伴来说，上手成本几乎为零。
+**Ink + React**，终端 UI 框架。Ink 让你可以用 React 组件的方式写终端界面，状态变了 UI 自动重渲染，和写 Web 前端的体验一致。ForgePilot 的流式输出、工具调用状态展示、进度面板，全部是 React 组件。对熟悉前端的小伙伴来说，上手成本几乎为零。
 
 ![](https://cdn.paicoding.com/stutymore/paicli-ts-launch-20260708182232.png)
 
-**undici**，Node.js 官方高性能 HTTP 客户端。和 node-fetch 相比，undici 直接走 Node.js 底层的 HTTP 解析器，性能更好。PaiCLI 所有和大模型 API 的通信、SSE 流式解析都走 undici。
+**undici**，Node.js 官方高性能 HTTP 客户端。和 node-fetch 相比，undici 直接走 Node.js 底层的 HTTP 解析器，性能更好。ForgePilot 所有和大模型 API 的通信、SSE 流式解析都走 undici。
 
-**commander**，CLI 框架。用链式调用定义命令和选项，比手写 process.argv 解析省不少工作量。PaiCLI 的所有子命令都用 commander 定义。
+**commander**，CLI 框架。用链式调用定义命令和选项，比手写 process.argv 解析省不少工作量。ForgePilot 的所有子命令都用 commander 定义。
 
 **zod**，运行时类型校验。TypeScript 的类型只在编译期生效，运行时就没了。zod 填的就是这个坑，用来校验 LLM 返回的 JSON 结构、用户配置文件格式、工具输入参数。Agent 系统里模型输出的结构不可控，没有运行时校验很容易崩。
 
@@ -49,7 +49,7 @@ PaiCLI-TS 用 Ink + React 搭了一套声明式 TUI，核心依赖有 8 个。
 
 **better-sqlite3**，同步 SQLite 驱动。better-sqlite3 是同步 API，用起来比异步的 sqlite3 包简洁，记忆系统和代码索引都用它做持久化存储。
 
-**fast-glob**，文件匹配库。比 Node.js 原生的 glob 模块快 2-3 倍，PaiCLI 的 Glob 工具和 Skill 发现都依赖它。
+**fast-glob**，文件匹配库。比 Node.js 原生的 glob 模块快 2-3 倍，ForgePilot 的 Glob 工具和 Skill 发现都依赖它。
 
 **chalk**，终端着色。和 Ink 配合使用，给日志、错误信息、状态提示加颜色。
 
@@ -81,11 +81,11 @@ PaiCLI-TS 用 Ink + React 搭了一套声明式 TUI，核心依赖有 8 个。
 
 **9 个内置工具**。Bash、ReadFile、WriteFile、Grep、Glob、ListDir、WebSearch、WebFetch、SaveMemory，覆盖了 Agent 日常工作的核心场景。扩展工具通过 MCP 协议接入，不需要改内置代码。
 
-## 03、如何把 PaiCLI 写到简历上
+## 03、如何把 ForgePilot 写到简历上
 
-对照目前市面上 AI Agent 岗位的 JD，PaiCLI-TS 的功能模块基本全覆盖了。下面是简历上可以直接用的项目描述模板。
+对照目前市面上 AI Agent 岗位的 JD，ForgePilot-TS 的功能模块基本全覆盖了。下面是简历上可以直接用的项目描述模板。
 
-项目名称：PaiCLI-TS 终端 Agent CLI（2026.05 - 2026.07）
+项目名称：ForgePilot-TS 终端 Agent CLI（2026.05 - 2026.07）
 
 项目描述：类似 Claude Code 的终端 Agent 命令行工具（TypeScript 版），支持 ReAct 推理、Plan-and-Execute 任务规划、Multi-Agent 多角色编排、MCP 协议接入、Skill 系统、三层记忆、上下文压缩，可在终端中通过自然语言驱动代码开发和调试。
 

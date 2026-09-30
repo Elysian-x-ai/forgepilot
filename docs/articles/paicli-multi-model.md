@@ -1,7 +1,7 @@
 ---
 title: DeepSeek V4 来了，这波我真的上头（附技术拆解报告）。
 shortTitle: Java Agent 多模型切换
-description: PaiCLI 第八期，用策略模式+模板方法实现多模型适配，GLM-5.1 和 DeepSeek V4 运行时一键切换
+description: ForgePilot 第八期，用策略模式+模板方法实现多模型适配，GLM-5.1 和 DeepSeek V4 运行时一键切换
 tag:
   - Agent
 category:
@@ -10,7 +10,7 @@ author: 沉默王二
 date: 2026-04-25
 ---
 
-> 2026-09-25 更新：PaiCLI 的 DeepSeek 默认模型已升级为 `deepseek-flash`（V4.1 Flash），支持 1M 上下文、思考模式、工具调用和图片输入。已有配置可用 `/model deepseek-flash` 切换并保存；旧 Flash 别名继续兼容。正文中的 V4 发布数据和运行记录保留为历史背景，当前模型与价格以[官方文档](https://api-docs.deepseek.com/zh-cn/quick_start/pricing/)为准。
+> 2026-09-25 更新：ForgePilot 的 DeepSeek 默认模型已升级为 `deepseek-flash`（V4.1 Flash），支持 1M 上下文、思考模式、工具调用和图片输入。已有配置可用 `/model deepseek-flash` 切换并保存；旧 Flash 别名继续兼容。正文中的 V4 发布数据和运行记录保留为历史背景，当前模型与价格以[官方文档](https://api-docs.deepseek.com/zh-cn/quick_start/pricing/)为准。
 
 模型列表按供应商分组，用表格展示模型 ID、上下文（如 `1M`）、输入能力和状态，`●` 标记当前选择。模板、思考模式等配置可用 `/model info [模型ID]` 查看。窄终端会下移状态列或转成纵向条目。
 
@@ -26,7 +26,7 @@ DeepSeek V4（预览版），1.6 万亿参数的 V4-Pro、284B 参数的 V4-Flas
 
 ![](https://cdn.paicoding.com/paicoding/a4cf198e8431f01a6c5d6d9d2a1d2faf.png)
 
-所以这一期我们来把 DeepSeek V4 接入到 PaiCLI。可以通过 `/model deepseek` 切到 DeepSeek V4，`/model glm` 切换到 GLM-5.1。
+所以这一期我们来把 DeepSeek V4 接入到 ForgePilot。可以通过 `/model deepseek` 切到 DeepSeek V4，`/model glm` 切换到 GLM-5.1。
 
 像 OpenClaw 那样。
 
@@ -210,7 +210,7 @@ private void updateSystemPromptWithMemory(String memoryContext) {
 }
 ```
 
-**第二，对话历史默认保留，手动清空。** `/model deepseek` 切换模型的时候，PaiCLI 不会重建 Agent，而是通过 `setLlmClient()` 原地替换模型客户端，对话历史保留。想做干净的对比，切完模型后手动 `/clear` 清空对话历史就行。
+**第二，对话历史默认保留，手动清空。** `/model deepseek` 切换模型的时候，ForgePilot 不会重建 Agent，而是通过 `setLlmClient()` 原地替换模型客户端，对话历史保留。想做干净的对比，切完模型后手动 `/clear` 清空对话历史就行。
 
 ```java
 reactAgent.setLlmClient(llmClient);
@@ -231,7 +231,7 @@ record ChatResponse(String role, String content, String reasoningContent,
 
 说了这么多，直接跑一个真实场景看看。
 
-任务是让 PaiCLI 分析项目的 pom.xml，找出核心依赖并给出简要说明。这个任务刚好能覆盖工具调用（read_file）和文本生成两个环节，可以同时对比工具使用策略和回答质量。
+任务是让 ForgePilot 分析项目的 pom.xml，找出核心依赖并给出简要说明。这个任务刚好能覆盖工具调用（read_file）和文本生成两个环节，可以同时对比工具使用策略和回答质量。
 
 **先用 GLM-5.1：**
 
@@ -322,9 +322,9 @@ V4 的技术报告给基础设施单独写了一整章，这在大模型报告�
 
 **Agent 训练沙箱 DSec。** 这个最让我意外。DeepSeek 为了训练 Agent 搭了一套专用的沙箱系统，一个集群能同时跑几十万个隔离环境。最妙的是训练中断恢复的设计——任务被抢占时沙箱不主动销毁，恢复后直接从断点继续，不会重复执行那些不能幂等的操作（比如已经写入数据库的命令）。
 
-## PaiCLI 如何写到简历上？
+## ForgePilot 如何写到简历上？
 
-**项目名称**：PaiCLI — Java Agent CLI
+**项目名称**：ForgePilot — Java Agent CLI
 
 **项目简介**：基于 ReAct 范式从零实现的 Java Agent 命令行工具，集成 Plan-and-Execute、Memory、RAG、Multi-Agent、HITL 人工审批、异步并行和多模型运行时切换，完整覆盖 AI Agent 核心技术栈。
 

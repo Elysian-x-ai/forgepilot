@@ -1,6 +1,6 @@
-# PaiCLI 教程与面试题
+# ForgePilot 教程与面试题
 
-这里是 PaiCLI 配套文章的唯一源。javabetter.cn 上 `/sidebar/itwanger/paicli/` 下的页面是副本，改动先在这里完成，再用 `tools/sync-articles-to-javabetter.sh` 同步过去，线上 URL 保持不变。
+这里是 ForgePilot 配套文章的唯一源。javabetter.cn 上 `/sidebar/itwanger/paicli/` 下的页面是副本，改动先在这里完成，再用 `tools/sync-articles-to-javabetter.sh` 同步过去，线上 URL 保持不变。
 
 文章 frontmatter 沿用 VuePress 格式（title / shortTitle / description / tag / category / author / date），图片统一走 CDN 链接，两边可以直接复用同一份 Markdown。改文章时以当前源码为准，涉及的源码事实优先引用 `AGENTS.md` 和对应类。
 

@@ -465,7 +465,7 @@ pom.xml 里这一期新增了三个依赖：sqlite-jdbc 管向量持久化，jav
 
 ## ending
 
-四期下来，PaiCLI 从一个只会一步步走的 ReAct Agent，逐渐进化到能规划、能记忆、还能读代码库的完整工具。
+四期下来，ForgePilot 从一个只会一步步走的 ReAct Agent，逐渐进化到能规划、能记忆、还能读代码库的完整工具。
 
 代码全部开源在 GitHub 上，第四期新增了 10 个 RAG 相关的类，累计代码量到了 1700 行左右。
 
@@ -483,9 +483,9 @@ pom.xml 里这一期新增了三个依赖：sqlite-jdbc 管向量持久化，jav
 
 ---
 
-## 简历包装：PaiCLI 项目
+## 简历包装：ForgePilot 项目
 
-**项目名称**：PaiCLI —— 开源 Java Agent CLI 工具
+**项目名称**：ForgePilot —— 开源 Java Agent CLI 工具
 
 **项目简介**：从零构建一个类 Claude Code 的命令行 Agent 工具，支持 ReAct 推理、Plan-and-Execute 任务规划、Memory 记忆系统、RAG 代码库检索。
 

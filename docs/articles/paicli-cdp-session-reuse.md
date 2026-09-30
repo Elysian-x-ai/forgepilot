@@ -1,7 +1,7 @@
 ---
 title: Agent 直连你日常使用的 Chrome 浏览器，天然携带登录态。
 shortTitle: CDP 会话复用
-description: PaiCLI 第 14 期，实现 CDP 会话复用，Agent 直连你的 Chrome 浏览器，访问 GitHub 私仓、内部系统、邮箱等需要登录态的页面，含敏感页面保护和标签页防误关的完整安全方案。
+description: ForgePilot 第 14 期，实现 CDP 会话复用，Agent 直连你的 Chrome 浏览器，访问 GitHub 私仓、内部系统、邮箱等需要登录态的页面，含敏感页面保护和标签页防误关的完整安全方案。
 tag:
   - Agent
   - MCP
@@ -15,7 +15,7 @@ date: 2026-05-06
 
 大家好，我是二哥呀。
 
-上一期我们给 PaiCLI 接上了 Chrome DevTools MCP，Agent 终于能开浏览器了。能导航页面、截图、拿 DOM 快照，微信公众号文章也能读了。
+上一期我们给 ForgePilot 接上了 Chrome DevTools MCP，Agent 终于能开浏览器了。能导航页面、截图、拿 DOM 快照，微信公众号文章也能读了。
 
 但存在另外一个问题。
 
@@ -54,7 +54,7 @@ chrome-devtools-mcp 原生支持一个参数 `--browser-url`，可以连接到�
 
 ## 02、开启 Chrome 远程调试
 
-要让 PaiCLI 连上你的 Chrome，第一步是让 Chrome 开放 CDP 调试端口。
+要让 ForgePilot 连上你的 Chrome，第一步是让 Chrome 开放 CDP 调试端口。
 
 ![](https://cdn.paicoding.com/paicoding/a86be4997fdb72117f5cbc4281a35585.jpg)
 
@@ -78,11 +78,11 @@ chrome://inspect/#remote-debugging
 
 上一期讲过，CDP 的通信方式是 WebSocket，chrome-devtools-mcp 会自动发现并连接到这个 Chrome 实例。
 
-这种方式最大的好处是：你当前 Chrome 里已经登录好的 GitHub、飞书、公司内网，所有的 Cookie 和 session 都在，不需要重新登录。PaiCLI 连上来就能直接用你现有的登录态。
+这种方式最大的好处是：你当前 Chrome 里已经登录好的 GitHub、飞书、公司内网，所有的 Cookie 和 session 都在，不需要重新登录。ForgePilot 连上来就能直接用你现有的登录态。
 
 ## 03、Agent 自动切换登录态
 
-Chrome 远程调试打开后，回到 PaiCLI。
+Chrome 远程调试打开后，回到 ForgePilot。
 
 不需要你手动执行连接命令。Agent 会自己判断当前页面需不需要登录态，需要的时候自动切换到 shared 模式，不需要的时候用 isolated 模式。
 
@@ -190,7 +190,7 @@ hitlHandler.clearApprovedAllForServer("chrome-devtools");
 
 切换只在内存中进行，不会去改你的 `~/.paicli/mcp.json` 文件。
 
-PaiCLI 重启后回到 isolated 模式，默认安全。
+ForgePilot 重启后回到 isolated 模式，默认安全。
 
 你也可以用 `/browser status` 随时查看当前模式，用 `/browser disconnect` 手动切回 isolated。但正常使用根本不需要操心这些，Agent 自己会处理。
 
@@ -261,7 +261,7 @@ chrome-devtools-mcp 内部是通过 Puppeteer 定位 Chrome 的用户数据目�
 
 当 chrome-devtools-mcp 第一次尝试连接时，Chrome 会弹出一个原生的确认对话框，问你是否允许这个外部程序接入。
 
-你点了“允许”，连接才能建立。这是 Chrome 自己的安全机制，不是 PaiCLI 加的。
+你点了“允许”，连接才能建立。这是 Chrome 自己的安全机制，不是 ForgePilot 加的。
 
 ![](https://cdn.paicoding.com/tobebetterjavaer/images/mdnice/323d83332c88-78f0a8ac-ff67-44b7-bfc5-d6a3c4ea6158.png)
 
@@ -269,7 +269,7 @@ chrome-devtools-mcp 内部是通过 Puppeteer 定位 Chrome 的用户数据目�
 
 1. 你在 `chrome://inspect/#remote-debugging` 打开远程调试
 2. Chrome 动态分配端口，把端口号和 WebSocket 路径写入 `DevToolsActivePort` 文件
-3. Agent 需要登录态时，PaiCLI 用 `--autoConnect` 重启 chrome-devtools-mcp
+3. Agent 需要登录态时，ForgePilot 用 `--autoConnect` 重启 chrome-devtools-mcp
 4. chrome-devtools-mcp 读取 `DevToolsActivePort` 文件，拿到端口和路径
 5. 通过 WebSocket 连接 Chrome，Chrome 弹出确认对话框
 6. 用户点“允许”，连接建立，Agent 拥有你的登录态
@@ -288,7 +288,7 @@ shared 模式下 Agent 拥有你的真实账户权限，这是一把双刃剑。
 
 你让它去读 GitHub 仓库的代码，没问题。但如果它跑去 GitHub Settings 里乱点一通，或者在支付宝页面上执行了什么 JavaScript 脚本，那就是灾难了。
 
-PaiCLI 的解决方案是 `BrowserGuard` + `SensitivePagePolicy`，一套策略层的安全机制。
+ForgePilot 的解决方案是 `BrowserGuard` + `SensitivePagePolicy`，一套策略层的安全机制。
 
 `SensitivePagePolicy` 内置了 14 条默认的敏感 URL 规则，用 glob 模式匹配：
 
@@ -336,7 +336,7 @@ private static String globToRegex(String glob) {
 *://erp.mycompany.com/*
 ```
 
-PaiCLI 启动时会读取这个文件，和默认规则合并。文件不存在也没关系，不会报错。
+ForgePilot 启动时会读取这个文件，和默认规则合并。文件不存在也没关系，不会报错。
 
 
 ![](https://cdn.paicoding.com/paicoding/0a9292ecc34c600b802901953c8d8b34.png)
@@ -386,7 +386,7 @@ shared 模式下还有一个风险：Agent 可能会关掉你正在用的标签�
 
 这种事情绝对不能发生。
 
-PaiCLI 的方案是 `BrowserSession` 里维护一个 `agentOpenedTabs` 集合，记录 Agent 自己通过 `new_page` 打开的标签页 ID：
+ForgePilot 的方案是 `BrowserSession` 里维护一个 `agentOpenedTabs` 集合，记录 Agent 自己通过 `new_page` 打开的标签页 ID：
 
 ```java
 private final Set<String> agentOpenedTabs = new LinkedHashSet<>();
@@ -409,14 +409,14 @@ if ("close_page".equals(localTool)
         && session.mode() == BrowserMode.SHARED
         && !session.isAgentOpenedTab(pageId(args))) {
     return BrowserCheckResult.block(
-        "shared 浏览器模式下拒绝关闭非 PaiCLI 创建的标签页，请手动关闭该 Chrome 标签页",
+        "shared 浏览器模式下拒绝关闭非 ForgePilot 创建的标签页，请手动关闭该 Chrome 标签页",
         metadata);
 }
 ```
 
 **验证标签页保护：**
 
-先在 Chrome 里手动打开几个页面，然后在 PaiCLI 里：
+先在 Chrome 里手动打开几个页面，然后在 ForgePilot 里：
 
 ```
 帮我关掉知识星球的tab页
@@ -446,9 +446,9 @@ Agent 的系统提示词也需要同步更新，让它知道 shared 模式下该
 - 如果不确定某个操作是否会影响用户账户数据，先问用户确认
 ```
 
-## 09、PaiCLI 如何写到简历上
+## 09、ForgePilot 如何写到简历上
 
-**项目名称**：PaiCLI — Session-Aware Browser Agent CLI
+**项目名称**：ForgePilot — Session-Aware Browser Agent CLI
 
 **项目简介**：基于 Java 实现的 AI Agent 命令行工具，支持 Chrome DevTools MCP 的 isolated/shared 双模式运行，在复用用户真实浏览器登录态的同时，通过敏感页面策略和标签页保护机制确保账户安全。
 

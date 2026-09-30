@@ -1,7 +1,7 @@
 ---
 title: AI Agent 面试题第一弹：ReAct、Plan-and-Execute、Multi-Agent 核心架构 13 题
 shortTitle: 面试题：Agent 核心架构
-description: 围绕 PaiCLI 23 期实战源码，精选 13 道 AI Agent 核心架构面试题，覆盖 ReAct 循环、Plan-and-Execute、Multi-Agent 协作、DAG 任务调度和并行工具调用，每道题结合源码深度拆解。
+description: 围绕 ForgePilot 23 期实战源码，精选 13 道 AI Agent 核心架构面试题，覆盖 ReAct 循环、Plan-and-Execute、Multi-Agent 协作、DAG 任务调度和并行工具调用，每道题结合源码深度拆解。
 tag:
   - Agent
   - 面试题
@@ -13,7 +13,7 @@ date: 2026-05-11
 
 第一弹，聚焦 **Agent 核心架构**——ReAct、Plan-and-Execute、Multi-Agent、异步并行。
 
-这几个方向面试出现的频率最高，也是 PaiCLI 第 1、2、5、7 期的核心内容。
+这几个方向面试出现的频率最高，也是 ForgePilot 第 1、2、5、7 期的核心内容。
 
 ## 01、什么是 ReAct 模式？
 
@@ -23,7 +23,7 @@ ReAct 是 Reasoning + Acting 的缩写，Yao et al.（姚顺雨）在 2022 年�
 
 ![](https://cdn.paicoding.com/paicoding/17ec57fc42ca3bfcbd492b48ea9d8f14.png)
 
-PaiCLI 第一期的 `Agent.java` 就是一个标准的 ReAct 实现。核心是一个 while 循环，每轮做三件事：
+ForgePilot 第一期的 `Agent.java` 就是一个标准的 ReAct 实现。核心是一个 while 循环，每轮做三件事：
 
 - 把消息历史发给 LLM、
 - 检查响应里有没有 `tool_calls`
@@ -50,13 +50,13 @@ ReAct 的突破在于加了 Action 和 Observation 两个环节。LLM 想到“�
 | 能力范围 | 纯推理 | 推理 + 外部工具调用 |
 | 信息来源 | 训练数据里的知识 | 实时获取（文件、命令、搜索） |
 | 适合场景 | 数学、逻辑、代码生成 | 需要与外部世界交互的任务 |
-| 典型产品 | ChatGPT 的思考过程 | Claude Code、PaiCLI、Cursor |
+| 典型产品 | ChatGPT 的思考过程 | Claude Code、ForgePilot、Cursor |
 
 面试官追问到这一步，可以补一句：
 
-PaiCLI 的 LLM 响应里也有 `reasoning_content`（思考过程），这个其实就是 CoT 的部分。
+ForgePilot 的 LLM 响应里也有 `reasoning_content`（思考过程），这个其实就是 CoT 的部分。
 
-ReAct 在 CoT 的基础上加了行动能力，推理之后可以真的去调用工具、拿到观察结果再接着推理。思考内容怎么处理要看模型：DeepSeek V4、GLM-5.3、混元 Hy4 和 Kimi 的思考模式要求带工具调用的那条 assistant 消息，必须把 `reasoning_content` 原样带回下一轮请求，这是这几家接口在思考模式下的约定，PaiCLI 组装请求时会把这个字段补回去；其他 provider 的思考内容 PaiCLI 只写日志和展示，不进对话历史。
+ReAct 在 CoT 的基础上加了行动能力，推理之后可以真的去调用工具、拿到观察结果再接着推理。思考内容怎么处理要看模型：DeepSeek V4、GLM-5.3、混元 Hy4 和 Kimi 的思考模式要求带工具调用的那条 assistant 消息，必须把 `reasoning_content` 原样带回下一轮请求，这是这几家接口在思考模式下的约定，ForgePilot 组装请求时会把这个字段补回去；其他 provider 的思考内容 ForgePilot 只写日志和展示，不进对话历史。
 
 ## 02、Agent 怎么知道该调用哪个工具？
 
@@ -68,7 +68,7 @@ ReAct 在 CoT 的基础上加了行动能力，推理之后可以真的去调用
 
 ![](https://cdn.paicoding.com/paicoding/2254cba36fc45bc885fdcd9fe606b911.jpg)
 
-PaiCLI 的 `ToolRegistry.java` 维护了一个工具注册表。每个工具注册时提供 name、description、parameters schema。Agent 每次请求 LLM 前，从注册表拉出全量工具定义塞进请求体。LLM 返回 `tool_calls: [{name: "read_file", arguments: {path: "pom.xml"}}]`，Agent 就从注册表里找到 `read_file` 的执行逻辑来跑。
+ForgePilot 的 `ToolRegistry.java` 维护了一个工具注册表。每个工具注册时提供 name、description、parameters schema。Agent 每次请求 LLM 前，从注册表拉出全量工具定义塞进请求体。LLM 返回 `tool_calls: [{name: "read_file", arguments: {path: "pom.xml"}}]`，Agent 就从注册表里找到 `read_file` 的执行逻辑来跑。
 
 ```java
 // ToolRegistry.java 核心结构
@@ -86,7 +86,7 @@ public String executeTool(String name, String argumentsJson) {
 
 这里有个实战经验值得提一下：**工具描述的质量直接决定 LLM 的选择准确率**。
 
-PaiCLI 早期 `execute_command` 的描述写得太简洁，LLM 经常用 `cat` 代替 `read_file` 读文件。后来在描述里加了“在项目根目录执行的短时 Shell 命令，如 ls、mvn compile，不要用来读取文件内容”，准确率就上去了。
+ForgePilot 早期 `execute_command` 的描述写得太简洁，LLM 经常用 `cat` 代替 `read_file` 读文件。后来在描述里加了“在项目根目录执行的短时 Shell 命令，如 ls、mvn compile，不要用来读取文件内容”，准确率就上去了。
 
 ### 如果 LLM 返回了不存在的工具名怎么办
 
@@ -104,9 +104,9 @@ PaiCLI 早期 `execute_command` 的描述写得太简洁，LLM 经常用 `cat` �
 
 **场景二**：LLM 输出一段推理但不调用工具也不给最终答案。Agent 把这段推理塞回去再请求 LLM，LLM 继续自言自语，永远不收尾。
 
-### PaiCLI 怎么处理死循环的？
+### ForgePilot 怎么处理死循环的？
 
-PaiCLI 源码里有四层防护：
+ForgePilot 源码里有四层防护：
 
 第一层是 **循环预算和停滞检测**。`AgentBudget` 管三个上限：轮数、Token 和停滞。早期版本写死最多 5 轮，复杂任务可能做不完，现在默认不限轮数和 Token，只开停滞检测，连续 3 轮工具名和参数完全相同就判定原地打转。轮数和 Token 上限可以在 CI、微信无人值守这类场景里显式配置。任何一项触发后，程序关掉工具再调一次模型，让它基于已有结果收尾，返回“⚠️ 部分完成”，已经做的工作不会丢。
 
@@ -128,7 +128,7 @@ Plan-and-Execute 是先规划后执行的两阶段模式。
 
 用户输入一个复杂任务，Agent 不急着动手，先让 LLM 拆解成多个子任务并明确依赖关系，生成一份执行计划。用户确认后，再按计划逐个执行子任务。
 
-PaiCLI 第 2 期实现了 `PlanExecuteAgent.java`，通过 `/plan` 命令触发。
+ForgePilot 第 2 期实现了 `PlanExecuteAgent.java`，通过 `/plan` 命令触发。
 
 ```
 用户输入 "/plan 创建 demoapp 项目，读取 pom.xml，验证项目结构"
@@ -152,13 +152,13 @@ Planner 生成计划:
 
 Plan-and-Execute 是“先想清楚再动手”——用户在 Agent 动手之前就能看到完整计划，觉得不对可以取消或修改。可预测性是最大的优势。
 
-PaiCLI 在执行前加了计划审阅：回车执行、Ctrl+O 展开完整计划、ESC 取消、按 I 输入补充要求。补充要求会拼到目标后面，让 Planner 整份重新规划，原计划不支持逐条编辑。
+ForgePilot 在执行前加了计划审阅：回车执行、Ctrl+O 展开完整计划、ESC 取消、按 I 输入补充要求。补充要求会拼到目标后面，让 Planner 整份重新规划，原计划不支持逐条编辑。
 
 每个子任务内部的工具循环是 `PlanExecuteAgent` 自己实现的，不复用 ReAct 的 `Agent` 类。任务有独立的消息历史，只拿到直接依赖任务的完整结果。
 
 当然代价是多了一轮 Planner 的 LLM 调用。
 
-简单任务用 Plan-and-Execute 反而浪费——“帮我读一下 README”不需要规划。PaiCLI 的设计是**默认 ReAct，用户显式 `/plan` 才切换**，执行完自动回到 ReAct。
+简单任务用 Plan-and-Execute 反而浪费——“帮我读一下 README”不需要规划。ForgePilot 的设计是**默认 ReAct，用户显式 `/plan` 才切换**，执行完自动回到 ReAct。
 
 ## 05、Plan-and-Execute 里的 DAG 是怎么工作的？
 
@@ -168,7 +168,7 @@ Planner 解析计划时做严格校验，id 重复、依赖引用了没声明的
 
 ![](https://cdn.paicoding.com/paicoding/7ec21fcc8f1031ffef6704fd6c9d8586.png)
 
-PaiCLI 的 `ExecutionPlan.java` 持有任务列表和 DAG 关系。执行时不预先算批次，每一轮用 `isExecutable` 取出依赖都已完成的任务，这一轮全部结束再算下一轮。拓扑序只用来给同一轮的任务排先后。效果上相当于下面这样分批：
+ForgePilot 的 `ExecutionPlan.java` 持有任务列表和 DAG 关系。执行时不预先算批次，每一轮用 `isExecutable` 取出依赖都已完成的任务，这一轮全部结束再算下一轮。拓扑序只用来给同一轮的任务排先后。效果上相当于下面这样分批：
 
 ```
 批次1: task_1, task_2（无依赖，可并行）
@@ -190,11 +190,11 @@ PaiCLI 的 `ExecutionPlan.java` 持有任务列表和 DAG 关系。执行时不�
 
 面试官可能追问“有没有重试机制”。
 
-PaiCLI 的 Plan-and-Execute 当前没有任务级重试，但 Multi-Agent 模式下 Reviewer 审查不通过时有重做机制（最多 2 次）。这是有意的设计选择——Plan 模式强调可预测性，自动重试会让执行过程变得不可控。
+ForgePilot 的 Plan-and-Execute 当前没有任务级重试，但 Multi-Agent 模式下 Reviewer 审查不通过时有重做机制（最多 2 次）。这是有意的设计选择——Plan 模式强调可预测性，自动重试会让执行过程变得不可控。
 
 ## 06、Multi-Agent 协作是怎么实现的？
 
-PaiCLI 第 5 期实现了三个角色的 Multi-Agent 架构。
+ForgePilot 第 5 期实现了三个角色的 Multi-Agent 架构。
 
 ![](https://cdn.paicoding.com/paicoding/0006ff11892252771010717c989b61ee.jpg)
 
@@ -266,7 +266,7 @@ Planner 是 Tech Lead 分任务，Worker 是开发写代码，Reviewer 是审查
 
 当 LLM 认为当前步骤需要同时做多件事（比如同时读 3 个文件），会在一次响应里返回多个 `tool_calls`。
 
-PaiCLI 第 7 期在 `Agent.java` 里实现了并行工具调用。
+ForgePilot 第 7 期在 `Agent.java` 里实现了并行工具调用。
 
 代码的核心路径是：从 LLM 响应解析出所有 `tool_calls` → 提交到 `ExecutorService` 线程池并行执行 → 等待全部完成（有统一超时兜底）→ 按原始 `tool_call` 顺序拼装结果 → 一起塞回消息历史。
 
@@ -300,7 +300,7 @@ ReAct、Plan-and-Execute、Multi-Agent Worker 三条路径都复用了同一套�
 
 两个工具同时写同一个文件、一个读文件一个改同一个文件，都是冲突场景。
 
-PaiCLI 早期的处理策略是“不做锁，靠提示词引导加工程兜底”。`base.md` 里写了“如果工具之间有依赖关系，模型应分多轮调用”，然后就指望模型别在同一轮写同一个文件。
+ForgePilot 早期的处理策略是“不做锁，靠提示词引导加工程兜底”。`base.md` 里写了“如果工具之间有依赖关系，模型应分多轮调用”，然后就指望模型别在同一轮写同一个文件。
 
 后来代码审查时实测了一下，同一轮对同一个文件发起多次 `edit_file`，50 轮里有 49 轮丢了改动，而且每个工具都报告成功。每次编辑都是“读文件、改一处、整文件写回”，并行执行时后写的把先写的盖掉了。模型觉得“改的是同一个文件的不同位置，互不影响”，从它的角度看这个判断并没有错。
 
@@ -320,7 +320,7 @@ LLM 有上下文窗口限制，GLM-5.1 是 200k token，DeepSeek V4 是 1M。Age
 
 ![](https://cdn.paicoding.com/stutymore/build-agent-p3-memory-20260420222204.png)
 
-PaiCLI 的上下文预算在 `com.paicli.context` 和 `com.paicli.memory` 两个包里。每次调用模型前，Agent 估算当前对话历史的 Token 数，达到阈值就交给自动压缩模块。
+ForgePilot 的上下文预算在 `com.paicli.context` 和 `com.paicli.memory` 两个包里。每次调用模型前，Agent 估算当前对话历史的 Token 数，达到阈值就交给自动压缩模块。
 
 阈值参考 Claude Code 的做法，给摘要输出和安全缓冲各留一块，公式是 `window - min(20000, window/4) - min(13000, window/8)`。200K 窗口大约 167K 触发，1M 窗口大约 967K 触发，128K 窗口是 95K。
 
@@ -344,7 +344,7 @@ PaiCLI 的上下文预算在 `com.paicli.context` 和 `com.paicli.memory` 两个
 | 创建项目、多文件重构 | Plan-and-Execute | 步骤多、有依赖，需要先规划 |
 | 大规模任务、需要质量保障 | Multi-Agent | 分工协作 + 审查机制 |
 
-PaiCLI 的设计是默认 ReAct，`/plan` 或 `/team` 显式切换，执行完自动回到 ReAct。
+ForgePilot 的设计是默认 ReAct，`/plan` 或 `/team` 显式切换，执行完自动回到 ReAct。
 
 日常使用中大部分交互 ReAct 就能搞定。
 
@@ -352,7 +352,7 @@ PaiCLI 的设计是默认 ReAct，`/plan` 或 `/team` 显式切换，执行完�
 
 答案是可以。
 
-但我不会把这个判断完全交给大模型自由发挥，我会做一个“模式路由层”。这是我的设计设想，PaiCLI 目前还没有实现，现在只有用户显式输入 `/plan` 或 `/team` 才会切换。
+但我不会把这个判断完全交给大模型自由发挥，我会做一个“模式路由层”。这是我的设计设想，ForgePilot 目前还没有实现，现在只有用户显式输入 `/plan` 或 `/team` 才会切换。
 
 用户输入进来后，先判断任务特征：是不是简单问答、是否需要工具调用、是否涉及多文件修改、是否有明显步骤依赖、是否适合并行拆分、风险是不是比较高。简单任务走 ReAct；有明确步骤和依赖的走 Plan-and-Execute；能拆成多个相对独立子任务的，再升级到 Multi-Agent。
 
@@ -364,9 +364,9 @@ PaiCLI 的设计是默认 ReAct，`/plan` 或 `/team` 显式切换，执行完�
 
 这道开放题面试官想看的是架构思维。
 
-**第一步，最小可用的 ReAct 循环**。一个 while 循环 + `LlmClient` 接口 + `ToolRegistry` 注册表。先跑通“用户输入 → LLM 推理 → 工具调用 → 结果返回 → 继续推理”这条链路。PaiCLI 第一期就是这么做的，400 行代码。
+**第一步，最小可用的 ReAct 循环**。一个 while 循环 + `LlmClient` 接口 + `ToolRegistry` 注册表。先跑通“用户输入 → LLM 推理 → 工具调用 → 结果返回 → 继续推理”这条链路。ForgePilot 第一期就是这么做的，400 行代码。
 
-**第二步，加防护**。Token 预算、循环次数上限、工具超时——这三个不加，Agent 会失控。PaiCLI 第 3 期加了 Token 预算管理，第 6 期加了 HITL 审批。
+**第二步，加防护**。Token 预算、循环次数上限、工具超时——这三个不加，Agent 会失控。ForgePilot 第 3 期加了 Token 预算管理，第 6 期加了 HITL 审批。
 
 **第三步，按需加复杂度**。任务复杂了加 Plan-and-Execute（第 2 期），质量要求高了加 Multi-Agent（第 5 期），工具多了加并行调度（第 7 期）。
 
@@ -376,7 +376,7 @@ PaiCLI 的设计是默认 ReAct，`/plan` 或 `/team` 显式切换，执行完�
 
 ## 13、面试中怎么介绍你的 Agent 项目（1 分钟版本）
 
-“我从零开始用 Java 实现了一个 AI Agent CLI，叫 PaiCLI，对标 Claude Code，分 23 期从 ReAct 循环做到了完整产品。
+“我从零开始用 Java 实现了一个 AI Agent CLI，叫 ForgePilot，对标 Claude Code，分 23 期从 ReAct 循环做到了完整产品。
 
 核心架构方面，实现了 ReAct、Plan-and-Execute、Multi-Agent 三种模式。ReAct 是默认的，Plan-and-Execute 加了 DAG 拓扑排序支持任务并行，Multi-Agent 是 Planner-Worker-Reviewer 三角色协作。
 
@@ -394,7 +394,7 @@ PaiCLI 的设计是默认 ReAct，`/plan` 或 `/team` 显式切换，执行完�
 
 【面试说到 ReAct，打开 Agent.java 指给面试官看那个 while 循环。说到 Plan，指 ExecutionPlan.java 的任务依赖图。说到 Multi-Agent，指 SubAgent.java 的角色定义和 prompt 文件。代码和回答能对上，面试官就知道你是真做过的。】
 
-**项目名称**：PaiCLI — Java Agent CLI（对标 Claude Code）
+**项目名称**：ForgePilot — Java Agent CLI（对标 Claude Code）
 
 **项目简介**：从零开始用 Java 实现的终端 AI Agent，覆盖 ReAct、Plan-and-Execute、Multi-Agent 三种架构模式，集成 MCP 协议、HITL 审批、RAG 检索和 Chrome DevTools 浏览器操控。
 

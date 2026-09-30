@@ -30,7 +30,7 @@ date: 2026-04-23
 
 先说清楚背景。
 
-PaiCLI 已经有了 ReAct、Plan-and-Execute、Memory、RAG、Multi-Agent，功能挺全的。
+ForgePilot 已经有了 ReAct、Plan-and-Execute、Memory、RAG、Multi-Agent，功能挺全的。
 
 但越能干，风险越高。
 
@@ -440,7 +440,7 @@ case "/clear" -> {
 
 这个问题我卡了一段时间。
 
-PaiCLI 的 Agent 在流式输出 reasoning_content 的时候，`TerminalMarkdownRenderer` 有缓冲区。渲染器遇到 `\n` 才 flush 一行内容。
+ForgePilot 的 Agent 在流式输出 reasoning_content 的时候，`TerminalMarkdownRenderer` 有缓冲区。渲染器遇到 `\n` 才 flush 一行内容。
 
 问题是：Agent 在工具调用迭代之间，渲染器里可能还有未 flush 的文字缓冲。
 
@@ -568,7 +568,7 @@ void testSafeToolBypassesHitl() {
 
 ## 11、完整跑一遍
 
-启动 PaiCLI 之后，先开启 HITL：
+启动 ForgePilot 之后，先开启 HITL：
 
 ```
 > /hitl on
@@ -597,7 +597,7 @@ Agent 思考完，触发 `write_file` 工具的时候，屏幕上会出现：
 
 ## ending
 
-六期做下来，PaiCLI 从一个只会“思考-行动”的 ReAct 小 Agent，逐渐进化到有计划、有记忆、能检索、能协作、会控制风险的 Agent 系统。
+六期做下来，ForgePilot 从一个只会“思考-行动”的 ReAct 小 Agent，逐渐进化到有计划、有记忆、能检索、能协作、会控制风险的 Agent 系统。
 
 很多人第一反应是“让 LLM 来判断危不危险，不是更智能吗”。但智能不等于可靠。工具执行是确定性的，判断“是否要阻断”这件事，也应该是确定的。
 
@@ -607,7 +607,7 @@ Agent 思考完，触发 `write_file` 工具的时候，屏幕上会出现：
 
 **简历包装**
 
-**项目名称**：PaiCLI — Java Agent CLI
+**项目名称**：ForgePilot — Java Agent CLI
 
 **项目简介**：基于 ReAct 范式从零实现的 Java Agent 命令行工具，集成 Plan-and-Execute、Memory、RAG、Multi-Agent 和 HITL 人工审批，完整覆盖 AI Agent 核心技术栈。
 

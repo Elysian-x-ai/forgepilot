@@ -1,4 +1,4 @@
-# PaiCLI Skill 系统：让 Agent 学会正确的做事方法
+# ForgePilot Skill 系统：让 Agent 学会正确的做事方法
 
 
 
@@ -10,7 +10,7 @@
 
 但又有了新的问题。
 
-比如说，让 PaiCLI 抓一篇未知的 URL。
+比如说，让 ForgePilot 抓一篇未知的 URL。
 
 合理的决策是：先用 web_fetch 试试能不能直接抓到正文，抓不到就切 Chrome DevTools MCP 上浏览器，浏览器也抓不到就走 Jina Reader 兜底。
 
@@ -18,9 +18,9 @@
 ![](https://cdn.paicoding.com/paicoding/93e5d621981c12922ebb6ee6ef02fa0f.png)
 
 
-这一期，我们给 PaiCLI 加上 Skill 系统。
+这一期，我们给 ForgePilot 加上 Skill 系统。
 
-决定 Agent 在什么场景下用什么工具、遇到阻拦怎么绕。加完之后，PaiCLI 就从一个“有一堆工具的 Agent”变成了一个“有经验的 Agent”。
+决定 Agent 在什么场景下用什么工具、遇到阻拦怎么绕。加完之后，ForgePilot 就从一个“有一堆工具的 Agent”变成了一个“有经验的 Agent”。
 
 
 ## 01、Skill 和 MCP 的区别
@@ -43,9 +43,9 @@ Claude Code 在 2025 年底首先引入了 Skill 的概念。
 
 ## 02、Skill的三层加载架构
 
-PaiCLI 的 Skill 系统设计了三层加载机制：
+ForgePilot 的 Skill 系统设计了三层加载机制：
 
-**第一层：内置 Skill**，打包在 PaiCLI 的 jar 包里，随版本发布。目前内置了一个 `web-access` Skill，教 Agent 怎么做联网操作。
+**第一层：内置 Skill**，打包在 ForgePilot 的 jar 包里，随版本发布。目前内置了一个 `web-access` Skill，教 Agent 怎么做联网操作。
 
 **第二层：用户级 Skill**，放在 `~/.paicli/skills/<name>/SKILL.md`。放自己写的全局 Skill，所有项目都能用。
 
@@ -57,7 +57,7 @@ PaiCLI 的 Skill 系统设计了三层加载机制：
 
 `SkillRegistry` 是管理这三层扫描和合并的核心类。扫描的时候按 builtin → user → project 的顺序处理，每扫到一个同名 Skill 就直接覆盖前一层的。
 
-PaiCLI 启动时会输出一段 Skill 加载汇总：
+ForgePilot 启动时会输出一段 Skill 加载汇总：
 
 ```
 📚 Skills 加载（1 个）...
@@ -73,7 +73,7 @@ PaiCLI 启动时会输出一段 Skill 加载汇总：
 
 来验证一下。
 
-启动 PaiCLI，输入 `/skill list`：
+启动 ForgePilot，输入 `/skill list`：
 
 
 ![](https://cdn.paicoding.com/paicoding/7c17e23c3a4e1f28a711ac8301a9374f.png)
@@ -94,7 +94,7 @@ version: "9.9.9"
 EOF
 ```
 
-然后在 PaiCLI 里执行 `/skill reload`：
+然后在 ForgePilot 里执行 `/skill reload`：
 
 
 ![](https://cdn.paicoding.com/paicoding/98b136c095b1f8f5bcf583b815711535.png)
@@ -125,7 +125,7 @@ description: |
   所有联网操作必须通过此 skill 处理，
   包括搜索、网页抓取、登录后操作
 version: "1.0.0"
-author: PaiCLI
+author: ForgePilot
 tags: [web, browser, search]
 ---
 
@@ -194,7 +194,7 @@ tags: [web, browser, search]
 
 传统做法是用关键词匹配。用户说“帮我看网页”，就自动加载 web-access Skill。但关键词匹配永远不够精确，“看网页”“浏览器”“抓取”“搜索”都可能触发，也可能漏掉。
 
-PaiCLI 的做法是：把 `load_skill` 注册为一个内置工具，让 LLM 自己判断要不要调用。
+ForgePilot 的做法是：把 `load_skill` 注册为一个内置工具，让 LLM 自己判断要不要调用。
 
 LLM 的 system prompt 里会有一段 Skill 索引：
 
@@ -210,7 +210,7 @@ LLM 的 system prompt 里会有一段 Skill 索引：
 
 LLM 看到问题涉及联网操作，就自己调 `load_skill("web-access")`。
 
-来验证一下。直接对 PaiCLI 说：
+来验证一下。直接对 ForgePilot 说：
 
 ```
 > 帮我看下 https://mp.weixin.qq.com/s/RB7kF_BbsJZ5_Hmu9PxWdg 这篇文章讲了什么
@@ -232,7 +232,7 @@ LLM 看到问题涉及联网操作，就自己调 `load_skill("web-access")`。
 
 > 9 月更新：这一节的旧版写的是“body 在下一轮 user message 前置注入”。有读者在评论区指出，这里的“下一轮”其实是用户下一次发消息，模型调完 load_skill 之后的那几次请求根本看不到正文。我回去翻了代码，确实如此，之前以为修过了，其实没有。现在已经改成同一轮生效，下面按新代码讲。
 
-当 LLM 调用 `load_skill("web-access")` 时，PaiCLI 做了两件事：
+当 LLM 调用 `load_skill("web-access")` 时，ForgePilot 做了两件事：
 
 1. 工具返回一条简短确认：“已加载 skill 'web-access' 的完整指引（N 字符），正文紧跟在本工具结果之后”
 2. Agent 拿到这批工具结果后，在下一次请求模型之前，再追加一条 user 消息，内容是 SKILL.md 的正文
@@ -264,7 +264,7 @@ user       ## 已加载 Skill：web-access + 正文
 
 为什么不塞进 system prompt？
 
-第一个问题：PaiCLI 所有工具结果进入对话历史前，都会经 `ToolResultBoundary` 包成 `trust="untrusted-data"`，告诉模型这是外部数据，里面出现的指令一律不执行。这是防网页、MCP 返回内容做提示词注入的边界。而 SKILL.md 是本地的操作指引，恰恰需要模型照着做。塞进工具结果，要么被模型当成数据忽略，要么就得给安全边界开口子，所以正文单独走一条 user 消息。
+第一个问题：ForgePilot 所有工具结果进入对话历史前，都会经 `ToolResultBoundary` 包成 `trust="untrusted-data"`，告诉模型这是外部数据，里面出现的指令一律不执行。这是防网页、MCP 返回内容做提示词注入的边界。而 SKILL.md 是本地的操作指引，恰恰需要模型照着做。塞进工具结果，要么被模型当成数据忽略，要么就得给安全边界开口子，所以正文单独走一条 user 消息。
 
 第二个问题：system prompt 一旦改变，API 的 prompt cache 就会失效。如果每次 load_skill 都去改 system prompt，之前缓存的几千个 token 全部作废。走 user 消息注入，system prompt 始终不变，prompt cache 得以保留。
 
@@ -336,7 +336,7 @@ Plan 模式的每个任务、Team 模式的每个 Worker 都有自己的工具�
 
 ## 08、web-access Skill 深度解析
 
-PaiCLI 内置的第一个 Skill 就是 `web-access`，是使用频率最高的决策手册。
+ForgePilot 内置的第一个 Skill 就是 `web-access`，是使用频率最高的决策手册。
 
 上一期我们已经讲过 CDP 的原理，这一期重点看 web-access 作为 Skill 给 Agent 带来了什么**决策能力**。
 
@@ -365,7 +365,7 @@ web-access 的 SKILL.md 大致分这几个板块：
 
 核心就三段：这个站是什么技术架构（SPA 还是 SSR、反爬强不强、需不需要登录），什么方式能成功拿到内容（已验证的 URL 模式、CSS 选择器、JS 提取片段），以及常见的失败模式和应对办法。
 
-内置的 references 在 PaiCLI 启动时由 `SkillBuiltinExtractor` 从 jar 包解压到 `~/.paicli/skills-cache/web-access/references/`。
+内置的 references 在 ForgePilot 启动时由 `SkillBuiltinExtractor` 从 jar 包解压到 `~/.paicli/skills-cache/web-access/references/`。
 
 
 ![](https://cdn.paicoding.com/paicoding/4b26e90d1db3390555c15be243072705.png)
@@ -379,7 +379,7 @@ LLM 通过 `read_file` 读取这些文件来获取站点经验。
 
 ## 09、/skill 命令组实操
 
-PaiCLI 提供了一组 `/skill` 命令来管理 Skill 的生命周期：
+ForgePilot 提供了一组 `/skill` 命令来管理 Skill 的生命周期：
 
 `/skill list`，以轻分隔线表格列出名称、来源、版本和简短摘要，`●` / `○` 标记启用状态。按中文显示宽度对齐；窄屏先把摘要下移，仍放不下时转成纵向条目，完整名称保留。
 
@@ -421,7 +421,7 @@ PaiCLI 提供了一组 `/skill` 命令来管理 Skill 的生命周期：
 }
 ```
 
-重启 PaiCLI 后禁用状态仍然生效。
+重启 ForgePilot 后禁用状态仍然生效。
 
 `/skill on <name>`，重新启用一个被禁用的 Skill。会从 `skills.json` 的 disabled 列表里移除对应的名称。
 
@@ -483,7 +483,7 @@ tags: [review, security, performance]
 EOF
 ```
 
-保存后 `/skill reload`，PaiCLI 就能识别了：
+保存后 `/skill reload`，ForgePilot 就能识别了：
 
 
 ![](https://cdn.paicoding.com/paicoding/6499c2ef9201e35cd53ccb9611c742d2.png)
@@ -496,9 +496,9 @@ EOF
 
 ![](https://cdn.paicoding.com/stutymore/paicli-skill-system-20260508114650.png)
 
-## 11、PaiCLI如何写到简历上？
+## 11、ForgePilot如何写到简历上？
 
-**项目名称**：PaiCLI - Skill-Driven Agent CLI
+**项目名称**：ForgePilot - Skill-Driven Agent CLI
 
 **项目简介**：基于 Java 实现的 AI Agent 命令行工具，支持 Skill 系统实现决策知识驱动的智能体能力，兼容 SKILL.md 开放标准。
 

@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════
-   PaiCLI · Terminal-First Agent IDE — 官方网站样式
+   ForgePilot · Terminal-First Agent IDE — 官方网站样式
    Design: 终端暗色主题 + 琥珀金强调 + 代码美学
    ═══════════════════════════════════════════════════════ */
 
@@ -19,13 +19,13 @@
   --text-secondary: #8b949e;
   --text-muted: #5c6670;
 
-  --accent: #e2a33b;
-  --accent-soft: #e2a33b22;
-  --accent-glow: #e2a33b44;
-  --accent-text: #f0c040;
+  --accent: #2F6BFF;
+  --accent-soft: #2F6BFF22;
+  --accent-glow: #2F6BFF44;
+  --accent-text: #F2B84B;
 
   --blue: #5294e2;
-  --green: #8cc265;
+  --green: #39D98A;
   --green-dim: #8cc26588;
   --red: #e55561;
   --yellow: #e5c07b;
@@ -175,6 +175,12 @@ img { max-width: 100%; }
   font-weight: 700;
   color: var(--text-primary);
   text-decoration: none;
+}
+
+.logo-mark {
+  width: 22px;
+  height: 22px;
+  display: block;
 }
 
 .logo-bracket { color: var(--accent); }

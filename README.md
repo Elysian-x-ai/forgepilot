@@ -1,6 +1,12 @@
-# PaiCLI
+# ForgePilot
 
-一个成熟的 Java Agent CLI 产品，对标 Claude Code 作者为沉默王二，从第一期的 `ReAct` 单代理循环逐步演进到第十六期的 `TUI 产品化`。
+**A controlled engineering agent for the terminal.**
+
+ForgePilot 是一款面向工程团队的 Java Agent CLI 工作台，对标 Claude Code。它把 ReAct、Plan、Team、Memory、MCP、浏览器自动化、LSP 诊断、快照回滚和审计能力收进一个可控的终端工作流中：模型负责推进任务，用户保留方向、审批和恢复权。
+
+项目原名 PaiCLI。公开品牌已迁移到 ForgePilot；现有 `com.paicli` 包名、`.paicli` 目录、`PAICLI_*` 配置和 benchmark 历史合同继续兼容，详见 [`docs/forgepilot-migration.md`](docs/forgepilot-migration.md)。
+
+[GitHub](https://github.com/Elysian-x-ai/forgepilot) · [品牌资产](brand/) · [迁移指南](docs/forgepilot-migration.md)
 
 当前进度：已完成第 16.1 期 inline 流式 TUI 形态修正、第 17 期 `LSP 诊断注入` MVP、第 18 期 `Git Side-History 快照与回滚` MVP、第 19 期 `Prompt 分层架构` MVP、第 20 期 `异步后台任务 + Runtime API` MVP、第 21 期 `图片复制粘贴输入` MVP、第 23 期 `微信 iLink 通道` 文本 MVP。
 
@@ -128,9 +134,9 @@ DeepSeek 的当前内置列表按[官方文档](https://api-docs.deepseek.com/zh
 - `web_search` 抽象成 `SearchProvider` 接口，内置四个实现：智谱 Web Search（与 GLM 共用 Key）、SerpAPI（国际通用付费）、SearXNG（开源自托管免费）、DeepSeek 原生搜索（与 DeepSeek 对话共用 Key）。未指定 `SEARCH_PROVIDER` 时按 GLM Key → SerpAPI Key → SearXNG URL → DeepSeek Key 自动选择，保留已有搜索配置的优先级
 - 仅配置 `DEEPSEEK_API_KEY` 即可启用 DeepSeek 搜索；同时配置了其他搜索服务时，用 `SEARCH_PROVIDER=deepseek` 指定。可用 `DEEPSEEK_SEARCH_MODEL` 单独设置搜索模型，默认 `deepseek-flash`，不随 `/model` 切换。每次搜索通过 Anthropic Messages API 发起独立模型请求（最多 4096 输出 Token、5 次服务端搜索、120 秒总超时），会产生额外 Token 费用；不自动重试或跟随重定向。只提取结构化搜索结果中的 URL，引用摘要按 URL 匹配，缺少搜索结果块或搜索工具报错会明确失败。`top_k` 在本地去重后截断，不保证减少服务端调用。
 - `web_fetch` 新工具：有可信来源的 URL → OkHttp 抓取 → Jsoup 解析 → 简易 readability → Markdown 正文
-- 联网不再对“最新/当前/今天/趋势/新闻/版本”等关键词做自动 freshness 预检。顶层用户输入只是标题、主题或摘录而没有任务目标时，PaiCLI 会先询问用户，本轮不调用工具；用户明确要求不要联网时始终优先遵从。
+- 联网不再对“最新/当前/今天/趋势/新闻/版本”等关键词做自动 freshness 预检。顶层用户输入只是标题、主题或摘录而没有任务目标时，ForgePilot 会先询问用户，本轮不调用工具；用户明确要求不要联网时始终优先遵从。
 - 模型不得根据标题猜测 URL。明确要求查找但没有 URL 时先 `web_search`；`web_fetch` 和浏览器导航只接受用户实际提交的顶层原文（不含 `@path` / MCP resource 展开正文）中的 URL，或当前执行分支由搜索 provider 返回的结构化 `discoveredUrls`。搜索正文/snippet/query 回显/错误提示、`web_fetch` 正文、浏览器结果和普通文件/命令输出里的链接不会自动取得访问授权；StepSearch MCP 的非结构化结果文本也不会生成 URL 凭据。
-- 运行时 `TurnToolPolicy` 覆盖 ReAct / Plan / Team，并在 StepSearch、内置 Web provider 和 MCP / Chrome 路由之前校验顶层意图与 URL 来源；Plan 审阅补充会重建策略。并行任务/worker 不共享新发现的 URL，只有 DAG 中声明的后继依赖会继承前置分支的类型化 `web_search` URL 凭据，不从任务回复文本重新抽取。grounded URL 先只开放导航，成功导航只建立当前页读取上下文，页面读取不扩充 URL 授权；点击/填写等交互需顶层原文明确授权。shared Chrome 状态跨轮读取，非 PaiCLI 创建的标签页只在用户明确要求时开放只读，不能由 Agent 导航、改写或关闭；导航工具返回的全量标签页清单会在回灌模型前裁掉。被拒绝的调用不能靠切换工具绕过。
+- 运行时 `TurnToolPolicy` 覆盖 ReAct / Plan / Team，并在 StepSearch、内置 Web provider 和 MCP / Chrome 路由之前校验顶层意图与 URL 来源；Plan 审阅补充会重建策略。并行任务/worker 不共享新发现的 URL，只有 DAG 中声明的后继依赖会继承前置分支的类型化 `web_search` URL 凭据，不从任务回复文本重新抽取。grounded URL 先只开放导航，成功导航只建立当前页读取上下文，页面读取不扩充 URL 授权；点击/填写等交互需顶层原文明确授权。shared Chrome 状态跨轮读取，非 ForgePilot 创建的标签页只在用户明确要求时开放只读，不能由 Agent 导航、改写或关闭；导航工具返回的全量标签页清单会在回灌模型前裁掉。被拒绝的调用不能靠切换工具绕过。
 - 当前模型是 `step-3.7-flash*` 且自动/显式 `step_search` 远程 server 已就绪时，通过 `TurnToolPolicy` 后的内置 `web_search` / `web_fetch` 会优先走 StepSearch MCP；未就绪或调用失败时自动回退到原 provider。
 - 默认安全策略：屏蔽 `file://` / 内网 / loopback；30 秒超时；5MB 响应上限；每分钟 30 次限流
 - 边界明确：SPA / 防爬墙站点会返回空正文 + 已知边界提示，Agent 会 fallback 到浏览器 MCP 路线
@@ -176,7 +182,7 @@ DeepSeek 的当前内置列表按[官方文档](https://api-docs.deepseek.com/zh
 - Agent 遇到登录页、权限不足或明确需要登录态页面时，会先调用 `browser_connect` 自动切到 shared；公开页面如微信公众号文章不提前切换
 - `/browser connect <port>` 保留旧式 CDP 端口兼容路径：先探活 `127.0.0.1:<port>/json/version`，成功后切到 `--browser-url=http://127.0.0.1:<port>`；失败时不会改 MCP 启动参数，并输出 macOS / Windows / Linux 的 Chrome 启动命令
 - 切换 shared / isolated 模式都会清空 `chrome-devtools` 的 server 维度全部放行，避免旧信任跨模式延续
-- shared 模式下 `close_page` 只能关闭 PaiCLI 自己创建的 tab；无法证明是 PaiCLI 创建的 tab 会被策略层拒绝
+- shared 模式下 `close_page` 只能关闭 ForgePilot 自己创建的 tab；无法证明是 ForgePilot 创建的 tab 会被策略层拒绝
 - 敏感页面命中规则后，`click` / `fill_form` / `evaluate_script` 等改写型浏览器工具必须单步 HITL 审批，不复用全部放行；读型工具如 `take_snapshot` 仍可继续使用
 - 审计日志为 chrome-devtools 工具追加可选浏览器 metadata：`browser_mode`、`sensitive`、`target_url`，旧格式 JSONL 仍可读取
 
@@ -186,18 +192,18 @@ DeepSeek 的当前内置列表按[官方文档](https://api-docs.deepseek.com/zh
 
 - 三层加载位置（按优先级，后者整体覆盖同名 skill）：jar 内置 < 用户级 `~/.paicli/skills/<name>/` < 项目级 `<project>/.paicli/skills/<name>/`
 - 启动期把启用 skill 的 `name` + `description` 注入三处 Agent 系统提示词索引段（启用上限 20 个，索引段 ≤ 4KB）
-- 内置工具 `load_skill(name)`：LLM 在 system prompt 看到匹配 description 时主动调用，工具结果之后、同一轮下一次 LLM 请求之前，PaiCLI 把 SKILL.md 正文（5KB 截断）作为独立 user 消息注入（不进入 untrusted 工具结果，也不改 system prompt）
+- 内置工具 `load_skill(name)`：LLM 在 system prompt 看到匹配 description 时主动调用，工具结果之后、同一轮下一次 LLM 请求之前，ForgePilot 把 SKILL.md 正文（5KB 截断）作为独立 user 消息注入（不进入 untrusted 工具结果，也不改 system prompt）
 - 内置 web-access skill：决策手册（浏览哲学四步法 + 工具选择表 + 浏览器优先级 + Jina 兜底说明）+ 6 个站点经验文件（mp.weixin / zhuanlan.zhihu / x.com / xiaohongshu / github / juejin）+ cdp-cheatsheet
 - frontmatter 走手写 YAML 子集解析，不引 SnakeYAML；解析失败 stderr 警告但不阻塞启动
 - CLI 命令：`/skill list` / `/skill show <name>` / `/skill on <name>` / `/skill off <name>` / `/skill reload`
 - 启用状态持久化：`~/.paicli/skills.json` 的 `disabled` 列表，默认全启用
 - 与 HITL 协同：Skill 内调用 `execute_command` 等危险工具仍走既有 HITL 审批，沿用 `execute_command` 工具维度全放行；不给 Skill 单独审批维度
 
-设计意图：从「写工具」演进到「打包专家手册」。当工具堆成山（PaiCLI 当前内置 9 个 + MCP 60+ 工具），用 Skill 给 LLM 一份按场景展开的"专家手册"，比往 system prompt 里塞更多规则更可扩展。
+设计意图：从「写工具」演进到「打包专家手册」。当工具堆成山（ForgePilot 当前内置 9 个 + MCP 60+ 工具），用 Skill 给 LLM 一份按场景展开的"专家手册"，比往 system prompt 里塞更多规则更可扩展。
 
 ### Better Harness 原生审计
 
-PaiCLI 内置 `better-harness` Skill 和 `/better-harness` 命令，用于审查编码 Agent 外层工作流，而不只是最终代码 diff。实现基于 QoderAI Better Harness 的 Agent Work Loop 方法，并针对 PaiCLI 的 Java 运行时、`ConversationLedger`、`PAI.md`、Skill、MCP 与 HITL 资产做了原生适配，不依赖 Node。
+ForgePilot 内置 `better-harness` Skill 和 `/better-harness` 命令，用于审查编码 Agent 外层工作流，而不只是最终代码 diff。实现基于 QoderAI Better Harness 的 Agent Work Loop 方法，并针对 ForgePilot 的 Java 运行时、`ConversationLedger`、`PAI.md`、Skill、MCP 与 HITL 资产做了原生适配，不依赖 Node。
 
 - `/better-harness` 或 `/better-harness normal`：正常深度审查，生成持久化报告
 - `/better-harness quick`：缩小项目摘录和候选 finding 上限，快速建立基线
@@ -205,7 +211,7 @@ PaiCLI 内置 `better-harness` Skill 和 `/better-harness` 命令，用于审查
 - 三路证据保持独立：当前会话脱敏元数据、Project Harness、Agent Customize
 - 三路 evidence specialist 并行运行且不暴露工具，lead 只基于三个结果做最终定级和归并
 - 运行期间展示 5 个确定性工作单元、三路审查完成数、当前阶段、累计耗时和 ESC 取消提示，不再用静态等待或估算进度冒充真实完成度
-- 终端报告统一经过 PaiCLI Markdown 渲染器，标题、强调、列表、表格和代码块按当前终端宽度显示，不直接打印 Markdown 源码标记
+- 终端报告统一经过 ForgePilot Markdown 渲染器，标题、强调、列表、表格和代码块按当前终端宽度显示，不直接打印 Markdown 源码标记
 - 默认不读取消息正文、reasoning、工具参数/结果、Memory 正文、用户目录资产或其他 provider
 - 持久化输出位于 `.paicli/better-harness/<run-id>/`：`report.md`、`report.html`、`findings.json`
 - 一次报告只能证明当前机制和观测证据，不能单独证明工作流已经因修复而改善；效果需要后续可比较 Task Episode
@@ -250,7 +256,7 @@ relay v9 保留 v6 引入的宿主登记的多服务目录与 server 绑定的 M
 
 `com.paicli.eval.benchmark` 另已交付独立的 dev-pilot Coordinator / Worker。它可加载 [`benchmarks/paicli-native-agentbench-v0.1/dev-suite.json`](benchmarks/paicli-native-agentbench-v0.1/dev-suite.json) 中的 8 个公开 sibling case，默认用 `FILE_ONLY` 工具面运行每个新 Worker，并可用无网络、只读挂载的 Docker verifier 检查最终状态。`DOCKER_RELAY` 另将 Candidate 运行在无网络、只读根文件系统和资源限额容器中，provider 与 API key 只留在宿主；可信 thin runner 与 Candidate jar 独立校验、独立快照和只读挂载。Runner 已按 manifest 分发 ReAct / Plan / Team，并提供 `REASONING_ONLY`、`READ_ONLY`、`FILE_ONLY`、`LOCAL_COMMAND` 四种静态 fail-closed 工具面；当前公开 8 题仍全部是 ReAct，Plan / Team 的专用轨迹 verifier 尚未完成。Coordinator 精确锁定 `deepseek/deepseek-v4-flash`、`hunyuan/hy4-preview` 和 `glm/glm-5.3-flash`；完整原始会话位于 owner-only 的 `conversation/raw/benchmark-episode.jsonl`，不得直接放入公开报告。该 Runner 是独立 Java 入口，不是 `/eval` 交互命令。
 
-Runner 已从 SSE 采集服务端 resolved model 与 usage-presence，并对 HOST / Docker 共用同一证据门禁；成功调用的模型身份、usage、请求指纹或 cap 证据无法证明时，episode 标为 evaluation-invalid，不会被偷算成 PaiCLI 的 0 分，而 Candidate 未发起 provider call 仍按有效失败处理。正式合同 v3 对三个模型统一冻结 1,000,000 context 和每次 16,384 output，E3 的 60k–100k token 只是同一 fixture 的工作量。既有 `0.1-dev.2` 两个完整 run 生成于该能力之前，仍如实记录 `UNAVAILABLE/false`；后续 DeepSeek 与 GLM 单题 Docker relay 冒烟已同时闭环 resolved model、usage 和请求指纹，但 `subset=true` 且只验证基础设施。final generator 已物化 24/28 题，不过整套仍为 `NOT_INTEGRATED` 原型。当前产出只能称为 dev-pilot 诊断，不是正式榜单。正式 score 仍阻塞于：formal preflight 尚未驱动完整生产批次、独立 Worker image 未冻结、Hy4 凭证预检与真实运行尚未完成、28 题隐藏 final 与三个模型各三次重复未完成。LLM-as-a-Judge 使用示例与边界见 [`docs/llm-as-a-judge.md`](docs/llm-as-a-judge.md)。
+Runner 已从 SSE 采集服务端 resolved model 与 usage-presence，并对 HOST / Docker 共用同一证据门禁；成功调用的模型身份、usage、请求指纹或 cap 证据无法证明时，episode 标为 evaluation-invalid，不会被偷算成 ForgePilot 的 0 分，而 Candidate 未发起 provider call 仍按有效失败处理。正式合同 v3 对三个模型统一冻结 1,000,000 context 和每次 16,384 output，E3 的 60k–100k token 只是同一 fixture 的工作量。既有 `0.1-dev.2` 两个完整 run 生成于该能力之前，仍如实记录 `UNAVAILABLE/false`；后续 DeepSeek 与 GLM 单题 Docker relay 冒烟已同时闭环 resolved model、usage 和请求指纹，但 `subset=true` 且只验证基础设施。final generator 已物化 24/28 题，不过整套仍为 `NOT_INTEGRATED` 原型。当前产出只能称为 dev-pilot 诊断，不是正式榜单。正式 score 仍阻塞于：formal preflight 尚未驱动完整生产批次、独立 Worker image 未冻结、Hy4 凭证预检与真实运行尚未完成、28 题隐藏 final 与三个模型各三次重复未完成。LLM-as-a-Judge 使用示例与边界见 [`docs/llm-as-a-judge.md`](docs/llm-as-a-judge.md)。
 
 2026-09-04 新一轮完整 Docker relay 运行已取得两家的真实 model / usage / 指纹证据；修复 verifier 临时副本权限后，对两家全部原始产物对称复验，均为 8/8、开发诊断分 100。原始自动 89 分因同一 verifier 故障失效，旧 JSON 保留，复验没有再次调用模型。最新 [报告](benchmarks/paicli-native-agentbench-v0.1/DEV-PILOT-REPORT-2026-09-04.md) / [机器摘要](benchmarks/paicli-native-agentbench-v0.1/dev-pilot-results-2026-09-04.json) 与 [8 月 31 日历史报告](benchmarks/paicli-native-agentbench-v0.1/DEV-PILOT-REPORT-2026-08-31.md) 分开保存；仍为 `publishable=false`，不得当作正式榜单。
 
@@ -260,7 +266,7 @@ v16.1 抽出 `Renderer` 接口 + 三个实现：
 
 | 形态 | 启用方式 | 视觉风格 |
 |---|---|---|
-| **inline 流式 TUI**（默认） | 直接运行 / `PAICLI_RENDERER=inline` | Claude Code / Qoder 风格：π 主题彩色开屏、主屏直出、transcript 当前位置的 `* ` 输入提示、JLine `Status` 托管的底部 dock（YOLO/HITL、MCP、Skill、model、ctx、token、cwd 等关键字段带克制彩色高亮；ctx 是当前上下文估算，in/out/cache 是调用统计）、右侧输入提示、行内可折叠工具块（`Read 3 files (ctrl+o to expand)`）、行内 git diff、HITL 单字符 `[y/n/a/s/m]` 提示 |
+| **inline 流式 TUI**（默认） | 直接运行 / `PAICLI_RENDERER=inline` | Claude Code / Qoder 风格：◆ 主题彩色开屏、主屏直出、transcript 当前位置的 `* ` 输入提示、JLine `Status` 托管的底部 dock（YOLO/HITL、MCP、Skill、model、ctx、token、cwd 等关键字段带克制彩色高亮；ctx 是当前上下文估算，in/out/cache 是调用统计）、右侧输入提示、行内可折叠工具块（`Read 3 files (ctrl+o to expand)`）、行内 git diff、HITL 单字符 `[y/n/a/s/m]` 提示 |
 | **lanterna 全屏 TUI** | `PAICLI_RENDERER=lanterna`（或兼容旧 `PAICLI_TUI=true`） | v16 三栏全屏：文件树 + 对话流 + 状态栏 + 底部输入栏，HITL 模态弹窗 |
 | **plain 兜底** | `PAICLI_RENDERER=plain` | 纯 println，无折叠 / 状态栏，等价 v15 行为 |
 
@@ -310,7 +316,7 @@ v16.1 抽出 `Renderer` 接口 + 三个实现：
 - Worker Pool 默认 2 个后台 worker，可通过 `PAICLI_TASK_WORKERS` 调整
 - `java -jar target/paicli-1.0-SNAPSHOT.jar serve --http --port 8080` 启动 localhost Runtime API
 - Runtime API 端点：`POST /v1/threads`、`POST /v1/threads/{id}/turns`、`GET /v1/threads/{id}/events`
-- Runtime API 强制要求 `PAICLI_RUNTIME_API_KEY` 或 `-Dpaicli.runtime.api.key`
+- Runtime API 优先使用 `FORGEPILOT_RUNTIME_API_KEY` / `-Dforgepilot.runtime.api.key`，并兼容 `PAICLI_RUNTIME_API_KEY` / `-Dpaicli.runtime.api.key`
 - 详细文档见 `docs/phase-20-runtime-api.md`
 
 ### 第二十一期：图片复制粘贴输入（MVP）
@@ -330,12 +336,12 @@ v16.1 抽出 `Renderer` 接口 + 三个实现：
 ### 第二十三期：微信 iLink 通道（文本 MVP）
 
 - 新增进程级入口：`paicli wechat setup`、`paicli wechat start`、`paicli wechat status`、`paicli wechat daemon start|stop|restart|status|logs`
-- 新增交互式入口：在 PaiCLI 主界面输入 `/wechat` 可扫码绑定并在当前进程后台启动微信通道；`/wechat setup` 重新扫码绑定，`/wechat status` 查看状态，`/wechat stop` 停止通道
+- 新增交互式入口：在 ForgePilot 主界面输入 `/wechat` 可扫码绑定并在当前进程后台启动微信通道；`/wechat setup` 重新扫码绑定，`/wechat status` 查看状态，`/wechat stop` 停止通道
 - 默认不开启微信通道；用户必须主动执行 `setup` 并扫码确认完成绑定
 - 支持在 Warp / iTerm2 / WezTerm 等兼容终端内直接显示 260px PNG 二维码；不支持终端图片协议时回退为字符二维码和链接
 - 微信侧使用 iLink `getupdates` 长轮询收消息、`sendmessage` 分片回消息，不依赖 SSE；这是独立通道，不是 Skill，也不是 Runtime API
 - 运行时只接受绑定用户私聊；普通消息单并发排队，`/help`、`/status`、`/pause`、`/resume`、`/stop` 走队列外控制路径
-- 微信侧用户消息会回显到 PaiCLI 终端 transcript；PaiCLI 终端继续显示 thinking / 工具调用过程，微信侧只接收 assistant 正文。iLink 协议层仍是 `text_item.text` 文本消息，没有显式 Markdown parse mode；PaiCLI 会保留 ClawBot 稳定支持的 Markdown 子集（列表、引用、粗体、行内代码、真实代码块），把标题转成粗体标题、把表格转成移动端更稳的键值/列表，并过滤图片 Markdown / H5-H6 / 中文斜体等兼容性差的标记；非代码类 fenced block（流程说明、长中文箭头链）会解包并换行，避免微信侧出现横向滚动代码块。iLink 不提供真正 SSE 或改单条消息能力。
+- 微信侧用户消息会回显到 ForgePilot 终端 transcript；ForgePilot 终端继续显示 thinking / 工具调用过程，微信侧只接收 assistant 正文。iLink 协议层仍是 `text_item.text` 文本消息，没有显式 Markdown parse mode；ForgePilot 会保留 ClawBot 稳定支持的 Markdown 子集（列表、引用、粗体、行内代码、真实代码块），把标题转成粗体标题、把表格转成移动端更稳的键值/列表，并过滤图片 Markdown / H5-H6 / 中文斜体等兼容性差的标记；非代码类 fenced block（流程说明、长中文箭头链）会解包并换行，避免微信侧出现横向滚动代码块。iLink 不提供真正 SSE 或改单条消息能力。
 - 微信通道使用非交互式默认拒绝策略：只读工具默认允许，`write_file` / `edit_file` / `create_project` 继续受 workspace PathGuard 限制，`execute_command` 必须精确命中命令白名单，`mcp__*` 必须命中 MCP 白名单，`revert_turn` 和浏览器会话切换默认拒绝
 - 当前文本 MVP 会保留图片 / 文件消息的媒体元数据提示，但 CDN 下载解密、图片块输入和 `/send` 文件推送仍待后续媒体链路补齐
 
@@ -349,7 +355,7 @@ v16.1 抽出 `Renderer` 接口 + 三个实现：
 - `write_file` / `edit_file` 写入后单文件 5MB 上限
 - CLI 命令：`/policy` 查看安全策略状态、`/audit [N]` 看最近 N 条审计
 
-**为什么不叫沙箱**：`com.paicli.policy` 这一层只做校验和审计，不提供进程隔离。进程隔离由可选的命令沙箱负责：`PAICLI_COMMAND_SANDBOX=auto` 时，`execute_command` 在 macOS 上用 Seatbelt（`sandbox-exec`），在 Linux 上用 bubblewrap（`bwrap`），两者共用一套策略：系统目录只读、用户 HOME 不可见、只有工作区可写、没有网络；探测不到或探针失败时启动页给出提示并回退直接执行。`PAICLI_COMMAND_SANDBOX=required` 时沙箱不可用则拒绝执行命令。默认仍是 `off`：Claude Code 和 Codex 默认开沙箱、关网络，但 PaiCLI 的沙箱把 HOME 重定向到工作区内，`mvn test`（依赖 `~/.m2`）、`npm install`、`git push` 等常用命令会直接失败，所以先保持显式开启。
+**为什么不叫沙箱**：`com.paicli.policy` 这一层只做校验和审计，不提供进程隔离。进程隔离由可选的命令沙箱负责：`PAICLI_COMMAND_SANDBOX=auto` 时，`execute_command` 在 macOS 上用 Seatbelt（`sandbox-exec`），在 Linux 上用 bubblewrap（`bwrap`），两者共用一套策略：系统目录只读、用户 HOME 不可见、只有工作区可写、没有网络；探测不到或探针失败时启动页给出提示并回退直接执行。`PAICLI_COMMAND_SANDBOX=required` 时沙箱不可用则拒绝执行命令。默认仍是 `off`：Claude Code 和 Codex 默认开沙箱、关网络，但 ForgePilot 的沙箱把 HOME 重定向到工作区内，`mvn test`（依赖 `~/.m2`）、`npm install`、`git push` 等常用命令会直接失败，所以先保持显式开启。
 
 ## 启动界面
 
@@ -358,7 +364,7 @@ v16.1 抽出 `Renderer` 接口 + 三个实现：
 当前启动输出以命令行实际产物为准：
 
 ```text
-   ████████    PaiCLI π  v16.1.0
+   ████████    ForgePilot ◆  v16.1.0
      ██  ██    Model step-3.5-flash-2603 (step)
      ██  ██    MCP 4/4 · 61 tools · 2/2 skills · ReAct
      ██  ██    ReAct · Plan · MCP · Browser · Image
@@ -513,7 +519,7 @@ export AGNES_MODEL=agnes-2.0-flash
 export AGNES_BASE_URL=https://apihub.agnes-ai.com/v1
 ```
 
-也可以在 PaiCLI 内用命令写入 `~/.paicli/config.json`，不会覆盖 Kimi 配置：
+也可以在 ForgePilot 内用命令写入 `~/.paicli/config.json`，不会覆盖 Kimi 配置：
 
 ```text
 /model deepseek-flash
@@ -526,7 +532,7 @@ export AGNES_BASE_URL=https://apihub.agnes-ai.com/v1
 /model agnes
 ```
 
-长期记忆默认保存在用户目录下的 `~/.paicli/memory/long_term_memory.json`。ReAct / Plan / Team 各自的记忆实例和多个 PaiCLI 进程可以同时读写这个文件：每次写入都在进程内锁 + `long_term_memory.json.lock` 文件锁下先重读磁盘最新内容再修改，并以临时文件原子改名落盘；读取前会检测文件变化并刷新。文件解析失败时会另存为 `long_term_memory.json.corrupt-<时间戳>`，并保留内存中已有记忆，不会被空列表覆盖。
+长期记忆默认保存在用户目录下的 `~/.paicli/memory/long_term_memory.json`。ReAct / Plan / Team 各自的记忆实例和多个 ForgePilot 进程可以同时读写这个文件：每次写入都在进程内锁 + `long_term_memory.json.lock` 文件锁下先重读磁盘最新内容再修改，并以临时文件原子改名落盘；读取前会检测文件变化并刷新。文件解析失败时会另存为 `long_term_memory.json.corrupt-<时间戳>`，并保留内存中已有记忆，不会被空列表覆盖。
 交互式 CLI 默认在 ReAct、Plan、Team 的任务完成后，从用户实际提交的原文中自动挑选稳定偏好或项目事实；模型必须返回原文中的连续片段，最多 3 条。自动条目只存当前项目，标注“自动提取，待核实”，不会从工具输出、助手回复或压缩摘要提取，也不会覆盖冲突记忆。会话接触外部内容后默认停止自动提取。可用 `PAICLI_MEMORY_AUTO_EXTRACT_ENABLED=false` 关闭；嵌入式 Agent 默认关闭，需调用 `MemoryManager.setAutoFactExtractionEnabled(true)`。候选输入会多一次无工具模型调用。显式保存仍可用 `/save <事实>`，或用户明确说“记一下 / 记住 / 以后记得”时由 Agent 调用 `save_memory`；跨项目通用偏好可用 `/save --global <事实>` 或 `save_memory(scope=global)`。长期记忆不应包含一次性任务请求或临时文件名/目录名。
 重复记忆只会在相同 `type + scope + project` 域内合并：先规范化 Unicode 宽窄、大小写、空白和普通标点，再保守识别少量中文语法助词差异；用户显式重复保存等价内容会刷新已有条目的核实时间，自动提取重复内容则跳过且不刷新。数字、代码符号或实质内容不同的事实不会被去重合并。
 写入时另有冲突检测：同域内“只有数字/版本号不同”或字符二元组相似度 ≥ `PAICLI_MEMORY_CONFLICT_THRESHOLD`（默认 0.8）但又不是重复的条目，视为同一事实的新旧版本，新内容不会写入，`/save` 或 `save_memory` 的结果会同时列出两条，由用户选择：保留旧的（无需操作）、`/memory replace <id> <新事实>` 改用新的，或 `/save --force <事实>` 两条都保留。冲突检测基于字面相似度，不理解同义改写或语义矛盾。
@@ -575,7 +581,7 @@ PAICLI_LOG_TOTAL_SIZE_CAP=100MB
 
 ### 2. 可选：配置 MCP server
 
-MCP 子系统默认开启。`~/.paicli/mcp.json` 不存在时，PaiCLI 会自动创建默认 chrome-devtools 配置：
+MCP 子系统默认开启。`~/.paicli/mcp.json` 不存在时，ForgePilot 会自动创建默认 chrome-devtools 配置：
 
 ```json
 {
@@ -615,7 +621,7 @@ MCP 子系统默认开启。`~/.paicli/mcp.json` 不存在时，PaiCLI 会自动
 
 `command` 表示 stdio server，`url` 表示 Streamable HTTP server。`${PROJECT_DIR}` / `${HOME}` 是内置变量，其他 `${VAR}` 从环境变量读取；缺失会在启动时直接提示。
 
-`step_search` 是约定名称：如果项目 `.env`、用户 `~/.env` 或系统环境变量里存在 `STEP_API_KEY`，PaiCLI 会自动内置这个远程 MCP；上面的手写配置只用于覆盖默认地址或自定义鉴权。当前模型为 `step-3.7-flash*` 时，内置 `web_search` / `web_fetch` 会优先代理到该 MCP server。
+`step_search` 是约定名称：如果项目 `.env`、用户 `~/.env` 或系统环境变量里存在 `STEP_API_KEY`，ForgePilot 会自动内置这个远程 MCP；上面的手写配置只用于覆盖默认地址或自定义鉴权。当前模型为 `step-3.7-flash*` 时，内置 `web_search` / `web_fetch` 会优先代理到该 MCP server。
 
 需要复用当前登录态时，Chrome 144+ 推荐打开 `chrome://inspect/#remote-debugging` 并勾选 `Allow remote debugging for this browser instance`。旧版本或需要显式 CDP 端口时，可以启动带远程调试端口和独立 user-data-dir 的 Chrome，并在这个调试 Chrome 中完成登录：
 
@@ -630,7 +636,7 @@ start chrome.exe --remote-debugging-port=9222 --user-data-dir=%TEMP%\paicli-chro
 google-chrome --remote-debugging-port=9222 --user-data-dir=/tmp/paicli-chrome-profile
 ```
 
-通常不需要用户预先切换；Agent 如果遇到登录页会自己调用 `browser_connect`。手工调试时也可以在 PaiCLI 内执行：
+通常不需要用户预先切换；Agent 如果遇到登录页会自己调用 `browser_connect`。手工调试时也可以在 ForgePilot 内执行：
 
 ```text
 /browser status
@@ -778,7 +784,7 @@ I
 - `mcp__{server}__{tool}` - MCP server 动态提供的外部工具
 - `mcp__{server}__list_resources` / `mcp__{server}__read_resource` - 支持 resources 的 MCP server 自动注册的虚拟工具
 
-同一轮模型返回多个工具调用时，PaiCLI 只并行执行只读工具；写文件、执行命令、MCP 等有副作用的调用按模型给出的顺序逐个执行。如果工具之间有数据依赖（例如需要先读结果再决定怎么改），模型仍应分多轮调用。`edit_file` 匹配 `old_text` 时先按字面量查找，找不到且文件使用 CRLF 换行时，会把 `old_text` / `new_text` 中的 `\n` 转成 `\r\n` 再匹配，替换后保留文件原有换行风格。
+同一轮模型返回多个工具调用时，ForgePilot 只并行执行只读工具；写文件、执行命令、MCP 等有副作用的调用按模型给出的顺序逐个执行。如果工具之间有数据依赖（例如需要先读结果再决定怎么改），模型仍应分多轮调用。`edit_file` 匹配 `old_text` 时先按字面量查找，找不到且文件使用 CRLF 换行时，会把 `old_text` / `new_text` 中的 `\n` 转成 `\r\n` 再匹配，替换后保留文件原有换行风格。
 
 文件类与代码检索工具（`read_file` / `write_file` / `edit_file` / `list_dir` / `glob_files` / `grep_code` / `create_project`）路径强制限定在项目根之内，越界请求会被策略层拒绝。`edit_file` 使用 `path`、`old_text`、`new_text` 参数，原文必须在已有文件中恰好出现一次；多处匹配时请补充上下文。编辑后的文件上限为 5MB，编辑操作与整文件写入一样触发 HITL、审计、diff 展示和编辑后诊断。`execute_command` 通过命令黑名单拦截 `sudo` / `rm -rf 全盘` / `mkfs` / `dd of=/dev` / fork bomb / `curl|sh` 等。`revert_turn` 会批量回写工作区，默认触发 HITL 和审计。所有 `mcp__` 前缀工具默认触发 HITL 和审计。详见 `/policy`。
 
@@ -795,8 +801,8 @@ I
 
 - `/wechat` - 扫码绑定并启动微信 iLink 通道；已绑定时直接启动
 - `/wechat setup` - 重新扫码绑定并启动微信通道
-- `/wechat status` - 查看当前 PaiCLI 进程内微信通道状态
-- `/wechat stop` - 停止当前 PaiCLI 进程内微信通道
+- `/wechat status` - 查看当前 ForgePilot 进程内微信通道状态
+- `/wechat stop` - 停止当前 ForgePilot 进程内微信通道
 - `/plan` - 下一条任务使用 Plan-and-Execute 模式
 - `/plan <任务>` - 直接用 Plan-and-Execute 模式执行这条任务
 - `/team` - 下一条任务使用 Multi-Agent 协作模式
@@ -860,7 +866,7 @@ I
 ### 第三期：当前运行效果
 
 ```text
-   ████████    PaiCLI π  v16.1.0
+   ████████    ForgePilot ◆  v16.1.0
      ██  ██    Model glm-5.1 (glm)
      ██  ██    MCP 4/4 · 61 tools · 2/2 skills · ReAct
      ██  ██    ReAct · Plan · MCP · Browser · Image

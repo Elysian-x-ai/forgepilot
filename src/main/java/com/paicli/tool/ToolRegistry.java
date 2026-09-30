@@ -194,7 +194,7 @@ public class ToolRegistry {
     }
 
     /**
-     * 交互式 PaiCLI 的沙箱入口：按模式探测 macOS Seatbelt / Linux bubblewrap。
+     * 交互式 ForgePilot 的沙箱入口：按模式探测 macOS Seatbelt / Linux bubblewrap。
      * AUTO 不可用时回退为直接执行；REQUIRED 不可用时 execute_command 拒绝执行；OFF 与旧行为一致。
      * 项目根切换时会按同一模式重新配置。
      */

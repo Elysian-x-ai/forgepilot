@@ -3,32 +3,26 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="学习使用 Claude Code 内置的斜杠命令进行上下文管理、会话控制和配置。">
-<title>斜杠命令 — PaiCLI 学习中心</title>
+<meta name="description" content="学习使用 ForgePilot 内置的斜杠命令进行上下文管理、会话控制和配置。">
+<title>斜杠命令 — ForgePilot 学习中心</title>
 
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
 <style>
-@font-face {
-  font-family: 'JetBrains Mono';
-  src: url('https://claude.nagdy.me/fonts/JetBrainsMono-Regular.woff2') format('woff2');
-  font-display: swap;
-}
-
 /* ===== CSS Variables (Light) ===== */
 :root {
   --font-sans: "DM Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
-  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", "Fira Code", monospace;
+  --font-mono: ui-monospace, "Cascadia Code", "Fira Code", monospace;
 
-  --color-brand: #b45309;
-  --color-brand-hover: #92400e;
-  --color-brand-light: #fbbf24;
-  --color-brand-light-hover: #fcd34d;
-  --color-brand-subtle: #fef3c7;
-  --color-brand-subtle-dark: #451a03;
+  --color-brand: #2f6bff;
+  --color-brand-hover: #1d4ed8;
+  --color-brand-light: #f2b84b;
+  --color-brand-light-hover: #ffd37a;
+  --color-brand-subtle: #eaf0ff;
+  --color-brand-subtle-dark: #17264d;
 
   --color-surface: #fafaf9;
   --color-surface-dark: #1c1917;
@@ -39,7 +33,7 @@
 
   --color-terminal-bg: #1c1917;
   --color-terminal-text: #e7e5e4;
-  --color-terminal-cursor: #fbbf24;
+  --color-terminal-cursor: #f2b84b;
   --color-terminal-selection: #44403c;
 
   --color-success: #22c55e;
@@ -89,7 +83,7 @@ html.dark {
   --color-text-secondary: #d6d3d1;
   --color-text-muted: #a8a29e;
   --color-border: #44403c;
-  --color-brand-subtle: #451a03;
+  --color-brand-subtle: #17264d;
   --color-white: #292524;
   --color-stone-100: #292524;
   --color-stone-200: #44403c;
@@ -122,6 +116,21 @@ body {
 
 a { color: inherit; text-decoration: inherit; }
 img, svg { vertical-align: middle; display: block; }
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--color-brand-light);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
 
 /* ===== Skip Link ===== */
 .skip-link {
@@ -822,7 +831,9 @@ html.dark .quiz-progress { background: var(--color-stone-700); }
   height: 100%;
   border-radius: 999px;
   background: var(--color-brand);
-  transition: width 0.3s;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.3s;
 }
 .quiz-question {
   margin-bottom: 1rem;
@@ -1165,6 +1176,31 @@ html.dark .footer-bottom a:hover { color: var(--color-brand-light); }
   .desktop-only { display: block; }
 }
 
+.mobile-nav {
+  display: none;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface-elevated);
+  padding: 0.75rem 1rem 1rem;
+}
+.mobile-nav.open {
+  display: grid;
+  gap: 0.25rem;
+}
+.mobile-nav-link {
+  border-radius: var(--radius-md);
+  padding: 0.625rem 0.75rem;
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.mobile-nav-link:hover {
+  background: var(--color-surface-muted);
+  color: var(--color-text-primary);
+}
+@media (min-width: 64rem) {
+  .mobile-nav { display: none !important; }
+}
+
 /* ===== Dark mode toggle icons ===== */
 .sun-icon { display: none; }
 .dark .sun-icon { display: block; }
@@ -1187,8 +1223,8 @@ html.dark .footer-bottom a:hover { color: var(--color-brand-light); }
 <header class="header" aria-label="网站页眉">
   <div class="header-inner">
     <a href="/" class="logo">
-      <span class="logo-icon">P</span>
-      <span><span class="logo-brand">Pai</span><span class="logo-muted">CLI</span></span>
+      <span class="logo-icon">◆</span>
+      <span class="logo-brand">ForgePilot</span>
     </a>
 
     <nav class="desktop-nav" aria-label="主导航">
@@ -1229,6 +1265,13 @@ html.dark .footer-bottom a:hover { color: var(--color-brand-light); }
   </div>
 </header>
 
+<nav class="mobile-nav" id="mobileNav" aria-label="移动端主导航">
+  <a class="mobile-nav-link" href="#main-content">学习中心</a>
+  <a class="mobile-nav-link" href="#discovering-commands">发现命令</a>
+  <a class="mobile-nav-link" href="#command-categories">命令分类</a>
+  <a class="mobile-nav-link" href="#footer">资源与更新</a>
+</nav>
+
 <!-- ===== Layout ===== -->
 <div class="layout-grid" id="layoutGrid">
   <!-- Desktop Sidebar -->
@@ -1244,7 +1287,7 @@ html.dark .footer-bottom a:hover { color: var(--color-brand-light); }
         <ul class="sidebar-nav-list">
           <li><a href="#" class="sidebar-nav-link"><span class="sidebar-number">0</span><span class="sidebar-title">入门指南</span></a></li>
           <li><a href="#" class="sidebar-nav-link active"><span class="sidebar-number">1</span><span class="sidebar-title">斜杠命令</span></a></li>
-          <li><a href="#" class="sidebar-nav-link"><span class="sidebar-number">2</span><span class="sidebar-title">记忆与 CLAUDE.md</span></a></li>
+          <li><a href="#" class="sidebar-nav-link"><span class="sidebar-number">2</span><span class="sidebar-title">记忆与 PAI.md</span></a></li>
           <li><a href="#" class="sidebar-nav-link"><span class="sidebar-number">3</span><span class="sidebar-title">项目设置</span></a></li>
           <li><a href="#" class="sidebar-nav-link"><span class="sidebar-number">4</span><span class="sidebar-title">命令深入</span></a></li>
           <li><a href="#" class="sidebar-nav-link"><span class="sidebar-number">5</span><span class="sidebar-title">技能</span></a></li>
@@ -1277,7 +1320,7 @@ html.dark .footer-bottom a:hover { color: var(--color-brand-light); }
             <span class="module-number">1</span>
             <div>
               <h1 class="module-title">斜杠命令</h1>
-              <p class="module-desc">学习使用 Claude Code 内置的斜杠命令进行上下文管理、会话控制和配置。</p>
+              <p class="module-desc">学习使用 ForgePilot 内置的斜杠命令进行上下文管理、会话控制和配置。</p>
               <div class="module-meta">
                 <span class="badge">入门</span>
                 <span class="module-time">15 分钟</span>
@@ -1288,12 +1331,12 @@ html.dark .footer-bottom a:hover { color: var(--color-brand-light); }
 
         <!-- Prose content -->
         <article class="prose">
-          <p>斜杠命令是在交互式会话中控制 Claude Code 行为最快的方式。在任意提示符下输入 <code>/</code> 即可查看完整列表，或输入几个字母进行筛选。本模块涵盖了你每天都会使用的内置命令。</p>
+          <p>斜杠命令是在交互式会话中控制 ForgePilot 行为最快的方式。在任意提示符下输入 <code>/</code> 即可查看完整列表，或输入几个字母进行筛选。本模块涵盖了你每天都会使用的内置命令。</p>
 
           <h2 id="discovering-commands">发现命令</h2>
           <p>在提示符下输入 <code>/</code>，菜单就会显示所有可用命令。开始输入以筛选 — <code>/co</code> 缩小到 <code>/compact</code>、<code>/color</code>、<code>/config</code>、<code>/context</code>、<code>/cost</code>、<code>/copy</code>。方向键导航，回车选择。当前设置下不可用的命令会自动隐藏，所以你只会看到能用的。</p>
-          <p>刚接触 Claude Code？试试 <code>/powerup</code> — 它会运行带有动画演示的交互式课程，直接在 CLI 中带你了解关键功能。</p>
-          <p>有些命令直接接受参数：<code>/compact focus on the API layer</code>、<code>/model opus</code>、<code>/effort high</code>、<code>/rename auth-refactor</code>。其他如 <code>/context</code>、<code>/cost</code> 和 <code>/status</code> 则无需参数立即运行。</p>
+          <p>刚接触 ForgePilot？试试 <code>/plan</code> — 它会先生成可审阅的执行计划，再按步骤推进任务。</p>
+          <p>有些命令直接接受参数：<code>/compact focus on the API layer</code>、<code>/model deepseek-flash</code>、<code>/mode plan</code>、<code>/hitl on</code>。其他如 <code>/context</code>、<code>/memory</code> 和 <code>/status</code> 则无需参数立即运行。</p>
 
           <div class="code-block">
             <pre><code><span>/compact focus on the payment service</span></code></pre>
@@ -1302,7 +1345,7 @@ html.dark .footer-bottom a:hover { color: var(--color-brand-light); }
           <h2 id="command-categories">命令分类</h2>
           <p>内置命令分为几个类别。了解类别有助于你找到合适的命令，而无需记住所有命令。</p>
 
-          <p><strong>上下文管理</strong> 控制 Claude 可以看到多少对话内容。</p>
+          <p><strong>上下文管理</strong> 控制 ForgePilot 可以看到多少对话内容。</p>
           <ul>
             <li><code>/context</code> — 显示上下文使用情况的可视化网格</li>
             <li><code>/compact</code> — 压缩对话。传入指令控制保留什么：<code>/compact keep the migration plan, drop the debugging</code></li>
@@ -1319,43 +1362,41 @@ html.dark .footer-bottom a:hover { color: var(--color-brand-light); }
             <li><code>/recap</code> — 生成会话中发生内容的一行摘要。当你离开后返回终端时也会自动运行。</li>
           </ul>
 
-          <p><strong>配置</strong> 命令在会话中调整 Claude 的行为。</p>
+          <p><strong>配置</strong> 命令在会话中调整 ForgePilot 的行为。</p>
           <ul>
-            <li><code>/model</code> — 切换可用模型，如 Sonnet、Opus、Haiku 以及其他别名如 <code>best</code> 或 <code>opusplan</code></li>
+            <li><code>/model</code> — 在可用模型间切换，如 <code>deepseek-flash</code>、<code>glm-5.3-flash</code> 和 <code>step-1</code></li>
             <li><code>/effort</code> — 设置推理深度：<code>low</code>、<code>medium</code>、<code>high</code>、<code>xhigh</code>、<code>max</code>（仅会话）或 <code>auto</code></li>
-            <li><code>/permissions</code> — 管理 Claude 无需询问即可执行的操作</li>
-            <li><code>/config</code> — 打开设置菜单</li>
-            <li><code>/theme</code>（v2.1.118 新增）— 创建和切换命名自定义主题。主题以 JSON 文件存储在 <code>~/.claude/themes/</code> 中，也可以直接手动编辑。</li>
-            <li><code>/tui</code> — 在对话中切换经典和无闪烁全屏渲染。也可作为 <code>tui</code> 设置使用。</li>
-            <li><code>/focus</code> — 切换专注模式以实现无干扰输入。</li>
-            <li><code>/less-permission-prompts</code> — 扫描最近的对话记录，查找常见的只读 Bash 和 MCP 工具调用，然后建议将允许列表添加到 <code>.claude/settings.json</code> 中，以减少未来的权限提示。</li>
+            <li><code>/mode</code> — 在 <code>auto</code>、<code>plan</code> 和 <code>ask</code> 模式间切换执行策略</li>
+            <li><code>/hitl</code> — 开启或关闭写入和命令执行前的人工确认</li>
+            <li><code>/theme</code> — 创建和切换命名主题。主题配置可以存储在 <code>~/.paicli/themes/</code> 中，也可以直接手动编辑。</li>
+            <li><code>/tui</code> — 在行内渲染和全屏终端界面之间切换</li>
+            <li><code>/skill list</code> — 查看可用技能，按需加载对应的专家手册</li>
+            <li><code>/mcp</code> — 查看和管理已连接的 MCP 服务器</li>
           </ul>
 
           <p><strong>诊断</strong> 在出问题时提供帮助。</p>
           <ul>
-            <li><code>/cost</code> — 显示会话费用、时长、代码更改和 token 使用量</li>
-            <li><code>/usage-credits</code>（v2.1.144 新增）— 查看和管理账户上的使用额度。从 <code>/extra-usage</code> 重命名而来；旧名称仍然有效。</li>
-            <li><code>/status</code> — 显示版本、模型和账户信息</li>
-            <li><code>/doctor</code> — 检查安装健康状况</li>
-            <li><code>/diff</code> — 打开未提交更改的交互式查看器，在提交前查看 Claude 做了什么</li>
+            <li><code>/context</code> — 显示上下文窗口使用量，帮助判断何时运行 <code>/compact</code></li>
+            <li><code>/memory</code> — 查看和管理项目级长期记忆与 <code>PAI.md</code> 指令</li>
+            <li><code>/better-harness</code> — 检查 Agent 工作流、工具轨迹和验证证据</li>
+            <li><code>/snapshot status</code> — 查看 Side-Git 快照状态，必要时恢复上一轮</li>
           </ul>
 
           <p><strong>发布前审查</strong> 在代码离开分支前检查你的工作。</p>
           <ul>
-            <li><code>/code-review</code>（v2.1.147 新增）— 审查当前差异的正确性错误，并报告发现而不编辑文件。接受努力级别（<code>/code-review high</code> 返回更广泛的覆盖；<code>/code-review low</code> 返回更少但置信度更高的发现）和 <code>--comment</code> 以将发现作为内联评论发布到当前的 GitHub PR。传入路径或 PR 引用以审查特定目标。这是一个内置技能；<code>/code-review --fix</code> 将发现应用到你的工作树。从 v2.1.154 开始，<code>/simplify</code> 是一个独立的仅清理技能，应用修复而不寻找错误 — 使用 <code>/code-review</code> 来查找错误。</li>
-            <li><code>/code-review ultra</code> — 在云端沙箱中使用并行分析和评审运行深度多代理代码审查。无参数时审查当前分支；传入 PR 编号（<code>/code-review ultra 123</code>）来获取和审查 GitHub PR。<code>/ultrareview</code> 是别名。Pro 和 Max 包含少量免费运行，之后消耗使用额度。</li>
-            <li><code>/review</code> — 对更改集进行只读深入检查</li>
-            <li><code>/security-review</code> — 对待定更改进行安全重点审查</li>
+            <li><code>/better-harness</code> — 对当前工作流进行只读深入检查，报告验证缺口并生成 HTML 报告</li>
+            <li><code>/export</code> — 导出会话、工具调用和关键结果，便于团队复盘</li>
+            <li><code>/revert</code> — 回退最近一轮由 Agent 产生的文件变更</li>
           </ul>
 
           <div class="code-block">
             <pre><code><span>/context</span>
 <span>/compact keep the auth refactor plan</span>
-<span>/model opus</span>
+<span>/model deepseek-flash</span>
 <span>/effort high</span>
-<span>/cost</span>
-<span>/code-review high</span>
-<span>/code-review --comment</span></code></pre>
+<span>/mode plan</span>
+<span>/context</span>
+<span>/better-harness</span></code></pre>
           </div>
         </article>
 
@@ -1381,7 +1422,7 @@ html.dark .footer-bottom a:hover { color: var(--color-brand-light); }
           <a href="#" class="module-nav-link next">
             <div>
               <span class="module-nav-label">下一节</span>
-              <span class="module-nav-text">记忆与 CLAUDE.md</span>
+              <span class="module-nav-text">记忆与 PAI.md</span>
             </div>
             <svg class="module-nav-arrow next" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
@@ -1404,7 +1445,7 @@ html.dark .footer-bottom a:hover { color: var(--color-brand-light); }
                 <span class="terminal-dot red"></span>
                 <span class="terminal-dot yellow"></span>
                 <span class="terminal-dot green"></span>
-                <span class="terminal-label">Claude Code — 引导式教程</span>
+                <span class="terminal-label">ForgePilot — 引导式教程</span>
               </div>
               <div class="terminal-body" id="guidedTerminalBody">
                 <div class="terminal-output" id="guidedOutput"></div>
@@ -1427,10 +1468,10 @@ html.dark .footer-bottom a:hover { color: var(--color-brand-light); }
                 <span class="terminal-dot red"></span>
                 <span class="terminal-dot yellow"></span>
                 <span class="terminal-dot green"></span>
-                <span class="terminal-label">Claude Code — 自由输入</span>
+                <span class="terminal-label">ForgePilot — 自由输入</span>
               </div>
               <div class="terminal-body">
-                <div class="welcome">欢迎使用 Claude Code！输入命令或 /help 开始使用。</div>
+                <div class="welcome">欢迎使用 ForgePilot！输入命令或 /help 开始使用。</div>
                 <div id="freeTypeOutput"></div>
                 <div class="prompt-line" style="margin-top:0.5rem;">
                   <span class="prompt">&gt;</span>
@@ -1451,15 +1492,15 @@ html.dark .footer-bottom a:hover { color: var(--color-brand-light); }
                 <span id="quizPercent">0%</span>
               </div>
               <div class="quiz-progress">
-                <div class="quiz-progress-bar" id="quizProgressBar" style="width:0%"></div>
+                <div class="quiz-progress-bar" id="quizProgressBar"></div>
               </div>
-              <p class="quiz-question" id="quizQuestion">当你在 Claude Code 中运行 /compact 时会发生什么？</p>
+              <p class="quiz-question" id="quizQuestion">当你在 ForgePilot 中运行 /compact 时会发生什么？</p>
               <div class="quiz-options" id="quizOptions" role="radiogroup"></div>
               <div id="quizResult" style="margin-top: 1rem;"></div>
             </div>
           </div>
 
-          <div class="right-panel-section">
+          <div class="right-panel-section" id="templates">
             <section aria-label="斜杠命令模板">
               <h3 class="section-title" style="font-size:1rem;margin-bottom:1rem;">斜杠命令模板</h3>
 
@@ -1468,18 +1509,18 @@ html.dark .footer-bottom a:hover { color: var(--color-brand-light); }
                 <div class="template-header">
                   <div>
                     <h4 class="template-name">专注与检查工作流</h4>
-                    <p class="template-desc">在开始实施之前，用于引导 Claude 了解仓库的斜杠命令序列。</p>
+                    <p class="template-desc">在开始实施之前，用于引导 ForgePilot 了解仓库的斜杠命令序列。</p>
                   </div>
                   <span class="template-lang">markdown</span>
                 </div>
                 <div class="template-code-wrap" aria-label="专注与检查工作流模板代码">
-                  <button class="copy-btn" aria-label="复制专注与检查工作流模板" onclick="navigator.clipboard?.writeText('/context\nRead `README.md`, `CLAUDE.md`, and `package.json`, then summarize the project conventions before making changes.\n')">
+                  <button class="copy-btn" aria-label="复制专注与检查工作流模板" onclick="navigator.clipboard?.writeText('/context\nRead `README.md`, `PAI.md`, and `package.json`, then summarize the project conventions before making changes.\n')">
                     <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9.75a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"/>
                     </svg>
                   </button>
                   <div class="template-code">/context
-Read `README.md`, `CLAUDE.md`, and `package.json`, then summarize the project conventions before making changes.
+Read `README.md`, `PAI.md`, and `package.json`, then summarize the project conventions before making changes.
 </div>
                 </div>
                 <button class="share-btn" aria-label="分享专注与检查工作流">
@@ -1520,20 +1561,18 @@ Read `README.md`, `CLAUDE.md`, and `package.json`, then summarize the project co
               <div class="template-card">
                 <div class="template-header">
                   <div>
-                    <h4 class="template-name">发布前正确性扫描</h4>
-                    <p class="template-desc">在当前差异上运行内置的 /code-review 技能，然后将发现发布到打开的 PR。自 v2.1.147 可用 — 从 /simplify 重命名而来。从 v2.1.154 起 /simplify 是一个独立的仅清理技能。</p>
+                    <h4 class="template-name">发布前工作流审查</h4>
+                    <p class="template-desc">运行内置的 Better Harness 审查，检查当前任务的工具轨迹、验证证据和未闭环风险。</p>
                   </div>
                   <span class="template-lang">markdown</span>
                 </div>
                 <div class="template-code-wrap" aria-label="发布前正确性扫描模板代码">
-                  <button class="copy-btn" aria-label="复制发布前正确性扫描模板" onclick="navigator.clipboard?.writeText('/code-review high\n# Once the findings look reasonable, post them to the PR:\n/code-review high --comment\n')">
+                  <button class="copy-btn" aria-label="复制发布前工作流审查模板" onclick="navigator.clipboard?.writeText('/better-harness\n')">
                     <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9.75a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"/>
                     </svg>
                   </button>
-                  <div class="template-code">/code-review high
-# Once the findings look reasonable, post them to the PR:
-/code-review high --comment
+                  <div class="template-code">/better-harness
 </div>
                 </div>
                 <button class="share-btn" aria-label="分享发布前正确性扫描">
@@ -1552,16 +1591,16 @@ Read `README.md`, `CLAUDE.md`, and `package.json`, then summarize the project co
 </div>
 
 <!-- ===== Footer ===== -->
-<footer class="footer">
+<footer class="footer" id="footer">
   <div class="footer-inner">
     <div class="footer-top">
       <div class="footer-brand">
         <a href="/" style="display:inline-flex;align-items:center;gap:0.5rem;font-size:1rem;font-weight:700;letter-spacing:-0.025em;text-decoration:none;color:var(--color-text-primary);">
-          <span class="logo-icon">P</span>
-          <span><span class="logo-brand">Pai</span><span style="color:var(--color-text-muted);">CLI</span></span>
+          <span class="logo-icon">◆</span>
+          <span class="logo-brand">ForgePilot</span>
         </a>
         <p class="footer-brand-text">
-          Claude Code 的互动学习平台。<br>灵感来源于 <a href="https://github.com/luongnv89/claude-howto" style="text-decoration:underline;text-underline-offset:2px;">luongnv89/claude-howto</a>。
+          面向工程团队的 ForgePilot 互动学习中心。<br>从命令、记忆到多智能体工作流，逐步掌握可控的终端协作方式。
         </p>
       </div>
       <nav class="footer-nav" aria-label="页脚导航">
@@ -1592,8 +1631,8 @@ Read `README.md`, `CLAUDE.md`, and `package.json`, then summarize the project co
       </nav>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 PaiCLI · v1.0.0</span>
-      <span>灵感来源于 <a href="https://github.com/luongnv89/claude-howto" target="_blank" rel="noopener noreferrer">luongnv89/claude-howto</a></span>
+      <span>© 2026 ForgePilot · v1.0.0</span>
+      <span><a href="https://github.com/Elysian-x-ai/forgepilot" target="_blank" rel="noopener noreferrer">GitHub 仓库</a></span>
     </div>
   </div>
 </footer>
@@ -1602,7 +1641,7 @@ Read `README.md`, `CLAUDE.md`, and `package.json`, then summarize the project co
 <script>
 // ===== Dark Mode =====
 (function() {
-  const STORAGE_KEY = 'paicli-state';
+  const STORAGE_KEY = 'forgepilot-state';
   let mode = 'system';
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -1632,19 +1671,39 @@ Read `README.md`, `CLAUDE.md`, and `package.json`, then summarize the project co
   }
 })();
 
+// ===== Mobile Navigation =====
+(function() {
+  const toggle = document.getElementById('mobileMenuToggle');
+  const nav = document.getElementById('mobileNav');
+  if (!toggle || !nav) return;
+
+  function setOpen(open) {
+    nav.classList.toggle('open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? '关闭导航菜单' : '打开导航菜单');
+  }
+
+  toggle.addEventListener('click', function() {
+    setOpen(!nav.classList.contains('open'));
+  });
+  nav.querySelectorAll('a').forEach(function(link) {
+    link.addEventListener('click', function() { setOpen(false); });
+  });
+})();
+
 // ===== Guided Tutorial =====
 (function() {
   const steps = [
     {
       command: '/help',
-      output: '可用斜杠命令：\n  /help         显示此帮助信息\n  /compact      压缩对话历史\n  /clear        开始新对话\n  /memory       编辑 CLAUDE.md 记忆文件\n  /review       审查代码更改\n  /code-review  审查当前差异的正确性错误（技能）\n  /init         初始化项目 CLAUDE.md\n  /cost         显示此会话的 token 使用量\n  /doctor       检查 Claude Code 健康状况\n  /login        切换 Anthropic 账户',
+      output: '可用斜杠命令：\n  /help         显示此帮助信息\n  /compact      压缩对话历史\n  /clear        开始新对话\n  /memory       编辑 PAI.md 记忆文件\n  /review       审查代码更改\n  /code-review  审查当前差异的正确性错误（技能）\n  /init         初始化项目 PAI.md\n  /cost         显示此会话的 token 使用量\n  /doctor       检查 ForgePilot 健康状况\n  /login        切换 模型服务账户',
       desc: '让我们从探索可用命令开始。点击"运行"查看 /help 输出。',
       nextLabel: '下一步：尝试 /compact →'
     },
     {
       command: '/theme',
-      output: '当前主题：深色（默认）\n\n可用主题：\n  dark       — 默认深色主题\n  light      — 适合明亮环境\n  solarized  — 太阳配色\n  dracula    — 德古拉配色\n\n自定义主题：~/.claude/themes/\n切换：/theme <名称>',
-      desc: '/theme 让你切换颜色主题。自定义主题可以以 JSON 文件存储在 ~/.claude/themes/ 中。',
+      output: '当前主题：深色（默认）\n\n可用主题：\n  dark       — 默认深色主题\n  light      — 适合明亮环境\n  solarized  — 太阳配色\n  dracula    — 德古拉配色\n\n自定义主题：~/.paicli/themes/\n切换：/theme <名称>',
+      desc: '/theme 让你切换颜色主题。自定义主题可以以 JSON 文件存储在 ~/.paicli/themes/ 中。',
       nextLabel: '下一步：尝试 /compact →'
     },
     {
@@ -1655,13 +1714,13 @@ Read `README.md`, `CLAUDE.md`, and `package.json`, then summarize the project co
     },
     {
       command: '/memory',
-      output: '找到 CLAUDE.md 文件：\n\n1. ~/.claude/CLAUDE.md（用户全局）\n   → 包含：首选语言，编码风格\n\n2. ./CLAUDE.md（项目根目录）\n   → 包含：项目约定，测试命令\n\n正在打开 ./CLAUDE.md 编辑器...\n\n提示：CLAUDE.md 文件跨会话持久化指令。\n全局文件适用于任何地方。项目文件是仓库特定的。',
+      output: '找到 PAI.md 文件：\n\n1. ~/.paicli/PAI.md（用户全局）\n   → 包含：首选语言，编码风格\n\n2. ./PAI.md（项目根目录）\n   → 包含：项目约定，测试命令\n\n正在打开 ./PAI.md 编辑器...\n\n提示：PAI.md 文件跨会话持久化指令。\n全局文件适用于任何地方。项目文件是仓库特定的。',
       desc: '/memory 命令让你编辑持久化指令。看看它做什么。',
       nextLabel: '下一步：尝试 /code-review →'
     },
     {
       command: '/code-review',
-      output: '审查当前差异（努力级别：中等）...\n\n更改的文件：3\n  M  src/utils/format.ts        (+28, -2)\n  M  src/components/Header.tsx  (+12, -4)\n  M  src/hooks/useAuth.ts        (+9, -3)\n\n发现（高置信度）：\n  src/utils/format.ts:15\n    → 缺少输入验证。formatDate(undefined) 抛出 TypeError。\n  src/hooks/useAuth.ts:28\n    → Promise 拒绝被吞没。.catch(() => null) 隐藏了 401/403。\n\n发现（较低置信度）：\n  src/components/Header.tsx:45\n    → useCallback 依赖数组中缺少 'title'。\n\n3 个发现，涉及 3 个文件。未修改文件。\n提示：传入 --comment 可将这些发布到当前 GitHub PR，\n    或 --fix 以应用修复。v2.1.147 由 /simplify 重命名而来。',
+      output: '审查当前差异（努力级别：中等）...\n\n更改的文件：3\n  M  src/utils/format.ts        (+28, -2)\n  M  src/components/Header.tsx  (+12, -4)\n  M  src/hooks/useAuth.ts        (+9, -3)\n\n发现（高置信度）：\n  src/utils/format.ts:15\n    → 缺少输入验证。formatDate(undefined) 抛出 TypeError。\n  src/hooks/useAuth.ts:28\n    → Promise 拒绝被吞没。.catch(() => null) 隐藏了 401/403。\n\n发现（较低置信度）：\n  src/components/Header.tsx:45\n    → useCallback 依赖数组中缺少 title 字段。\n\n3 个发现，涉及 3 个文件。未修改文件。\n提示：传入 --comment 可将这些发布到当前 GitHub PR，\n    或 --fix 以应用修复。v2.1.147 由 /simplify 重命名而来。',
       desc: 'v2.1.146 新增内置技能。审查差异的正确性错误并报告发现，无需编辑文件。传入努力级别（low/medium/high/xhigh/max/ultra）或 --comment 以发布内联 PR 评论。',
       nextLabel: '完成'
     }
@@ -1701,21 +1760,21 @@ Read `README.md`, `CLAUDE.md`, and `package.json`, then summarize the project co
 // ===== Free Type Terminal =====
 (function() {
   const responses = {
-    '/help': '可用斜杠命令：\n  /help          显示此帮助信息\n  /compact       压缩对话历史\n  /clear         开始新对话\n  /memory        编辑 CLAUDE.md 记忆文件\n  /review        审查代码更改\n  /code-review   审查当前差异的正确性错误（技能，原 /simplify）\n  /security-review 安全重点审查\n  /init          初始化项目 CLAUDE.md\n  /cost          显示 token 使用量\n  /doctor        检查 Claude Code 健康状况\n  /login         切换账户\n  /status        显示当前 git 状态\n  /cd            将会话移至新工作目录（保留提示缓存）\n  /model         切换 Claude 模型\n  /permissions   查看/管理工具权限\n  /config        编辑设置\n  /diff          显示未提交更改\n  /context       显示上下文窗口使用量\n  /branch        分叉对话到并行分支\n  /rewind        回滚到上一条消息\n  /resume        恢复已保存的会话\n  /rename        重命名当前会话\n  /export        导出会话到文件\n  /effort        设置推理深度（low/medium/high/xhigh/max/ultracode）\n  /plan          进入规划模式\n  /btw           提问辅助问题（不加入历史）\n  /batch         跨并行代理拆分工作\n  /loop          按循环间隔运行任务\n  /schedule      创建云备份定时任务\n  /debug         切换详细模式\n  /context       显示上下文窗口使用量\n  /status        显示版本、模型和账户信息\n  /cost          显示会话费用、时长、代码更改和 token 使用量',
+    '/help': '可用斜杠命令：\n  /help          显示此帮助信息\n  /compact       压缩对话历史\n  /clear         开始新对话\n  /memory        编辑 PAI.md 记忆文件\n  /review        审查代码更改\n  /code-review   审查当前差异的正确性错误（技能，原 /simplify）\n  /security-review 安全重点审查\n  /init          初始化项目 PAI.md\n  /cost          显示 token 使用量\n  /doctor        检查 ForgePilot 健康状况\n  /login         切换账户\n  /status        显示当前 git 状态\n  /cd            将会话移至新工作目录（保留提示缓存）\n  /model         切换 ForgePilot 模型\n  /permissions   查看/管理工具权限\n  /config        编辑设置\n  /diff          显示未提交更改\n  /context       显示上下文窗口使用量\n  /branch        分叉对话到并行分支\n  /rewind        回滚到上一条消息\n  /resume        恢复已保存的会话\n  /rename        重命名当前会话\n  /export        导出会话到文件\n  /effort        设置推理深度（low/medium/high/xhigh/max/ultracode）\n  /plan          进入规划模式\n  /btw           提问辅助问题（不加入历史）\n  /batch         跨并行代理拆分工作\n  /loop          按循环间隔运行任务\n  /schedule      创建云备份定时任务\n  /debug         切换详细模式\n  /context       显示上下文窗口使用量\n  /status        显示版本、模型和账户信息\n  /cost          显示会话费用、时长、代码更改和 token 使用量',
     '/compact': '对话已压缩。\n之前上下文：15,234 tokens → 2,841 tokens（减少 81%）\n保留的摘要：\n- 正在处理当前项目\n- 保留了最近的文件编辑\n- 测试结果已延续',
-    '/clear': '开始新对话。\n所有上下文已清除。CLAUDE.md 指令仍然有效。',
-    '/context': '上下文窗口使用量：\n\n  ████████████████████░░░░░░░░░░  67%\n\n  输入 tokens：   134,521 / 200,000\n  缓存：          42,800（32%）\n  CLAUDE.md：      1,240\n  对话：          90,481\n\n  提示：使用 /compact 在超过 80% 时释放空间。',
-    '/model': '当前模型：claude-sonnet-4-6（200k 上下文）\n\n可用模型：\n  ● claude-sonnet-4-6     200k 上下文（当前）\n  ● claude-opus-4-6       1M 上下文\n  ● claude-haiku-4-5      200k 上下文\n\n切换：/model <名称>\n快捷方式：/model opus, /model sonnet, /model haiku',
+    '/clear': '开始新对话。\n所有上下文已清除。PAI.md 指令仍然有效。',
+    '/context': '上下文窗口使用量：\n\n  ████████████████████░░░░░░░░░░  67%\n\n  输入 tokens：   134,521 / 200,000\n  缓存：          42,800（32%）\n  PAI.md：      1,240\n  对话：          90,481\n\n  提示：使用 /compact 在超过 80% 时释放空间。',
+    '/model': '当前模型：deepseek-flash（200k 上下文）\n\n可用模型：\n  ● deepseek-flash     200k 上下文（当前）\n  ● glm-5.3-flash       1M 上下文\n  ● step-1      200k 上下文\n\n切换：/model <名称>\n快捷方式：/model deepseek-flash, /model deepseek-flash, /model step-1',
     '/effort': '推理努力级别：high\n\n可用级别：\n  low      — 快速响应，最小推理\n  medium   — 平衡（默认）\n  high     — 深入分析，彻底推理\n  xhigh    — 超深度推理\n  max      — 最大深度，扩展思考（仅会话）\n  ultracode — xhigh 努力 + 自动工作流编排（v2.1.154+）',
     '/cost': '会话 token 使用量：\n  输入：   42,156 tokens\n  输出：   18,934 tokens\n  缓存：   12,340 tokens（读取），8,200 tokens（写入）\n  总计：  ~$0.23',
-    '/doctor': 'Claude Code 健康检查\n\n✓ 认证：有效\n✓ 模型访问：claude-sonnet-4-20250514\n✓ Node.js：v22.12.0\n✓ Git：v2.43.0\n✓ npm：v10.9.0\n✓ 工作目录：干净\n\n所有检查通过！',
-    '/status': 'Claude Code v2.1.87\n\n模型：   claude-sonnet-4-6（200k 上下文）\n账户：   user@example.com（Pro）\n努力：   medium\n会话：   auth-refactor（12 条消息）\n\n项目：~/my-project\n分支：  feature/terminal-simulator',
+    '/doctor': 'ForgePilot 健康检查\n\n✓ 认证：有效\n✓ 模型访问：deepseek-flash\n✓ Node.js：v22.12.0\n✓ Git：v2.43.0\n✓ npm：v10.9.0\n✓ 工作目录：干净\n\n所有检查通过！',
+    '/status': 'ForgePilot v2.1.87\n\n模型：   deepseek-flash（200k 上下文）\n账户：   user@example.com（Pro）\n努力：   medium\n会话：   auth-refactor（12 条消息）\n\n项目：~/my-project\n分支：  feature/terminal-simulator',
     '/rename': '会话已重命名。\n\n  之前：session-2026-03-28-1430\n  现在：auth-refactor\n\n稍后用以下命令恢复：/resume auth-refactor',
     '/resume': '已保存的会话：\n\n  1. auth-refactor      （2 小时前）    12 条消息\n  2. fix-payment-bug     （昨天）       8 条消息\n  3. database-migration   （3 天前）     24 条消息\n\n恢复：/resume <名称或编号>',
-    '/rewind': '对话历史：\n\n  1. [你] 修复登录表单验证\n  2. [Claude] 我将更新验证逻辑...\n  3. [你] 还要添加限流\n  4. [Claude] 添加限流中间件...\n  ► 5. [你] 实际上，撤销限流\n\n回滚到消息 3。消息 4-5 的更改已被撤销。\n之后的文件更改也被还原。',
+    '/rewind': '对话历史：\n\n  1. [你] 修复登录表单验证\n  2. [ForgePilot] 我将更新验证逻辑...\n  3. [你] 还要添加限流\n  4. [ForgePilot] 添加限流中间件...\n  ► 5. [你] 实际上，撤销限流\n\n回滚到消息 3。消息 4-5 的更改已被撤销。\n之后的文件更改也被还原。',
     '/branch': '对话已分叉。\n\n  main ──● 当前消息\n         ├── branch-1（此分支）\n         └── original（继续独立发展）\n\n你现在在 branch-1 中。两个分支共享到此点的历史。\n使用 /resume 在分支之间切换。',
     '/export': '会话已导出。\n\n  文件：./session-export-2026-03-28.md\n  消息：18\n  大小：12.4 KB\n\n  包含：对话历史，文件更改和工具调用。',
-    '/code-review': '审查当前差异（努力级别：中等）...\n\n更改的文件：3\n  M  src/utils/format.ts        (+28, -2)\n  M  src/components/Header.tsx  (+12, -4)\n  M  src/hooks/useAuth.ts        (+9, -3)\n\n发现（高置信度）：\n  src/utils/format.ts:15\n    → 缺少输入验证。formatDate(undefined) 抛出 TypeError。\n  src/hooks/useAuth.ts:28\n    → Promise 拒绝被吞没。.catch(() => null) 隐藏了 401/403。\n\n发现（较低置信度）：\n  src/components/Header.tsx:45\n    → useCallback 依赖数组中缺少 'title'。\n\n3 个发现，涉及 3 个文件。未修改文件。\n提示：传入 --comment 可将这些发布到当前 GitHub PR，或 --fix 以应用修复。'
+    '/code-review': '审查当前差异（努力级别：中等）...\n\n更改的文件：3\n  M  src/utils/format.ts        (+28, -2)\n  M  src/components/Header.tsx  (+12, -4)\n  M  src/hooks/useAuth.ts        (+9, -3)\n\n发现（高置信度）：\n  src/utils/format.ts:15\n    → 缺少输入验证。formatDate(undefined) 抛出 TypeError。\n  src/hooks/useAuth.ts:28\n    → Promise 拒绝被吞没。.catch(() => null) 隐藏了 401/403。\n\n发现（较低置信度）：\n  src/components/Header.tsx:45\n    → useCallback 依赖数组中缺少 title 字段。\n\n3 个发现，涉及 3 个文件。未修改文件。\n提示：传入 --comment 可将这些发布到当前 GitHub PR，或 --fix 以应用修复。'
   };
 
   const input = document.getElementById('freeTypeInput');
@@ -1742,7 +1801,7 @@ Read `README.md`, `CLAUDE.md`, and `package.json`, then summarize the project co
 (function() {
   const questions = [
     {
-      text: '当你在 Claude Code 中运行 /compact 时会发生什么？',
+      text: '当你在 ForgePilot 中运行 /compact 时会发生什么？',
       options: [
         { text: '它会永久删除对话历史', correct: false, explanation: '/compact 压缩对话以节省上下文空间，但不会删除历史。使用 /clear 开始新对话。' },
         { text: '它会压缩当前上下文，并可选指令专注于特定区域', correct: true, explanation: '/compact 减小对话上下文的大小。你可以传入聚焦指令如 \'/compact focus on the auth module\' 来保留最重要的内容。' },
@@ -1753,7 +1812,7 @@ Read `README.md`, `CLAUDE.md`, and `package.json`, then summarize the project co
     {
       text: '/branch 命令的目的是什么？',
       options: [
-        { text: '它为你的代码更改创建新的 git 分支', correct: false, explanation: '/branch 创建并行对话分支，而非 git 分支。对于 git 操作，使用 Claude 直接运行 git 命令或将其配置为技能。' },
+        { text: '它为你的代码更改创建新的 git 分支', correct: false, explanation: '/branch 创建并行对话分支，而非 git 分支。对于 git 操作，使用 ForgePilot 直接运行 git 命令或将其配置为技能。' },
         { text: '它显示当前 git 分支名称', correct: false, explanation: '要查看 git 分支，运行 bash 命令。/branch 从会话当前点创建并行对话分叉。' },
         { text: '它从当前点创建并行对话，以便你可以并排探索两种方案', correct: true, explanation: '/branch（原 /fork）让你拆分对话，探索不同解决方案而不丢失任一方向。两个分支从同一起点继续。' },
         { text: '它将两个对话合并在一起', correct: false, explanation: '/branch 创建新的并行对话。没有内置命令可以合并对话 — /rewind 用于回到更早的状态。' }
@@ -1763,8 +1822,8 @@ Read `README.md`, `CLAUDE.md`, and `package.json`, then summarize the project co
       text: '/context 显示什么，何时应该检查它？',
       options: [
         { text: '它显示你的 git 上下文（分支、暂存文件、最近提交）', correct: false, explanation: '/context 显示你的上下文窗口使用量，而非 git 上下文。要获取 git 信息，使用 /status 或直接运行 git 命令。' },
-        { text: '它显示你的上下文窗口使用情况的可视化网格 — 当响应开始丢失早期上下文时检查它', correct: true, explanation: '/context 显示可视化网格，显示上下文窗口的使用量（绿色/黄色/红色）。当 Claude 似乎忘记早期指令或你已工作一段时间时检查它。超过 80% 时使用 /compact 释放空间。' },
-        { text: '它显示哪些 CLAUDE.md 文件已加载到当前会话', correct: false, explanation: '/context 显示整体上下文窗口使用量的可视化网格，而非加载的文件列表。它帮助你决定何时运行 /compact。' },
+        { text: '它显示你的上下文窗口使用情况的可视化网格 — 当响应开始丢失早期上下文时检查它', correct: true, explanation: '/context 显示可视化网格，显示上下文窗口的使用量（绿色/黄色/红色）。当 ForgePilot 似乎忘记早期指令或你已工作一段时间时检查它。超过 80% 时使用 /compact 释放空间。' },
+        { text: '它显示哪些 PAI.md 文件已加载到当前会话', correct: false, explanation: '/context 显示整体上下文窗口使用量的可视化网格，而非加载的文件列表。它帮助你决定何时运行 /compact。' },
         { text: '它显示当前项目目录和环境设置', correct: false, explanation: '/context 是关于上下文窗口使用量的，而非项目设置。使用 /status 获取版本和账户信息，或使用 /config 获取设置。' }
       ]
     },
@@ -1780,14 +1839,14 @@ Read `README.md`, `CLAUDE.md`, and `package.json`, then summarize the project co
     {
       text: '/doctor 检查什么，何时使用它？',
       options: [
-        { text: '它检查你的代码是否有错误 — 在提交前使用', correct: false, explanation: '/doctor 检查 Claude Code 的安装健康状况，而非你的代码。代码审查使用 /review 或 /simplify。' },
-        { text: '它检查 Claude Code 的安装健康状况（认证、Node.js、git）— 当出现问题时使用', correct: true, explanation: '/doctor 验证认证、模型访问、Node.js 版本、git 安装和其他依赖。当 Claude Code 行为异常或升级后运行它。' },
-        { text: '它对项目依赖运行安全审计', correct: false, explanation: '/doctor 检查 Claude Code 自身的安装健康状况，而非项目安全。它验证认证、模型访问和系统依赖。' },
-        { text: '它显示上次会话的诊断日志 — 用于调试错误', correct: false, explanation: '调试日志使用 /debug 或 Ctrl+O 启用详细模式。/doctor 是 Claude Code 安装的快速健康检查 — 认证、版本和依赖。' }
+        { text: '它检查你的代码是否有错误 — 在提交前使用', correct: false, explanation: '/doctor 检查 ForgePilot 的安装健康状况，而非你的代码。代码审查使用 /review 或 /simplify。' },
+        { text: '它检查 ForgePilot 的安装健康状况（认证、Node.js、git）— 当出现问题时使用', correct: true, explanation: '/doctor 验证认证、模型访问、Node.js 版本、git 安装和其他依赖。当 ForgePilot 行为异常或升级后运行它。' },
+        { text: '它对项目依赖运行安全审计', correct: false, explanation: '/doctor 检查 ForgePilot 自身的安装健康状况，而非项目安全。它验证认证、模型访问和系统依赖。' },
+        { text: '它显示上次会话的诊断日志 — 用于调试错误', correct: false, explanation: '调试日志使用 /debug 或 Ctrl+O 启用详细模式。/doctor 是 ForgePilot 安装的快速健康检查 — 认证、版本和依赖。' }
       ]
     },
     {
-      text: '你读到一份较旧的 Claude Code 指南提到 /extra-usage，但当前文档使用 /usage-credits。发生了什么变化，今天你应该输入哪个？',
+      text: '你读到一份较旧的 ForgePilot 指南提到 /extra-usage，但当前文档使用 /usage-credits。发生了什么变化，今天你应该输入哪个？',
       options: [
         { text: '/extra-usage 在 v2.1.144 重命名为 /usage-credits；两者仍然有效，但 /usage-credits 是当前名称', correct: true, explanation: 'v2.1.144 将 "extra usage" 重命名为 "usage credits"，斜杠命令也从 /extra-usage 改为 /usage-credits。旧的 /extra-usage 名称仍然作为别名有效，但新文档、快速模式错误消息和选择器都使用 credits 措辞。' },
         { text: '/usage-credits 和 /extra-usage 是不同的命令 — credits 管理计费，extra-usage 管理超额限制', correct: false, explanation: '它们是同一个命令。v2.1.144 将 /extra-usage 重命名为 /usage-credits 作为 CLI 中一致的 "usage credits" 措辞的一部分。旧名称只是一个别名。' },
@@ -1796,12 +1855,12 @@ Read `README.md`, `CLAUDE.md`, and `package.json`, then summarize the project co
       ]
     },
     {
-      text: '你完成了重构，想要 Claude 在推送前标记任何正确性错误。哪个命令最合适，--comment 标志做什么？',
+      text: '你完成了重构，想要 ForgePilot 在推送前标记任何正确性错误。哪个命令最合适，--comment 标志做什么？',
       options: [
         { text: '/code-review — 默认以仅报告模式审查当前差异（使用 --fix 应用更改）；--comment 将发现作为内联评论发布到当前 GitHub PR', correct: true, explanation: '/code-review 是一个内置技能（v2.1.147 从 /simplify 重命名为 /code-review）。它审查差异并报告发现而不编辑文件 — /code-review --fix 是将发现应用到工作树的变体。--comment 标志将这些发现作为内联评论发布到当前 GitHub PR。你还可以传入努力级别如 `/code-review high` 获得更广泛的覆盖，`/code-review low` 获得更少但置信度更高的发现，或 `/code-review ultra` 进行云端更深度的多代理审查。自 v2.1.154 起，/simplify 运行单独的仅清理审查，应用修复而不寻找错误 — 它不再是 /code-review 的简单别名；要查找错误并应用修复，使用 /code-review --fix。' },
         { text: '/security-review — 运行深度安全审计；--comment 跳过审计直接评论', correct: false, explanation: '/security-review 是用于安全重点审查的，而非一般正确性错误。没有 `--comment skip-the-audit` 的行为。使用 /code-review 进行正确性错误审查，使用 /security-review 关注安全漏洞。' },
         { text: '/diff — 显示更改的行；--comment 打开编辑器让你自己写审查', correct: false, explanation: '/diff 打开未提交更改的交互式查看器 — 它不运行审查也不接受 --comment 标志。/code-review 是审查差异的内置技能，支持 --comment 将发现发布到 GitHub PR。' },
-        { text: '/review --comment — Claude 重写代码，在发现问题的地方加上内联 TODO 注释', correct: false, explanation: '/review 和 /code-review 不编辑你的文件。/code-review 以响应形式（或使用 --comment 作为 PR 评论）报告发现；它从不重写代码。如果你想要应用修复，在审查发现后要求 Claude 处理它们。' }
+        { text: '/review --comment — ForgePilot 重写代码，在发现问题的地方加上内联 TODO 注释', correct: false, explanation: '/review 和 /code-review 不编辑你的文件。/code-review 以响应形式（或使用 --comment 作为 PR 评论）报告发现；它从不重写代码。如果你想要应用修复，在审查发现后要求 ForgePilot 处理它们。' }
       ]
     }
   ];
@@ -1819,7 +1878,7 @@ Read `README.md`, `CLAUDE.md`, and `package.json`, then summarize the project co
     counter.textContent = '第 ' + (currentQ + 1) + ' 题，共 ' + questions.length + ' 题';
     const pct = Math.round((currentQ / questions.length) * 100);
     percent.textContent = pct + '%';
-    bar.style.width = pct + '%';
+    bar.style.transform = 'scaleX(' + (pct / 100) + ')';
     question.textContent = q.text;
     options.innerHTML = '';
     result.innerHTML = '';

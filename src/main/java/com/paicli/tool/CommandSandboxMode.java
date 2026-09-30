@@ -3,7 +3,7 @@ package com.paicli.tool;
 import java.util.Locale;
 
 /**
- * 交互式 PaiCLI 的 {@code execute_command} 沙箱模式。
+ * 交互式 ForgePilot 的 {@code execute_command} 沙箱模式。
  *
  * <ul>
  *   <li>{@link #OFF}（默认）：与之前完全一致，命令直接在宿主执行；</li>

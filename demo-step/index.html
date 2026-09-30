@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>斜杠命令 — PaiCLI 学习中心</title>
+  <title>斜杠命令 — ForgePilot 学习中心</title>
   <style>
     :root {
       --bg-primary: #0a0a0f;
@@ -12,14 +12,14 @@
       --text-primary: #e4e4e7;
       --text-secondary: #a1a1aa;
       --text-muted: #71717a;
-      --accent: #6366f1;
-      --accent-hover: #818cf8;
+      --accent: #2f6bff;
+      --accent-hover: #6c8fff;
       --border: #27272a;
       --border-hover: #3f3f46;
       --code-bg: #0d0d14;
       --success: #22c55e;
-      --warning: #f59e0b;
-      --info: #3b82f6;
+      --warning: #f2b84b;
+      --info: #82a8ff;
     }
 
     * {
@@ -47,6 +47,13 @@
 
     a:hover {
       color: var(--accent-hover);
+    }
+
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible {
+      outline: 2px solid var(--accent-hover);
+      outline-offset: 3px;
     }
 
     /* Header */
@@ -611,6 +618,12 @@
       outline: none;
     }
 
+    .terminal-input:focus-visible {
+      outline: 2px solid var(--accent-hover);
+      outline-offset: 2px;
+      border-radius: 3px;
+    }
+
     .run-btn {
       margin-top: 12px;
       width: 100%;
@@ -661,7 +674,9 @@
       height: 100%;
       background: var(--accent);
       border-radius: 2px;
-      transition: width 0.3s;
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition: transform 0.3s;
     }
 
     .quiz-question {
@@ -843,6 +858,10 @@
     }
 
     @media (max-width: 860px) {
+      .mobile-nav-toggle {
+        display: inline-flex;
+      }
+
       .sidebar {
         display: none;
       }
@@ -854,6 +873,51 @@
       .header-left .nav-links {
         display: none;
       }
+
+      .mobile-nav {
+        display: none;
+        border-top: 1px solid var(--border);
+        background: var(--bg-secondary);
+        padding: 12px 24px 16px;
+      }
+
+      .mobile-nav.open {
+        display: grid;
+        gap: 8px;
+      }
+
+      .mobile-nav a {
+        display: block;
+        padding: 10px 12px;
+        border-radius: 6px;
+        color: var(--text-secondary);
+      }
+
+      .mobile-nav a:hover {
+        color: var(--text-primary);
+        background: var(--bg-tertiary);
+      }
+    }
+
+    .mobile-nav-toggle {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: transparent;
+      color: var(--text-secondary);
+      padding: 7px 10px;
+      cursor: pointer;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
     }
   </style>
 </head>
@@ -863,7 +927,7 @@
   <header class="site-header">
     <div class="header-inner">
       <div class="header-left">
-        <a href="#" class="logo">PaiCLI <span>.nagdy.me</span></a>
+        <a href="#" class="logo">ForgePilot</a>
         <nav class="nav-links">
           <a href="#">学习中心</a>
           <a href="#">实验场</a>
@@ -884,9 +948,16 @@
         <button class="theme-toggle" onclick="toggleTheme()" title="切换深色模式">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m4.93 19.07 1.41-1.41"></path><path d="m17.66 6.34 1.41-1.41"></path></svg>
         </button>
+        <button class="mobile-nav-toggle" id="mobileNavToggle" type="button" aria-expanded="false" aria-controls="mobileNav">菜单</button>
       </div>
     </div>
   </header>
+  <nav class="mobile-nav" id="mobileNav" aria-label="移动端导航">
+    <a href="#main-content">学习中心</a>
+    <a href="#discovering-commands">发现命令</a>
+    <a href="#command-categories">命令分类</a>
+    <a href="#footer">资源与更新</a>
+  </nav>
 
   <div class="layout">
     <!-- Left Sidebar -->
@@ -900,7 +971,7 @@
       <ul class="module-list">
         <li><a href="#"><span class="module-num">0</span> 入门指南</a></li>
         <li><a href="#" class="active"><span class="module-num">1</span> 斜杠命令</a></li>
-        <li><a href="#"><span class="module-num">2</span> 记忆与 CLAUDE.md</a></li>
+        <li><a href="#"><span class="module-num">2</span> 记忆与 PAI.md</a></li>
         <li><a href="#"><span class="module-num">3</span> 项目配置</a></li>
         <li><a href="#"><span class="module-num">4</span> 命令详解</a></li>
         <li><a href="#"><span class="module-num">5</span> 技能</a></li>
@@ -914,7 +985,7 @@
     </aside>
 
     <!-- Main Content -->
-    <main class="main">
+    <main class="main" id="main-content">
       <div class="main-content">
         <div class="content-wrapper">
           <!-- Breadcrumb -->
@@ -933,7 +1004,7 @@
               <h1>斜杠命令</h1>
             </div>
             <p class="hero-description">
-              学习使用 PaiCLI 内置的斜杠命令，高效管理上下文、控制会话行为与调整配置。
+              学习使用 ForgePilot 内置的斜杠命令，高效管理上下文、控制会话行为与调整配置。
             </p>
             <div class="meta-tags">
               <span class="tag beginner">入门级</span>
@@ -945,30 +1016,30 @@
           <div class="content">
             <div class="section">
               <p>
-                斜杠命令是在交互式会话中控制 PaiCLI 行为的最快方式。在任意提示符处输入 <code>/</code> 即可查看完整列表，或输入几个字母进行过滤。本模块涵盖了你每天都会用到的内置命令。
+                斜杠命令是在交互式会话中控制 ForgePilot 行为的最快方式。在任意提示符处输入 <code>/</code> 即可查看完整列表，或输入几个字母进行过滤。本模块涵盖了你每天都会用到的内置命令。
               </p>
 
-              <h2>发现命令</h2>
+              <h2 id="discovering-commands">发现命令</h2>
               <p>
                 在提示符处输入 <code>/</code>，会弹出一个包含所有可用命令的菜单。继续输入即可过滤 —— 例如 <code>/co</code> 会筛选出 <code>/compact</code>、<code>/color</code>、<code>/config</code>、<code>/context</code>、<code>/cost</code>、<code>/copy</code>。使用方向键导航，回车确认。对于当前环境不适用的命令会自动隐藏，只显示可用的选项。
               </p>
               <p>
-                如果你是 PaiCLI 的新手，可以试试 <code>/powerup</code> —— 它会运行交互式教程，通过动画演示带你快速掌握核心功能。
+                如果你是 ForgePilot 的新手，可以试试 <code>/powerup</code> —— 它会运行交互式教程，通过动画演示带你快速掌握核心功能。
               </p>
               <p>
-                部分命令可以直接接收参数：<code>/compact focus on the API layer</code>、<code>/model opus</code>、<code>/effort high</code>、<code>/rename auth-refactor</code>。而 <code>/context</code>、<code>/cost</code> 和 <code>/status</code> 这类命令则无需参数，直接运行即可。
+                部分命令可以直接接收参数：<code>/compact focus on the API layer</code>、<code>/model deepseek-flash</code>、<code>/mode plan</code>、<code>/hitl on</code>。而 <code>/context</code>、<code>/memory</code> 和 <code>/status</code> 这类命令则无需参数，直接运行即可。
               </p>
 
               <div class="code-block">
                 <pre>/compact focus on the payment service</pre>
               </div>
 
-              <h2>命令分类</h2>
+              <h2 id="command-categories">命令分类</h2>
               <p>
                 内置命令按功能划分为几个类别。了解这些分类，有助于你在不刻意记忆所有命令的情况下，快速找到所需功能。
               </p>
 
-              <p><strong>上下文管理</strong> 控制 PaiCLI 在对话中可查看的内容范围。</p>
+              <p><strong>上下文管理</strong> 控制 ForgePilot 在对话中可查看的内容范围。</p>
               <ul>
                 <li><code>/context</code> — 以可视化网格展示当前上下文使用情况</li>
                 <li><code>/compact</code> — 压缩对话历史。可传入指令控制保留内容：<code>/compact keep the migration plan, drop the debugging</code></li>
@@ -985,13 +1056,13 @@
                 <li><code>/recap</code> — 生成会话的单行摘要。当你离开终端一段时间后返回时，也会自动运行。</li>
               </ul>
 
-              <p><strong>配置</strong> 在会话中调整 PaiCLI 的行为。</p>
+              <p><strong>配置</strong> 在会话中调整 ForgePilot 的行为。</p>
               <ul>
-                <li><code>/model</code> — 在可用模型间切换，如 Sonnet、Opus、Haiku，或别名如 <code>best</code>、<code>opusplan</code></li>
+                <li><code>/model</code> — 在可用模型间切换，如 <code>deepseek-flash</code>、<code>glm-5.3-flash</code> 和 <code>step-1</code></li>
                 <li><code>/effort</code> — 设置推理深度：<code>low</code>、<code>medium</code>、<code>high</code>、<code>xhigh</code>、<code>max</code>（仅当前会话）或 <code>auto</code></li>
-                <li><code>/permissions</code> — 管理 PaiCLI 无需询问即可执行的操作</li>
+                <li><code>/permissions</code> — 管理 ForgePilot 无需询问即可执行的操作</li>
                 <li><code>/config</code> — 打开设置菜单</li>
-                <li><code>/theme</code>（v2.1.118 新增）— 创建并切换自定义主题。主题以 JSON 文件形式存储在 <code>~/.pai/themes/</code> 下，也可直接手动编辑。</li>
+                <li><code>/theme</code> — 创建并切换自定义主题。主题以 JSON 文件形式存储在 <code>~/.paicli/themes/</code> 下，也可直接手动编辑。</li>
                 <li><code>/tui</code> — 在经典模式和无闪烁全屏渲染之间切换</li>
                 <li><code>/focus</code> — 切换专注视图，实现无干扰输入</li>
                 <li><code>/less-permission-prompts</code> — 扫描最近的会话记录，针对常见的只读 Bash 和 MCP 工具调用提出允许列表建议，减少后续权限询问</li>
@@ -1003,7 +1074,7 @@
                 <li><code>/usage-credits</code>（v2.1.144 新增）— 查看和管理账户使用额度。原名 <code>/extra-usage</code>，旧名称仍可用。</li>
                 <li><code>/status</code> — 显示版本、模型和账户信息</li>
                 <li><code>/doctor</code> — 检查安装健康状况</li>
-                <li><code>/diff</code> — 打开交互式查看器查看未提交的更改，提交前预览 PaiCLI 的改动很有用</li>
+                <li><code>/diff</code> — 打开交互式查看器查看未提交的更改，提交前预览 ForgePilot 的改动很有用</li>
               </ul>
 
               <p><strong>发布前审查</strong> 在代码离开你的分支之前检查工作质量。</p>
@@ -1024,7 +1095,7 @@
 
 /compact keep the auth refactor plan
 
-/model opus
+/model deepseek-flash
 
 /effort high
 
@@ -1048,7 +1119,7 @@
               </a>
               <a href="#" class="nav-card next">
                 <div class="nav-label">下一篇 →</div>
-                <div class="nav-title">记忆与 CLAUDE.md</div>
+                <div class="nav-title">记忆与 PAI.md</div>
               </a>
             </nav>
           </div>
@@ -1058,7 +1129,7 @@
       <!-- Right Sidebar -->
       <aside class="right-sidebar">
         <!-- Guided Tutorial -->
-        <div class="widget">
+          <div class="widget" id="quiz">
           <h3>引导教程</h3>
           <div class="terminal">
             <div class="terminal-header">
@@ -1067,7 +1138,7 @@
                 <div class="terminal-dot"></div>
                 <div class="terminal-dot"></div>
               </div>
-              <span>PaiCLI — 引导教程</span>
+              <span>ForgePilot — 引导教程</span>
             </div>
             <div class="terminal-body" id="guidedOutput">
               <div>让我们先探索可用命令。点击 Run 查看 /help 输出。</div>
@@ -1077,7 +1148,7 @@
         </div>
 
         <!-- Try It Yourself -->
-        <div class="widget">
+        <div class="widget" id="templates">
           <h3>亲自尝试</h3>
           <div class="terminal">
             <div class="terminal-header">
@@ -1086,10 +1157,10 @@
                 <div class="terminal-dot"></div>
                 <div class="terminal-dot"></div>
               </div>
-              <span>PaiCLI — 自由输入</span>
+              <span>ForgePilot — 自由输入</span>
             </div>
             <div class="terminal-body">
-              <div>欢迎使用 PaiCLI！输入命令或 /help 开始。</div>
+              <div>欢迎使用 ForgePilot！输入命令或 /help 开始。</div>
               <div class="terminal-input-line">
                 <span class="terminal-prompt">❯</span>
                 <input type="text" class="terminal-input" id="freeInput" placeholder="输入命令..." autocomplete="off">
@@ -1107,9 +1178,9 @@
               <span class="quiz-progress-text" id="quizPercent">0%</span>
             </div>
             <div class="quiz-progress-bar">
-              <div class="quiz-progress-fill" id="quizFill" style="width: 0%"></div>
+              <div class="quiz-progress-fill" id="quizFill"></div>
             </div>
-            <div class="quiz-question" id="quizQuestion">在 PaiCLI 中运行 /compact 会发生什么？</div>
+            <div class="quiz-question" id="quizQuestion">在 ForgePilot 中运行 /compact 会发生什么？</div>
             <div class="quiz-options" id="quizOptions">
               <label class="quiz-option">
                 <input type="radio" name="quiz" value="0">
@@ -1137,9 +1208,9 @@
 
           <div class="template-card">
             <div class="template-title">聚焦与检查工作流</div>
-            <div class="template-desc">在开始实现之前，引导 PaiCLI 熟悉仓库的一组斜杠命令序列。</div>
+            <div class="template-desc">在开始实现之前，引导 ForgePilot 熟悉仓库的一组斜杠命令序列。</div>
             <div class="template-code">/context
-Read `README.md`, `CLAUDE.md`, and `package.json`, then summarize the project conventions before making changes.</div>
+Read `README.md`, `PAI.md`, and `package.json`, then summarize the project conventions before making changes.</div>
             <div class="template-actions">
               <button class="template-btn" onclick="copyTemplate(this)">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>
@@ -1191,11 +1262,11 @@ Read `README.md`, `CLAUDE.md`, and `package.json`, then summarize the project co
   </div>
 
   <!-- Footer -->
-  <footer class="site-footer">
+  <footer class="site-footer" id="footer">
     <div class="footer-inner">
       <div class="footer-brand">
-        <div class="footer-logo">PaiCLI</div>
-        <p class="footer-desc">An interactive learning platform for Claude Code.</p>
+        <div class="footer-logo">ForgePilot</div>
+        <p class="footer-desc">ForgePilot 的互动学习平台，帮助你掌握终端工程 Agent 工作流。</p>
       </div>
       <div class="footer-links">
         <div class="footer-col">
@@ -1225,8 +1296,8 @@ Read `README.md`, `CLAUDE.md`, and `package.json`, then summarize the project co
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 PaiCLI · v1.0.0</span>
-      <span>基于 claude.nagdy.me 灵感构建</span>
+      <span>© 2026 ForgePilot · v1.0.0</span>
+      <span>ForgePilot · 面向终端工程 Agent 构建</span>
     </div>
   </footer>
 
@@ -1295,7 +1366,7 @@ Read `README.md`, `CLAUDE.md`, and `package.json`, then summarize the project co
         quizOptions.forEach(o => o.style.color = 'var(--text-secondary)');
         opt.style.borderColor = 'var(--accent)';
         opt.style.color = 'var(--text-primary)';
-        document.getElementById('quizFill').style.width = '100%';
+        document.getElementById('quizFill').style.transform = 'scaleX(1)';
         document.getElementById('quizPercent').textContent = '100%';
       });
     });
@@ -1316,6 +1387,13 @@ Read `README.md`, `CLAUDE.md`, and `package.json`, then summarize the project co
     function toggleTheme() {
       alert('深色模式切换功能演示');
     }
+
+    const mobileNavToggle = document.getElementById('mobileNavToggle');
+    const mobileNav = document.getElementById('mobileNav');
+    mobileNavToggle?.addEventListener('click', () => {
+      const open = mobileNav.classList.toggle('open');
+      mobileNavToggle.setAttribute('aria-expanded', String(open));
+    });
   </script>
 </body>
 </html>

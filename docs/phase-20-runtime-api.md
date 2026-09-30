@@ -29,17 +29,18 @@
 启动：
 
 ```bash
-PAICLI_RUNTIME_API_KEY=your_local_api_key \
+FORGEPILOT_RUNTIME_API_KEY=your_local_api_key \
 java -jar target/paicli-1.0-SNAPSHOT.jar serve --http --port 8080
 ```
 
 安全策略：
 
 - 仅监听 `127.0.0.1`
-- 必须配置 `PAICLI_RUNTIME_API_KEY` 或 `-Dpaicli.runtime.api.key`
+- 优先配置 `FORGEPILOT_RUNTIME_API_KEY` 或 `-Dforgepilot.runtime.api.key`；`PAICLI_RUNTIME_API_KEY` 与 `-Dpaicli.runtime.api.key` 继续兼容
 - 请求头支持：
   - `Authorization: Bearer <key>`
-  - `X-PaiCLI-API-Key: <key>`
+  - `X-ForgePilot-API-Key: <key>`
+  - `X-PaiCLI-API-Key: <key>`（兼容旧客户端）
 
 端点：
 

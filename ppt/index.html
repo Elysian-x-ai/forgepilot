@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PaiCLI · 亲手写一个 Claude Code</title>
+<title>ForgePilot · 亲手写一个终端 Agent</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@300;400;500;600&family=Noto+Serif+SC:wght@300;400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -433,7 +433,7 @@
   body.low-power.motion-ready [data-anim],
   body.low-power [data-anim]{opacity:1!important;transform:none!important}
 
-  /* ---------- 终端模拟块(本 deck 自定义,模拟 PaiCLI 真实运行画面) ---------- */
+  /* ---------- 终端模拟块(本 deck 自定义,模拟 ForgePilot 真实运行画面) ---------- */
   .term{background:var(--ink);color:var(--paper);border-radius:6px;overflow:hidden;width:100%;min-width:0}
   .slide.dark .term{background:var(--ink-tint);outline:1px solid rgba(var(--paper-rgb),.14)}
   .term-bar{display:flex;align-items:center;gap:7px;padding:11px 16px;border-bottom:1px solid rgba(var(--paper-rgb),.12)}
@@ -498,12 +498,12 @@
 <section class="slide hero dark">
   <div class="chrome">
     <div>二哥的 Java 进阶之路 · 2026</div>
-    <div>Vol. π</div>
+    <div>Vol. ◆</div>
   </div>
   <div class="frame" style="display:grid; gap:3.4vh; align-content:center; min-height:80vh">
     <div class="kicker" data-anim>写给想学 Agent 的你 · An Invitation</div>
-    <h1 class="h-hero h-hero-en" style="font-size:11vw" data-anim>PaiCLI</h1>
-    <h2 class="h-sub" data-anim>亲手写一个 Claude Code</h2>
+    <h1 class="h-hero h-hero-en" style="font-size:11vw" data-anim>ForgePilot</h1>
+    <h2 class="h-sub" data-anim>亲手写一个 ForgePilot</h2>
     <p class="lead" style="max-width:58vw" data-anim>
       一个用 Java 从零长大的 Agent CLI。二十一期演进，从一个 ReAct 循环，到一个完整的终端产品——每一期，都是你能亲手摸到的一课。
     </p>
@@ -536,14 +536,14 @@
       </div>
       <div class="callout" data-anim>
         "擦掉毛玻璃的最好办法，<br>是亲手造一个。"
-        <div class="callout-src">— PaiCLI 的起点</div>
+        <div class="callout-src">— ForgePilot 的起点</div>
       </div>
     </div>
     <div class="term" data-anim style="margin-top:7vh">
-      <div class="term-bar"><i></i><i></i><i></i><span class="term-title">paicli — java</span></div>
-      <pre class="term-body">$ java -jar paicli.jar
+      <div class="term-bar"><i></i><i></i><i></i><span class="term-title">ForgePilot — java</span></div>
+      <pre class="term-body">$ java -jar target/paicli-1.0-SNAPSHOT.jar
 
-   ████████    <b>PaiCLI π</b>  v16.1.0
+   ████████    <b>ForgePilot ◆</b>  v16.1.0
      ██  ██    Model glm-5.1 (glm)
      ██  ██    MCP 4/4 · 61 tools · 2/2 skills
      ██  ██    ReAct · Plan · MCP · Browser
@@ -580,7 +580,7 @@
       概念是别人的。跑通的那一刻，才是你的。
     </p>
     <div class="meta-row" data-anim>
-      <span>— 沉默王二</span><span>·</span><span>PaiCLI 作者</span>
+      <span>— 沉默王二</span><span>·</span><span>ForgePilot 作者</span>
     </div>
   </div>
   <div class="foot">
@@ -617,7 +617,7 @@
   <div class="frame" style="padding-top:6vh">
     <div class="kicker" data-anim>一个 jar 里的世界</div>
     <h2 class="h-xl" data-anim>不是玩具，是产品</h2>
-    <p class="lead" style="margin-bottom:1.5vh" data-anim>对标 Claude Code，一期一期打磨出来的。</p>
+    <p class="lead" style="margin-bottom:1.5vh" data-anim>从一个循环出发，一期一期打磨出来的。</p>
 
     <div class="grid-6" style="margin-top:1.5vh">
       <div class="stat-card" data-anim>
@@ -653,7 +653,7 @@
     </div>
   </div>
   <div class="foot">
-    <div>项目 · PaiCLI　|　Java 17 + Maven</div>
+    <div>项目 · ForgePilot　|　Java 17 + Maven</div>
     <div>Act I · Numbers</div>
   </div>
 </section>
@@ -681,7 +681,7 @@
       </div>
     </div>
     <div class="term" data-anim style="margin-top:7vh">
-      <div class="term-bar"><i></i><i></i><i></i><span class="term-title">paicli — react</span></div>
+      <div class="term-bar"><i></i><i></i><i></i><span class="term-title">ForgePilot — react</span></div>
       <pre class="term-body">* 这个项目的测试为什么挂了？
 
 <span class="dim">Thinking… 先跑一次快速回归拿到报错，
@@ -769,7 +769,7 @@
         <div class="step" data-anim="step">
           <div class="step-nb">10</div>
           <div class="step-title">TUI</div>
-          <div class="step-desc">长成 Claude Code 的样子</div>
+          <div class="step-desc">长成 ForgePilot 的工作台</div>
         </div>
       </div>
     </div>
@@ -874,7 +874,7 @@
       </div>
       <div class="rowline" data-anim>
         <div class="k">TUI 产品化</div>
-        <div class="v">流式输出、可折叠工具块，长出 Claude Code 的模样</div>
+        <div class="v">流式输出、可折叠工具块，长成 ForgePilot 的工作台</div>
         <div class="m">Phase 16</div>
       </div>
     </div>
@@ -959,7 +959,7 @@
       而你，刚好会写循环。
     </p>
     <div class="meta-row" data-anim>
-      <span>— 写在 PaiCLI 的第一行代码之后</span>
+      <span>— 写在 ForgePilot 的第一行代码之后</span>
     </div>
   </div>
   <div class="foot">
@@ -984,11 +984,11 @@
       克隆下来，跑起来，然后翻开第一期的代码——故事，从一个循环开始。
     </p>
     <div class="meta-row" data-anim>
-      <span>git clone</span><span>·</span><span>mvn clean package</span><span>·</span><span>java -jar paicli.jar</span>
+      <span>git clone</span><span>·</span><span>mvn clean package</span><span>·</span><span>java -jar target/paicli-1.0-SNAPSHOT.jar</span>
     </div>
   </div>
   <div class="foot">
-    <div>PaiCLI · 二哥的 Java 进阶之路</div>
+    <div>ForgePilot · 二哥的 Java 进阶之路</div>
     <div>— 等你 —</div>
   </div>
 </section>

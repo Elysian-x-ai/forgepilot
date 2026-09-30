@@ -1,5 +1,5 @@
 /**
- * PaiCLI · Terminal-First Agent IDE — 官方网站交互脚本
+ * ForgePilot · Terminal-First Agent IDE — 官方网站交互脚本
  * Scroll reveal, nav effects, smooth scrolling
  */
 

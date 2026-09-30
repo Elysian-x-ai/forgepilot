@@ -11,7 +11,7 @@ date: 2026-04-22
 ---
 
 
-我们的 PaiCLI Agent 已经实现了 ReAct、Plan-and-Execute、Memory、RAG，一个单 Agent 已经能读文件、跑命令、搜代码、记住上下文了。
+我们的 ForgePilot Agent 已经实现了 ReAct、Plan-and-Execute、Memory、RAG，一个单 Agent 已经能读文件、跑命令、搜代码、记住上下文了。
 
 但我们还想要更多。
 
@@ -43,7 +43,7 @@ AutoGen 是偏对话驱动的多 Agent 协作，多个 Agent 围绕同一个问�
 
 CrewAI 偏角色扮演+任务委派，先定义角色再分配任务，适合流程明确的执行类场景。
 
-PaiCLI 选择了更接近 CrewAI 的方式——定义角色、分配任务、审查结果。
+ForgePilot 选择了更接近 CrewAI 的方式——定义角色、分配任务、审查结果。
 
 
 ![](https://cdn.paicoding.com/paicoding/22b6bdc0bdd26d404b0787959259c054.png)
@@ -53,7 +53,7 @@ PaiCLI 选择了更接近 CrewAI 的方式——定义角色、分配任务、�
 
 ## 02、主从模式+三角色分工
 
-PaiCLI 选择了主从架构（Orchestrator-SubAgent），编排器是“主”，子 Agent 是“从”。
+ForgePilot 选择了主从架构（Orchestrator-SubAgent），编排器是“主”，子 Agent 是“从”。
 
 编排器负责任务分发和流程控制，子 Agent 只管干自己的活。
 
@@ -478,7 +478,7 @@ mvn clean package
 java -jar target/paicli-1.0-SNAPSHOT.jar
 ```
 
-启动后你会看到 PaiCLI v5.0.0 的 Banner 和提示信息。
+启动后你会看到 ForgePilot v5.0.0 的 Banner 和提示信息。
 
 
 ### 进入 Multi-Agent 模式
@@ -560,7 +560,7 @@ Multi-Agent 任务执行完后，会自动回到默认的 ReAct 模式。不需�
 
 ### 其他命令
 
-PaiCLI 还支持 `/plan`（Plan-and-Execute 模式）、`/memory`（查看记忆状态）、`/index`（索引代码库）、`/search`（语义检索）、`/graph`（代码关系图谱）等命令，可以组合使用。
+ForgePilot 还支持 `/plan`（Plan-and-Execute 模式）、`/memory`（查看记忆状态）、`/index`（索引代码库）、`/search`（语义检索）、`/graph`（代码关系图谱）等命令，可以组合使用。
 
 一步能搞定用 ReAct，多步有依赖用 Plan，多步需要分工用 Multi-Agent。
 
@@ -579,7 +579,7 @@ PaiCLI 还支持 `/plan`（Plan-and-Execute 模式）、`/memory`（查看记忆
 
 ## 07、简历包装
 
-**项目名称**：PaiCLI - Java Agent CLI
+**项目名称**：ForgePilot - Java Agent CLI
 
 **项目简介**：基于主从架构的 Multi-Agent，实现规划者、执行者、检查者三个角色分工与协作。
 

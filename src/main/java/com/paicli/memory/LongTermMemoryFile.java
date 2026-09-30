@@ -25,7 +25,7 @@ import java.util.function.Supplier;
  * 长期记忆 JSON 文件的并发安全读写。
  *
  * <p>同一个文件可能同时被多个 {@link LongTermMemory} 实例（ReAct / Plan / Team 各自持有）
- * 和多个 PaiCLI 进程访问。变更在“进程内路径锁 + 跨进程文件锁”下执行；写入先落临时文件再原子改名，
+ * 和多个 ForgePilot 进程访问。变更在“进程内路径锁 + 跨进程文件锁”下执行；写入先落临时文件再原子改名，
  * 读取方永远看不到写了一半的 JSON。解析失败的文件会先备份，调用方据此保留内存中的可用数据。</p>
  */
 final class LongTermMemoryFile {

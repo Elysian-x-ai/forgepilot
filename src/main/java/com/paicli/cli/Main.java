@@ -9,6 +9,7 @@ import com.paicli.browser.BrowserGuard;
 import com.paicli.browser.BrowserMode;
 import com.paicli.browser.BrowserSession;
 import com.paicli.browser.SensitivePagePolicy;
+import com.paicli.brand.ForgePilotBrand;
 import com.paicli.config.PaiCliConfig;
 import com.paicli.hitl.HitlHandler;
 import com.paicli.hitl.HitlToolRegistry;
@@ -107,7 +108,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
 /**
- * PaiCLI v16.1.0 - Terminal-First Agent IDE
+ * ForgePilot v16.1.0 - Terminal-First Agent IDE
  * 支持 ReAct、Plan-and-Execute、Memory、RAG、Multi-Agent、HITL、并行工具调用、多模型切换、MCP、CDP 会话复用
  * 第 15 期新增：Skill 系统（三层加载 + load_skill 工具 + 同轮正文注入）、内置 web-access skill
  * 第 16 期新增：TUI 界面（Lanterna 3）、文件树浏览、代码高亮、对话历史可视化、配置管理面板
@@ -1036,8 +1037,9 @@ public class Main {
                 store.close();
             }, "paicli-runtime-api-shutdown"));
             server.start();
-            System.out.println("✅ PaiCLI Runtime API 已启动: http://127.0.0.1:" + server.port());
-            System.out.println("   认证: Authorization: Bearer <PAICLI_RUNTIME_API_KEY>");
+            System.out.println("✅ ForgePilot Runtime API 已启动: http://127.0.0.1:" + server.port());
+            System.out.println("   认证: Authorization: Bearer <FORGEPILOT_RUNTIME_API_KEY>");
+            System.out.println("   兼容请求头: X-ForgePilot-API-Key（旧 X-PaiCLI-API-Key 仍可用）");
             new CountDownLatch(1).await();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -1301,7 +1303,7 @@ public class Main {
             return thread;
         });
         Future<String> future = executor.submit(task);
-        // 进入 raw mode 监听 ESC：raw mode 关 ICANON / ECHO / IEXTEN 但保留 ISIG，所以 Ctrl+C 仍能终止 PaiCLI。
+        // 进入 raw mode 监听 ESC：raw mode 关 ICANON / ECHO / IEXTEN 但保留 ISIG，所以 Ctrl+C 仍能终止 ForgePilot。
         Attributes original = null;
         try {
             if (terminal != null) {
@@ -1804,8 +1806,8 @@ public class Main {
                 new SlashCommandHint("/better-harness normal", "/better-harness normal", "完整生成 Better Harness 报告"),
                 new SlashCommandHint("/better-harness --inline", "/better-harness --inline", "只在终端输出，不写报告文件"),
                 new SlashCommandHint("/export", "/export", "导出当前会话对话记录为 Markdown"),
-                new SlashCommandHint("/exit", "/exit", "退出 PaiCLI"),
-                new SlashCommandHint("/quit", "/quit", "退出 PaiCLI")
+                new SlashCommandHint("/exit", "/exit", "退出 ForgePilot"),
+                new SlashCommandHint("/quit", "/quit", "退出 ForgePilot")
         );
     }
 
@@ -2316,7 +2318,7 @@ public class Main {
 
     static String renderConversationExport(List<LlmClient.Message> history, LocalDateTime exportedAt) {
         StringBuilder md = new StringBuilder();
-        md.append("# PaiCLI 会话导出\n\n");
+        md.append("# ForgePilot 会话导出\n\n");
         md.append("**导出时间**: ").append(exportedAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))).append("\n\n");
         md.append("---\n\n");
 
@@ -3134,7 +3136,7 @@ public class Main {
         String capabilities = "ReAct · Plan · MCP · Browser · Image · Tools · Memory · RAG";
         String state = mcp + " · " + skills + " · ReAct";
         List<String> lines = new ArrayList<>(List.of(
-                "   " + AnsiStyle.section("██████████") + "    " + AnsiStyle.emphasis("PaiCLI") + " " + AnsiStyle.section("π") + "  " + AnsiStyle.subtle("v" + VERSION),
+                "   " + AnsiStyle.section("██████████") + "    " + AnsiStyle.emphasis(ForgePilotBrand.PRODUCT_NAME.toUpperCase()) + " " + AnsiStyle.section(ForgePilotBrand.MARK) + "  " + AnsiStyle.subtle("v" + VERSION),
                 "   " + AnsiStyle.section("  ██  ██") + "    " + AnsiStyle.subtle(ready),
                 "   " + AnsiStyle.section("  ██  ██") + "    " + AnsiStyle.subtle(state),
                 "   " + AnsiStyle.section("  ██  ██") + "    " + AnsiStyle.subtle(capabilities),

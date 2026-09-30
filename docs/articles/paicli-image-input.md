@@ -1,7 +1,7 @@
 ---
-title: Agent 终于能看图了！GLM-5V 让 PaiCLI 在图像识别上有了一双眼睛。
-shortTitle: PaiCLI 图片输入
-description: PaiCLI 第 21 期，让 Agent 真正看见图片，支持 @image 本地图片、@clipboard 剪贴板截图、MCP 浏览器截图注入，含完整的图片预处理管线。
+title: Agent 终于能看图了！GLM-5V 让 ForgePilot 在图像识别上有了一双眼睛。
+shortTitle: ForgePilot 图片输入
+description: ForgePilot 第 21 期，让 Agent 真正看见图片，支持 @image 本地图片、@clipboard 剪贴板截图、MCP 浏览器截图注入，含完整的图片预处理管线。
 tag:
   - Agent
   - Image
@@ -16,9 +16,9 @@ date: 2026-05-10
 
 大家好，我是二哥呀。
 
-PaiCLI 已经非常强大了，有 ReAct、Multi-Agent、MCP、Skill、Function Calling，基本上 Claude Code 有的功能都覆盖到了。
+ForgePilot 已经非常强大了，有 ReAct、Multi-Agent、MCP、Skill、Function Calling，基本上 Claude Code 有的功能都覆盖到了。
 
-今天这篇，我们给 PaiCLI 再追加一个能力：图片输入。听起来简单，但真正做起来涉及到的东西很多。
+今天这篇，我们给 ForgePilot 再追加一个能力：图片输入。听起来简单，但真正做起来涉及到的东西很多。
 
 这个功能的核心前提是多模态模型。单纯的文本模型是看不了图的，比如说 GLM-5.1，于是我们追加了 GLM-5V 模型的 endpoint。
 
@@ -82,7 +82,7 @@ GLM-5V 多了一个关键组件：Vision Encoder。
 ![](https://cdn.paicoding.com/paicoding/419da702116443eeeeedd7a17cb0e2f0.png)
 
 
-从代码层面看，GLM-5.1 和 GLM-5V 在 PaiCLI 里走的是完全不同的路径。
+从代码层面看，GLM-5.1 和 GLM-5V 在 ForgePilot 里走的是完全不同的路径。
 
 `GLMClient` 里有一个 `selectApiUrl()` 方法：
 
@@ -100,11 +100,11 @@ private static String selectApiUrl(String model) {
 
 ## 02、ContentPart 协议升级
 
-搞清楚了多模态的原理，接下来看 PaiCLI 怎么在代码层面支持它。
+搞清楚了多模态的原理，接下来看 ForgePilot 怎么在代码层面支持它。
 
 第一步是改造 LLM 通信协议。
 
-之前 PaiCLI 的 `LlmClient.Message` 里 content 就是一个 String，纯文本。Agent 发消息给模型，就是把字符串塞进 JSON 的 `content` 字段，模型返回的也是一个字符串。
+之前 ForgePilot 的 `LlmClient.Message` 里 content 就是一个 String，纯文本。Agent 发消息给模型，就是把字符串塞进 JSON 的 `content` 字段，模型返回的也是一个字符串。
 
 多模态 Vision API 要求 content 不能是字符串，而是一个数组，里面可以混排 text block 和 image block，每个 block 有自己的 type 和数据。
 
@@ -172,7 +172,7 @@ base64 图片默认会被转成 `data:image/png;base64,<payload>` 格式的 data
 帮我分析下这张截图 @image:./shot.png
 ```
 
-PaiCLI 会在终端里显示一条提示：`[已附加图片: ./shot.png, mimeType=image/png, bytes=...]`，然后模型的回复就是基于图片内容的分析了。
+ForgePilot 会在终端里显示一条提示：`[已附加图片: ./shot.png, mimeType=image/png, bytes=...]`，然后模型的回复就是基于图片内容的分析了。
 
 路径写法支持好几种：
 
@@ -184,7 +184,7 @@ PaiCLI 会在终端里显示一条提示：`[已附加图片: ./shot.png, mimeTy
 @image:</Users/itwanger/Desktop/中文截图.png>           # 中文路径
 ```
 
-2026-09-25 更新：PaiCLI 默认的 DeepSeek 已升级为 V4.1 Flash（`deepseek-flash`），支持图片输入，使用 `/model deepseek-flash` 即可切换。旧 Flash 别名也由官方转到新版；DeepSeek V4 Pro、混元 Hy4 等文本模型仍会把图片替换成文字提示。下面的截图记录的是旧版文本模型行为。
+2026-09-25 更新：ForgePilot 默认的 DeepSeek 已升级为 V4.1 Flash（`deepseek-flash`），支持图片输入，使用 `/model deepseek-flash` 即可切换。旧 Flash 别名也由官方转到新版；DeepSeek V4 Pro、混元 Hy4 等文本模型仍会把图片替换成文字提示。下面的截图记录的是旧版文本模型行为。
 
 ![](https://cdn.paicoding.com/paicoding/da97740869e11ce5c116328d0af8433d.png)
 
@@ -202,7 +202,7 @@ private static final Pattern IMAGE_REF = Pattern.compile(
 
 ## 04、@clipboard 剪贴板抓图
 
-PaiCLI 支持两种剪贴板输入方式。
+ForgePilot 支持两种剪贴板输入方式。
 
 第一种是在对话里打 `@clipboard`：
 
@@ -210,9 +210,9 @@ PaiCLI 支持两种剪贴板输入方式。
 帮我看看这张图 @clipboard
 ```
 
-第二种是直接按 `Ctrl+V`，PaiCLI 会自动抓取剪贴板图片，并在输入行末尾追加一个 `@image:` 引用。
+第二种是直接按 `Ctrl+V`，ForgePilot 会自动抓取剪贴板图片，并在输入行末尾追加一个 `@image:` 引用。
 
-PaiCLI 在 macOS 上走的是 AppleScript + osascript：
+ForgePilot 在 macOS 上走的是 AppleScript + osascript：
 
 ```applescript
 on run argv
@@ -238,7 +238,7 @@ end run
 
 `«class PNGf»` 是 macOS 剪贴板里 PNG 数据的 Apple Event 类型。截图工具放进剪贴板的就是这个格式。
 
-但有些应用比如 Preview 和部分 Office 软件，往剪贴板里放的是 TIFF。所以 PaiCLI 有个兜底：PNG 抓不到就试 `«class TIFF»`，抓到 TIFF 后用系统自带的 `/usr/bin/sips` 转成 PNG。
+但有些应用比如 Preview 和部分 Office 软件，往剪贴板里放的是 TIFF。所以 ForgePilot 有个兜底：PNG 抓不到就试 `«class TIFF»`，抓到 TIFF 后用系统自带的 `/usr/bin/sips` 转成 PNG。
 
 Java 侧通过 `ProcessBuilder` 调用 osascript，脚本从 stdin 传入（不落临时文件），8 秒超时保护。整个冷启动大概 30ms，用户几乎无感知。
 
@@ -260,7 +260,7 @@ Linux 和 Windows 走的是 AWT 的标准 `Clipboard.getData(DataFlavor.imageFla
 
 图片输入真正发挥威力的场景，是和 Chrome DevTools MCP 配合使用。
 
-之前我们给 PaiCLI 接上了 Chrome DevTools MCP，Agent 能控制浏览器、导航页面、截图。但截图拿回来只有一段占位文字，模型看不到图片内容。
+之前我们给 ForgePilot 接上了 Chrome DevTools MCP，Agent 能控制浏览器、导航页面、截图。但截图拿回来只有一段占位文字，模型看不到图片内容。
 
 ```
 打开 https://www.apple.com 然后截图，告诉我首页主视觉里有什么
@@ -274,7 +274,7 @@ Linux 和 Windows 走的是 AWT 的标准 `Clipboard.getData(DataFlavor.imageFla
 
 首先是 `McpCallToolResult`。
 
-MCP 工具返回的结果是一个 JSON 数组，里面的 content item 有 `type: "text"` 和 `type: "image"` 两种。PaiCLI 在 `toToolOutput()` 方法里会遍历这个数组，遇到 image 类型的 content，提取 base64 数据，经过 `ImageProcessor` 预处理后，存入 `ToolOutput` 的 imageParts 列表：
+MCP 工具返回的结果是一个 JSON 数组，里面的 content item 有 `type: "text"` 和 `type: "image"` 两种。ForgePilot 在 `toToolOutput()` 方法里会遍历这个数组，遇到 image 类型的 content，提取 base64 数据，经过 `ImageProcessor` 预处理后，存入 `ToolOutput` 的 imageParts 列表：
 
 ```java
 if ("image".equals(type)) {
@@ -284,7 +284,7 @@ if ("image".equals(type)) {
 }
 ```
 
-文本 fallback 也会同时生成，告诉模型“PaiCLI 会在下一轮把图片作为图片附件附加”。这样即使 provider 不支持图片输入，工具结果仍然是一条合法的 tool message。
+文本 fallback 也会同时生成，告诉模型“ForgePilot 会在下一轮把图片作为图片附件附加”。这样即使 provider 不支持图片输入，工具结果仍然是一条合法的 tool message。
 
 然后是 `Agent.appendImageToolMessages()`。这个方法在工具执行完毕后被调用，检查每个工具结果里有没有 imageParts。如果有，就构造一条新的 user message，把图片作为 ContentPart 追加到对话历史里：
 
@@ -307,13 +307,13 @@ private void appendImageToolMessages(List<ToolExecutionResult> toolResults) {
 
 因为 OpenAI API 规范里，tool role 的 message 只支持纯文本 content，不支持 content array。如果我们强行往 tool message 里塞图片 block，API 会返回 400 错误。
 
-所以 PaiCLI 的处理是：tool message 放文本 fallback（告诉模型这个工具返回了图片），紧接着追加一条 user message 放真图。消息顺序变成 `assistant(tool_calls) → tool(text fallback) → user(text + image block)`。
+所以 ForgePilot 的处理是：tool message 放文本 fallback（告诉模型这个工具返回了图片），紧接着追加一条 user message 放真图。消息顺序变成 `assistant(tool_calls) → tool(text fallback) → user(text + image block)`。
 
 还有一个容易忽略的问题：上下文膨胀。
 
 每张图片经过 base64 编码后平均在 200KB~2MB，如果 Agent 执行了十几轮 ReAct 循环，每轮都带着历史图片，上下文会迅速爆掉。
 
-PaiCLI 的解法是 `pruneHistoricalImagePayloads()`：在每一轮新的 ReAct 推理开始前，扫描对话历史中所有消息，把已经处理过的图片 block 替换成一行文本占位符 `[图片已省略，参见上文描述]`。
+ForgePilot 的解法是 `pruneHistoricalImagePayloads()`：在每一轮新的 ReAct 推理开始前，扫描对话历史中所有消息，把已经处理过的图片 block 替换成一行文本占位符 `[图片已省略，参见上文描述]`。
 
 只保留最近一轮的图片实体数据，更早的全部裁剪掉。这样模型仍然知道“之前看过什么图”，但不需要在每轮推理中重新消耗那些图片的 token，上下文窗口的利用效率大幅提升。
 
@@ -325,7 +325,7 @@ PaiCLI 的解法是 `pruneHistoricalImagePayloads()`：在每一轮新的 ReAct 
 对比一下这两张截图差异 @image:./before.png @image:./after.png
 ```
 
-PaiCLI 会分别处理两张图片，终端里会显示两条附加提示，模型能同时看到两张图并给出对比分析。
+ForgePilot 会分别处理两张图片，终端里会显示两条附加提示，模型能同时看到两张图并给出对比分析。
 
 ![](https://cdn.paicoding.com/paicoding/508a367a5bfa92b23a601cfa19105c28.jpg)
 
@@ -333,7 +333,7 @@ PaiCLI 会分别处理两张图片，终端里会显示两条附加提示，模�
 
 ## 07、图片预处理
 
-PaiCLI 不是拿到图片就直接扔给 API 的。
+ForgePilot 不是拿到图片就直接扔给 API 的。
 
 整个决策树在 `ImageProcessor.process()` 方法里，核心逻辑分三层：
 
@@ -387,11 +387,11 @@ API 传输的是 base64 编码后的字符串，base64 会把每 3 字节变成 
 
 整个预处理管线的执行时间通常在 50ms~200ms 之间（取决于图片大小和是否需要压缩）。
 
-### PaiCLI 如何写到简历上
+### ForgePilot 如何写到简历上
 
 如果大家在做 Agent 的多模态输入或者图片预处理相关的工作，可以这样写进简历：
 
-- **项目名称**：PaiCLI（终端 AI 编程 Agent）
+- **项目名称**：ForgePilot（终端 AI 编程 Agent）
 - **项目简介**：基于 Java 构建的终端原生 AI 编程 Agent，支持多模型接入、MCP 生态、图片多模态输入
 - **技术栈**：Java 21、Maven、OpenAI-Compatible API、Chrome DevTools Protocol、MCP 协议
 - **核心职责**：

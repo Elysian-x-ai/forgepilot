@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">ForgePilot social preview</title>
+  <desc id="desc">ForgePilot, a controlled engineering agent for the terminal.</desc>
+  <rect width="1200" height="630" fill="#10141C"/>
+  <path d="M0 2h1200" stroke="#2F6BFF" stroke-width="4"/>
+  <path d="M0 628h1200" stroke="#F2B84B" stroke-width="4"/>
+  <g fill="none" stroke="#EEF2F7" stroke-opacity=".045" stroke-width="1">
+    <path d="M0 90h1200M0 180h1200M0 270h1200M0 360h1200M0 450h1200M0 540h1200"/>
+    <path d="M90 0v630M180 0v630M270 0v630M360 0v630M450 0v630M540 0v630M630 0v630M720 0v630M810 0v630M900 0v630M990 0v630M1080 0v630M1170 0v630"/>
+  </g>
+  <g transform="translate(92 152) scale(1.22)">
+    <path fill="#2F6BFF" d="M128 16 151 105 240 128l-89 23-23 89-23-89-89-23 89-23z"/>
+    <path fill="#F2B84B" d="m128 82 46 46-46 46-46-46z"/>
+    <path fill="#10141C" d="m128 105 23 23-23 23-23-23z"/>
+    <circle cx="128" cy="128" r="94" fill="none" stroke="#EEF2F7" stroke-opacity=".18" stroke-width="4"/>
+  </g>
+  <text x="470" y="256" fill="#EEF2F7" font-family="Inter,IBM Plex Sans,Segoe UI,Arial,sans-serif" font-size="92" font-weight="700" letter-spacing="-2">Forge<tspan fill="#2F6BFF">Pilot</tspan></text>
+  <rect x="474" y="287" width="274" height="7" rx="3.5" fill="#F2B84B"/>
+  <text x="475" y="370" fill="#EEF2F7" fill-opacity=".86" font-family="Inter,IBM Plex Sans,Segoe UI,Arial,sans-serif" font-size="30" font-weight="500">A controlled engineering agent</text>
+  <text x="475" y="414" fill="#EEF2F7" fill-opacity=".62" font-family="Inter,IBM Plex Sans,Segoe UI,Arial,sans-serif" font-size="30" font-weight="500">for the terminal.</text>
+  <g transform="translate(475 494)">
+    <circle cx="8" cy="8" r="8" fill="#39D98A"/>
+    <text x="28" y="19" fill="#EEF2F7" fill-opacity=".58" font-family="Inter,IBM Plex Sans,Segoe UI,Arial,sans-serif" font-size="18" font-weight="600" letter-spacing="1.4">PLAN  •  TEAM  •  MEMORY  •  MCP</text>
+  </g>
+</svg>

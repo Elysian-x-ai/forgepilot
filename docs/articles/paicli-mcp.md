@@ -1,10 +1,10 @@
 ---
 title: 给 Agent 接入 MCP，支持 stdio 和 Streamable HTTP。
-shortTitle: PaiCLI接入MCP
-description: PaiCLI 第 10 期教程，手把手教你给 Java Agent 接入 MCP 协议，支持 stdio 和 Streamable HTTP 两种传输方式
+shortTitle: ForgePilot接入MCP
+description: ForgePilot 第 10 期教程，手把手教你给 Java Agent 接入 MCP 协议，支持 stdio 和 Streamable HTTP 两种传输方式
 tag:
   - Agent
-  - PaiCLI
+  - ForgePilot
 category:
   - AI
 author: 沉默王二
@@ -13,7 +13,7 @@ date: 2026-04-28
 
 大家好，我是二哥呀。
 
-上一期我们给 PaiCLI 加上了联网能力，搜索和抓取都有了。但这些工具都是我们自己实现的。
+上一期我们给 ForgePilot 加上了联网能力，搜索和抓取都有了。但这些工具都是我们自己实现的。
 
 如果想让 Agent 操作本地文件系统呢？
 
@@ -31,13 +31,13 @@ MCP 全称 Model Context Protocol，翻译过来叫做模型上下文协议。�
 
 ~~当然了，配置还是需要配置的~~。😄
 
-这一期，我们就来给 PaiCLI 接上 MCP。
+这一期，我们就来给 ForgePilot 接上 MCP。
 
 ## 01、先看效果
 
-老规矩，先看接上 MCP 之后 PaiCLI 能干什么，再聊怎么实现。
+老规矩，先看接上 MCP 之后 ForgePilot 能干什么，再聊怎么实现。
 
-在没有配置 MCP 之前，启动 PaiCLI 会看到这样的提示：
+在没有配置 MCP 之前，启动 ForgePilot 会看到这样的提示：
 
 ![](https://cdn.paicoding.com/stutymore/sucai-20260428172546.png)
 
@@ -73,9 +73,9 @@ MCP 全称 Model Context Protocol，翻译过来叫做模型上下文协议。�
 
 ![](https://cdn.paicoding.com/stutymore/sucai-20260428173057.png)
 
-好，我们的 PaiCLI Agent 就同时接入了两种 MCP：一种是 stdio 传输（filesystem），另一种是 Streamable HTTP 传输（zread）。
+好，我们的 ForgePilot Agent 就同时接入了两种 MCP：一种是 stdio 传输（filesystem），另一种是 Streamable HTTP 传输（zread）。
 
-重新启动 PaiCLI，输入提示词：
+重新启动 ForgePilot，输入提示词：
 
 > 读一下 itwanger/paicoding 仓库根目录的 README，给我讲讲它在做什么
 
@@ -91,7 +91,7 @@ Agent 自动调用了 `zread.read` 这个 MCP 工具，去 GitHub 上抓取了 R
 
 整个仓库的目录结构一目了然。你也可以试试其他提示词：
 
-- 搜一下 itwanger/paicli 这个仓库的官方文档，看看 MCP 是怎么集成的？
+- 搜一下 ForgePilot 仓库的官方文档，看看 MCP 是怎么集成的？
 - 看看 itwanger/paicoding 仓库整体的目录结构
 
 接下来测试 Claude 官方的 filesystem MCP。
@@ -116,7 +116,7 @@ Agent 自动调用了 `zread.read` 这个 MCP 工具，去 GitHub 上抓取了 R
 
 Agent 不需要知道工具的实现细节，只要 MCP server 提供了工具描述，Agent 就能根据用户意图自动选择调用。
 
-这就是 MCP 最大的价值：**工具的开发者和 Agent 的开发者可以完全解耦**。filesystem 的作者不需要知道 PaiCLI 是怎么实现的，PaiCLI 也不需要知道 filesystem 内部是怎么读写文件的。双方只要遵循 MCP 协议，就能无缝对接。
+这就是 MCP 最大的价值：**工具的开发者和 Agent 的开发者可以完全解耦**。filesystem 的作者不需要知道 ForgePilot 是怎么实现的，ForgePilot 也不需要知道 filesystem 内部是怎么读写文件的。双方只要遵循 MCP 协议，就能无缝对接。
 
 ## 02、MCP 到底是什么
 
@@ -156,7 +156,7 @@ JSON-RPC 天然适合这种场景，协议头尾加起来也就几个字段，�
 
 ![](https://cdn.paicoding.com/paicoding/1f87a0cbbbecb111ac4f5ec3a35dc7cb.png)
 
-PaiCLI 手写了一个 `JsonRpcClient`，大概 120 行代码。用 `AtomicLong` 生成递增 ID，用 `ConcurrentHashMap<Long, CompletableFuture<JsonNode>>` 做请求-响应配对。发请求的时候往 map 里塞一个 future，收到响应的时候按 ID 找到 future 并 complete，用 `future.get(timeout)` 等结果。
+ForgePilot 手写了一个 `JsonRpcClient`，大概 120 行代码。用 `AtomicLong` 生成递增 ID，用 `ConcurrentHashMap<Long, CompletableFuture<JsonNode>>` 做请求-响应配对。发请求的时候往 map 里塞一个 future，收到响应的时候按 ID 找到 future 并 complete，用 `future.get(timeout)` 等结果。
 
 超时控制默认 60 秒，用 `ScheduledExecutorService`（daemon 线程）调度定时任务，到点了就把 pending 的 future 用 `TimeoutException` 异常结束。调用方设的超时会比内部多留 1 秒缓冲，避免调度器和调用方同时超时产生竞争。
 
@@ -178,7 +178,7 @@ Claude 官方的 filesystem、Git、SQLite 这些 MCP 都是 stdio 的。缺点�
 
 stdio 还有一个不太明显的优势：安全。
 
-因为 server 是你自己启动的子进程，它的权限和 PaiCLI 进程一样的，不存在网络暴露的风险。不用担心别人通过网络来掉你的 MCP server。
+因为 server 是你自己启动的子进程，它的权限和 ForgePilot 进程一样的，不存在网络暴露的风险。不用担心别人通过网络来掉你的 MCP server。
 
 
 ![](https://cdn.paicoding.com/paicoding/edb1d47942a5394c67b5088ddd1e2848.png)
@@ -220,9 +220,9 @@ Streamable HTTP 还有一个 Session ID 机制。服务端在响应头里返回 
 ![](https://cdn.paicoding.com/paicoding/163cc8fdf18c42418b2a8befadcf5973.jpg)
 
 
-协议版本不匹配的时候可以在 initialize 阶段就拒绝，不用等到真正调工具的时候才报错。另外 capabilities 里声明了客户端支持的能力（目前 PaiCLI 只声明了 tools），服务端可以据此决定暴露哪些功能。比如将来如果服务端支持 resources 和 prompts，但客户端没声明支持，服务端可以选择不暴露这些能力，避免兼容性问题。
+协议版本不匹配的时候可以在 initialize 阶段就拒绝，不用等到真正调工具的时候才报错。另外 capabilities 里声明了客户端支持的能力（目前 ForgePilot 只声明了 tools），服务端可以据此决定暴露哪些功能。比如将来如果服务端支持 resources 和 prompts，但客户端没声明支持，服务端可以选择不暴露这些能力，避免兼容性问题。
 
-PaiCLI 的 initialize 超时设置是 30 秒，比普通的 tools/call（60 秒）短一半。因为握手应该是轻量操作，如果 30 秒还没回应，大概率是网络问题或者 server 挂了，没必要多等。
+ForgePilot 的 initialize 超时设置是 30 秒，比普通的 tools/call（60 秒）短一半。因为握手应该是轻量操作，如果 30 秒还没回应，大概率是网络问题或者 server 挂了，没必要多等。
 
 ### tools/list 和 tools/call
 
@@ -248,7 +248,7 @@ PaiCLI 的 initialize 超时设置是 30 秒，比普通的 tools/call（60 秒�
 }
 ```
 
-拿到工具列表后，PaiCLI 会把每个工具注册到 ToolRegistry 里，这样 LLM 在做 Function Calling 的时候就能看到这些工具了。
+拿到工具列表后，ForgePilot 会把每个工具注册到 ToolRegistry 里，这样 LLM 在做 Function Calling 的时候就能看到这些工具了。
 
 调用工具就更简单了：
 
@@ -256,11 +256,11 @@ PaiCLI 的 initialize 超时设置是 30 秒，比普通的 tools/call（60 秒�
 {"method": "tools/call", "params": {"name": "read_file", "arguments": {"path": "/README.md"}}}
 ```
 
-服务端执行完返回 `content` 数组，里面是工具的输出。PaiCLI 把 text 类型的内容拼接起来回传给 LLM，非 text 类型（比如图片）会给一个占位提示。
+服务端执行完返回 `content` 数组，里面是工具的输出。ForgePilot 把 text 类型的内容拼接起来回传给 LLM，非 text 类型（比如图片）会给一个占位提示。
 
-## 03、PaiCLI 的 MCP 实现
+## 03、ForgePilot 的 MCP 实现
 
-原理讲完了，来看 PaiCLI 是怎么把这些东西落地的。
+原理讲完了，来看 ForgePilot 是怎么把这些东西落地的。
 
 整个 MCP 子系统放在 `com.paicli.mcp` 包下，架构分四层：
 
@@ -302,7 +302,7 @@ if (!process.waitFor(1, TimeUnit.SECONDS)) {
 
 关闭的时候发一个 DELETE 请求，带上 Session ID，通知服务端清理会话。
 
-这是 best-effort 的，如果失败了也不会阻塞 PaiCLI 退出。
+这是 best-effort 的，如果失败了也不会阻塞 ForgePilot 退出。
 
 ### 多 Server 并行启动
 
@@ -343,7 +343,7 @@ MCP server 提供的工具在注册到 ToolRegistry 的时候，会加上命名�
 
 两个原因。
 
-第一是避免冲突。PaiCLI 自己有 `read_file` 工具，filesystem MCP 也有 `read_file` 工具，如果不加前缀就重名了。
+第一是避免冲突。ForgePilot 自己有 `read_file` 工具，filesystem MCP 也有 `read_file` 工具，如果不加前缀就重名了。
 
 第二是安全审计。所有以 `mcp__` 开头的工具调用都会被自动记录到审计日志里，方便事后追查。而且 HITL 人工审批模块会对所有 MCP 工具默认开启审批，因为第三方工具不可信。
 
@@ -358,7 +358,7 @@ private boolean isMcpTool(String toolName) {
 }
 ```
 
-这意味着 MCP 工具和 PaiCLI 内置的危险工具（write_file、execute_command）享受同等级别的安全管控。审计日志会记录每次调用的工具名、参数、结果、耗时，敏感参数（Bearer token、password 之类）会自动脱敏。
+这意味着 MCP 工具和 ForgePilot 内置的危险工具（write_file、execute_command）享受同等级别的安全管控。审计日志会记录每次调用的工具名、参数、结果、耗时，敏感参数（Bearer token、password 之类）会自动脱敏。
 
 ### Schema 清洗
 
@@ -368,7 +368,7 @@ MCP server 返回的工具参数 Schema 五花八门，有些 Schema 里会有 `
 ![](https://cdn.paicoding.com/paicoding/83058812a441f8c7100a9fd4be15501c.png)
 
 
-PaiCLI 实现了一个 `McpSchemaSanitizer`，在注册工具之前对 Schema 做一轮清洗：
+ForgePilot 实现了一个 `McpSchemaSanitizer`，在注册工具之前对 Schema 做一轮清洗：
 
 删掉 `$schema`、`$id`、`$ref` 这些 LLM 看不懂的字段。把 `anyOf`、`oneOf` 展开写成 description 文本描述。
 
@@ -440,7 +440,7 @@ MCP 的配置文件放在两个位置：
 
 ### CLI 命令
 
-PaiCLI 提供了一组 `/mcp` 命令来管理 MCP server：
+ForgePilot 提供了一组 `/mcp` 命令来管理 MCP server：
 
 ```
 /mcp                  查看所有 server 的状态
@@ -461,11 +461,11 @@ PaiCLI 提供了一组 `/mcp` 命令来管理 MCP server：
 `/mcp logs filesystem` 可以查看 filesystem server 的 stderr 输出，最多保留最近 200 行。npx 冷启动时的下载日志、server 内部的调试信息都能在这里看到，排查问题很方便。
 
 
-## 05、PaiCLI如何写到简历上？
+## 05、ForgePilot如何写到简历上？
 
 学完这一期，大家可以在简历上这样写：
 
-- **项目名称**：PaiCLI - Agent CLI
+- **项目名称**：ForgePilot - Agent CLI
 - **项目简介**：从零构建的生产级 Agent 命令行工具，支持联网搜索、网页抓取、MCP 协议、多 Agent 协作等能力
 - **技术栈**：Java 21、JSON-RPC 2.0、OkHttp、SSE、ProcessBuilder、MCP 2025-03-26 规范
 - **核心职责**：
@@ -477,7 +477,7 @@ PaiCLI 提供了一组 `/mcp` 命令来管理 MCP server：
 
 ## ending
 
-项目源码地址：`https://github.com/itwanger/paicli`，第 10 期的代码已经全部提交。欢迎大家 star、fork、提 issue。
+项目源码地址：`https://github.com/Elysian-x-ai/forgepilot`，第 10 期的代码已经全部提交。欢迎大家 star、fork、提 issue。
 
 
 ![](https://cdn.paicoding.com/paicoding/85f4c661a11a053da53fc47a39942e26.png)
@@ -492,4 +492,3 @@ PaiCLI 提供了一组 `/mcp` 命令来管理 MCP server：
 **【从零造轮子的意义，不是重复发明，而是知道轮子为什么是圆的。】**
 
 我们下期见。
-
