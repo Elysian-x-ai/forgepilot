@@ -10,7 +10,7 @@ import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.Reference;
 import org.jline.terminal.Terminal;
-import org.jline.terminal.TerminalBuilder;
+import org.jline.terminal.impl.DumbTerminal;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -91,10 +91,8 @@ class SessionModeControllerTest {
 
     @Test
     void shiftTabIsBoundToTheCycleWidget() throws Exception {
-        try (Terminal terminal = TerminalBuilder.builder()
-                .dumb(true)
-                .streams(new ByteArrayInputStream(new byte[0]), new ByteArrayOutputStream())
-                .build()) {
+        try (Terminal terminal = new DumbTerminal(
+                new ByteArrayInputStream(new byte[0]), new ByteArrayOutputStream())) {
             LineReader reader = LineReaderBuilder.builder().terminal(terminal).build();
             AtomicInteger cycles = new AtomicInteger();
 
