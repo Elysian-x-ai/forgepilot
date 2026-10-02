@@ -627,6 +627,29 @@ a { color: inherit; text-decoration: none; }
 
 .footer-links a:hover { color: #EEF2F7; }
 
+.resource-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-top: 40px;
+  text-align: left;
+}
+
+.resource-link {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+  border: 1px solid #2B374A;
+  border-radius: 10px;
+  background: #171E2B;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.resource-link:hover { border-color: #2F6BFF; transform: translateY(-2px); }
+.resource-link strong { font-size: 0.95rem; }
+.resource-link span { color: #A9B4C2; font-size: 0.8rem; line-height: 1.5; }
+
 .footer-copy {
   font-size: 0.8rem;
   color: #6F7F94;
@@ -658,10 +681,12 @@ a { color: inherit; text-decoration: none; }
   .nav { padding: 0 24px; }
   .nav-links { gap: 20px; }
   .section { padding: 64px 20px; }
+  .resource-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 600px) {
   .safety-grid { grid-template-columns: 1fr; }
+  .resource-grid { grid-template-columns: 1fr; }
   .hero-title { font-size: 2.5rem; }
   .install-cmd { font-size: 0.78rem; padding: 12px 16px; }
   .nav-links a:not(.nav-cta) { display: none; }
@@ -682,6 +707,7 @@ a { color: inherit; text-decoration: none; }
     <a href="#modes">模式</a>
     <a href="#models">模型</a>
     <a href="#safety">安全</a>
+    <a href="#resources">资源</a>
     <a href="https://github.com/Elysian-x-ai/forgepilot" class="nav-cta">获取源码</a>
   </div>
 </nav>
@@ -692,7 +718,7 @@ a { color: inherit; text-decoration: none; }
     <span class="pi">◆</span> ForgePilot
   </h1>
   <p class="hero-subtitle">
-    面向开发者的 Java Agent CLI，从 ReAct 到 Multi-Agent，21 期迭代打造的编程助手。
+    面向开发者的 Java Agent CLI，从 ReAct 到 Multi-Agent，持续交付的 Java 编程助手。
   </p>
 
   <button type="button" class="install-cmd" id="installCmd" data-copy="FORGEPILOT_RENDERER=inline java -jar target/paicli-1.0-SNAPSHOT.jar" onclick="copyInstall(this)">
@@ -707,8 +733,7 @@ a { color: inherit; text-decoration: none; }
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
       获取源码
     </a>
-    <a href="https://github.com/Elysian-x-ai/forgepilot" class="hero-link">教程</a>
-    <a href="https://github.com/Elysian-x-ai/forgepilot#readme" class="hero-link">学习路线</a>
+    <a href="#resources" class="hero-link">资源中心</a>
   </div>
 
   <!-- Terminal -->
@@ -747,7 +772,7 @@ a { color: inherit; text-decoration: none; }
     <div class="feature reveal">
       <div class="feature-icon">🔌</div>
       <div class="feature-name">MCP Protocol</div>
-      <div class="feature-desc">标准 Model Context Protocol，支持 stdio 与 Streamable HTTP，60+ 工具动态注册。</div>
+      <div class="feature-desc">标准 Model Context Protocol，支持 stdio 与 Streamable HTTP，工具按需动态注册。</div>
     </div>
     <div class="feature reveal">
       <div class="feature-icon">🔍</div>
@@ -803,14 +828,14 @@ a { color: inherit; text-decoration: none; }
 <!-- MODELS -->
 <section class="section section-center" id="models">
   <div class="section-label reveal">Multi-Model</div>
-  <h2 class="section-title reveal">一个 CLI，五个大脑</h2>
+  <h2 class="section-title reveal">一个 CLI，多种模型</h2>
   <p class="section-desc reveal">运行时无缝切换模型，每个模型都做了深度适配。</p>
 
   <div class="models reveal">
     <div class="model-chip">
       <span class="model-dot glm"></span>
-      GLM-5.1
-      <span class="model-cmd">/model glm-5.1</span>
+      GLM
+      <span class="model-cmd">/model glm</span>
     </div>
     <div class="model-chip">
       <span class="model-dot ds"></span>
@@ -883,7 +908,7 @@ a { color: inherit; text-decoration: none; }
     </div>
     <div class="arch-arrow">→</div>
     <div class="arch-node">
-      🛠️ 11 内置 + 60 MCP
+      🛠️ 17 内置 + MCP
       <div class="arch-sub">ToolRegistry · HITL · Audit</div>
     </div>
     <div class="arch-arrow">→</div>
@@ -897,7 +922,7 @@ a { color: inherit; text-decoration: none; }
 <!-- TIMELINE -->
 <section class="section section-center" id="timeline">
   <div class="section-label reveal">Evolution</div>
-  <h2 class="section-title reveal">21 期迭代，持续进化</h2>
+  <h2 class="section-title reveal">持续交付，持续进化</h2>
   <p class="section-desc reveal">从第一行 ReAct 循环到完整的 Agent CLI 产品。</p>
 
   <div class="timeline reveal">
@@ -924,7 +949,7 @@ a { color: inherit; text-decoration: none; }
     <div class="tl-item">
       <div class="tl-phase">Phase 8-9</div>
       <div class="tl-title">Multi-Model & Web</div>
-      <div class="tl-desc">五模型适配 · 联网搜索 · web_fetch</div>
+      <div class="tl-desc">多模型适配 · 联网搜索 · web_fetch</div>
     </div>
     <div class="tl-item">
       <div class="tl-phase">Phase 10-15</div>
@@ -932,10 +957,24 @@ a { color: inherit; text-decoration: none; }
       <div class="tl-desc">MCP 协议 · Chrome DevTools · Skill 系统</div>
     </div>
     <div class="tl-item">
-      <div class="tl-phase">Phase 16-21</div>
-      <div class="tl-title">TUI · LSP · Snapshot · Image</div>
-      <div class="tl-desc">产品化 TUI · 诊断注入 · 快照回滚 · 图片输入</div>
+      <div class="tl-phase">Phase 16-23</div>
+      <div class="tl-title">TUI · LSP · Snapshot · Image · WeChat</div>
+      <div class="tl-desc">产品化 TUI · 诊断注入 · 快照回滚 · 图片输入 · 微信文本通道</div>
     </div>
+  </div>
+</section>
+
+<!-- RESOURCES -->
+<section class="section section-center" id="resources">
+  <div class="section-label reveal">Resources</div>
+  <h2 class="section-title reveal">从一个入口开始</h2>
+  <p class="section-desc reveal">文档、互动演示、演讲稿和源码集中在这里，按需要选择下一步。</p>
+  <div class="resource-grid reveal">
+    <a class="resource-link" href="../docs/website/index.html"><strong>官方文档</strong><span>安装、架构与能力说明</span></a>
+    <a class="resource-link" href="../demo-step/index.html"><strong>互动演示</strong><span>通过命令模块了解日常工作流</span></a>
+    <a class="resource-link" href="../demo-deepseek/index.html"><strong>DeepSeek 演示</strong><span>在终端场景中体验完整流程</span></a>
+    <a class="resource-link" href="../ppt/index.html"><strong>演讲稿</strong><span>从循环到工程产品的演进故事</span></a>
+    <a class="resource-link" href="https://github.com/Elysian-x-ai/forgepilot" target="_blank" rel="noopener"><strong>GitHub 仓库</strong><span>源码、Issue 与版本记录</span></a>
   </div>
 </section>
 
@@ -963,11 +1002,11 @@ a { color: inherit; text-decoration: none; }
 <footer class="footer">
   <div class="footer-brand">◆ ForgePilot</div>
   <div class="footer-links">
-    <a href="https://github.com/Elysian-x-ai/forgepilot">获取源码</a>
-    <a href="https://github.com/Elysian-x-ai/forgepilot">教程</a>
-    <a href="https://github.com/Elysian-x-ai/forgepilot#readme">学习路线</a>
+    <a href="#resources">资源中心</a>
+    <a href="../docs/website/index.html">官方文档</a>
+    <a href="https://github.com/Elysian-x-ai/forgepilot" target="_blank" rel="noopener">GitHub</a>
   </div>
-  <div class="footer-copy">Built with Java 17 · Powered by 沉默王二</div>
+  <div class="footer-copy">Built with Java 17 · Maintained by Hank</div>
 </footer>
 
 <script>
@@ -995,9 +1034,9 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 // Terminal animation
 const desktopLines = [
   { t: '', d: 0 },
-  { t: '   <span class="t-logo">██████████</span>    <span class="t-strong">ForgePilot</span> <span class="t-pi">◆</span>  <span class="t-dim">v16.1.0</span>', d: 0 },
+  { t: '   <span class="t-logo">██████████</span>    <span class="t-strong">ForgePilot</span> <span class="t-pi">◆</span>', d: 0 },
   { t: '   <span class="t-logo">  ██  ██</span>    <span class="t-dim">Model deepseek-v4-pro (deepseek)</span>', d: 80 },
-  { t: '   <span class="t-logo">  ██  ██</span>    <span class="t-dim">MCP 5/5 · 63 tools · 5/5 skills · ReAct</span>', d: 160 },
+  { t: '   <span class="t-logo">  ██  ██</span>    <span class="t-dim">MCP · Skills · ReAct</span>', d: 160 },
   { t: '   <span class="t-logo">  ██  ██</span>    <span class="t-dim">ReAct · Plan · MCP · Browser · Image · Tools · Memory · RAG</span>', d: 240 },
   { t: '   <span class="t-logo">  ██  ██</span>', d: 320 },
   { t: '', d: 450 },
@@ -1019,10 +1058,10 @@ const desktopLines = [
 
 const mobileLines = [
   { t: '', d: 0 },
-  { t: ' <span class="t-logo">██████████</span>  <span class="t-strong">ForgePilot</span> <span class="t-pi">◆</span> <span class="t-dim">v16.1.0</span>', d: 0 },
+  { t: ' <span class="t-logo">██████████</span>  <span class="t-strong">ForgePilot</span> <span class="t-pi">◆</span>', d: 0 },
   { t: ' <span class="t-logo">  ██  ██</span>  <span class="t-dim">deepseek-v4-pro</span>', d: 80 },
-  { t: ' <span class="t-logo">  ██  ██</span>  <span class="t-dim">MCP 5/5 · 63 tools</span>', d: 160 },
-  { t: ' <span class="t-logo">  ██  ██</span>  <span class="t-dim">5/5 skills · ReAct</span>', d: 240 },
+  { t: ' <span class="t-logo">  ██  ██</span>  <span class="t-dim">MCP tools · ReAct</span>', d: 160 },
+  { t: ' <span class="t-logo">  ██  ██</span>  <span class="t-dim">Skills · ReAct</span>', d: 240 },
   { t: ' <span class="t-logo">  ██  ██</span>  <span class="t-dim">Plan · MCP · Browser · RAG</span>', d: 320 },
   { t: '', d: 450 },
   { t: 'Tips for getting started:', d: 500 },

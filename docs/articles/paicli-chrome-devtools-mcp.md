@@ -9,11 +9,11 @@ tag:
   - Chrome DevTools
 category:
   - AI
-author: 沉默王二
+author: Hank
 date: 2026-04-29
 ---
 
-大家好，我是二哥呀。
+大家好，我是 Hank。
 
 做了联网搜索，做了 MCP，我发现 ForgePilot 还有一个问题，Agent “看不见”一些固有生态的内容，比如说微信的内容。
 

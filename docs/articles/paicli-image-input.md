@@ -8,13 +8,13 @@ tag:
   - MCP
 category:
   - AI
-author: 沉默王二
+author: Hank
 date: 2026-05-10
 ---
 
 
 
-大家好，我是二哥呀。
+大家好，我是 Hank。
 
 ForgePilot 已经非常强大了，有 ReAct、Multi-Agent、MCP、Skill、Function Calling，基本上 Claude Code 有的功能都覆盖到了。
 
@@ -33,7 +33,7 @@ ForgePilot 已经非常强大了，有 ReAct、Multi-Agent、MCP、Skill、Funct
 ![](https://cdn.paicoding.com/paicoding/34269eeb06af02419f10298a271deba4.jpg)
 
 - 网站名称：技术派（技术派 logo 在左上角）
-- 作者：多篇内容署名 沉默王二（和上一张图的署名一致）
+- 作者：Hank（和上一张图的署名一致）
 - 核心产品：PaiFlow（Agent 工作流）、派聪明（RAG 项目）
 
 ## 01、为什么 GLM-5.1 看不了图

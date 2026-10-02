@@ -13,11 +13,11 @@ tag:
   - Go
 category:
   - AI
-author: 沉默王二
+author: Hank
 date: 2026-07-09
 ---
 
-大家好，我是二哥呀。
+大家好，我是 Hank。
 
 ForgePilot 的 Go 版本上线了。
 

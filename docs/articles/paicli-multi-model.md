@@ -6,7 +6,7 @@ tag:
   - Agent
 category:
   - AI
-author: 沉默王二
+author: Hank
 date: 2026-04-25
 ---
 
@@ -20,7 +20,7 @@ date: 2026-04-25
 
 当前 DeepSeek 内置列表只列官方推荐的 `deepseek-flash`（V4.1 Flash）和 `deepseek-v4-pro`；两个旧 Flash 名称是官方继续接受的兼容入口，原模型已下线，请求由 V4.1 Flash 提供服务。刷新不会把旧名重新登记成独立模型，也不会改写已有选择。已有配置里的旧名会标注“兼容旧名 → deepseek-flash”，可用 `/model deepseek-flash` 切换并保存。新增 0 个时，只说明没有新增模型，不再提示新模型能力待配置。
 
-大家好，我是二哥呀。
+大家好，我是 Hank。
 
 DeepSeek V4（预览版），1.6 万亿参数的 V4-Pro、284B 参数的 V4-Flash，原生 1M 上下文，Agentic Coding 评测直接对标 Opus 4.6。
 

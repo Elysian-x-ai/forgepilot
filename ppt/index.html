@@ -453,6 +453,7 @@
     .pipeline{grid-template-columns:repeat(2,1fr)}
     .grid-2-7-5,.grid-2-6-6,.grid-2-8-4{grid-template-columns:1fr}
   }
+.deck-home{position:fixed;top:18px;left:24px;z-index:30;color:currentColor;text-decoration:none;font:500 12px var(--mono);letter-spacing:.08em;opacity:.72}.deck-home:hover{opacity:1}
 </style>
 </head>
 <body>
@@ -484,6 +485,7 @@
 
 <canvas id="bg-dark" class="bg"></canvas>
 <canvas id="bg-light" class="bg"></canvas>
+<a href="../landing/index.html" class="deck-home">◆ ForgePilot · 返回统一入口</a>
 <div id="hint">← → 翻页 · B 静态 · ESC 索引</div>
 
 <div id="deck">
@@ -497,7 +499,7 @@
 <!-- 01 · 封面 · hero dark -->
 <section class="slide hero dark">
   <div class="chrome">
-    <div>二哥的 Java 进阶之路 · 2026</div>
+    <div>ForgePilot · 2026</div>
     <div>Vol. ◆</div>
   </div>
   <div class="frame" style="display:grid; gap:3.4vh; align-content:center; min-height:80vh">
@@ -505,10 +507,10 @@
     <h1 class="h-hero h-hero-en" style="font-size:11vw" data-anim>ForgePilot</h1>
     <h2 class="h-sub" data-anim>亲手写一个 ForgePilot</h2>
     <p class="lead" style="max-width:58vw" data-anim>
-      一个用 Java 从零长大的 Agent CLI。二十一期演进，从一个 ReAct 循环，到一个完整的终端产品——每一期，都是你能亲手摸到的一课。
+      一个用 Java 从零长大的 Agent CLI。从 ReAct 循环到完整的终端产品，持续交付可审阅、可回滚的工程能力。
     </p>
     <div class="meta-row" data-anim>
-      <span>沉默王二</span><span>·</span><span>项目作者</span><span>·</span><span>For Class of 2027</span>
+      <span>Hank</span><span>·</span><span>项目作者</span>
     </div>
   </div>
   <div class="foot">
@@ -543,9 +545,9 @@
       <div class="term-bar"><i></i><i></i><i></i><span class="term-title">ForgePilot — java</span></div>
       <pre class="term-body">$ java -jar target/paicli-1.0-SNAPSHOT.jar
 
-   ████████    <b>ForgePilot ◆</b>  v16.1.0
-     ██  ██    Model glm-5.1 (glm)
-     ██  ██    MCP 4/4 · 61 tools · 2/2 skills
+   ████████    <b>ForgePilot ◆</b>
+     ██  ██    Multi-model provider
+     ██  ██    MCP · Skills · ReAct
      ██  ██    ReAct · Plan · MCP · Browser
      ██  ██
 
@@ -580,7 +582,7 @@
       概念是别人的。跑通的那一刻，才是你的。
     </p>
     <div class="meta-row" data-anim>
-      <span>— 沉默王二</span><span>·</span><span>ForgePilot 作者</span>
+      <span>— Hank</span><span>·</span><span>ForgePilot 作者</span>
     </div>
   </div>
   <div class="foot">
@@ -622,17 +624,17 @@
     <div class="grid-6" style="margin-top:1.5vh">
       <div class="stat-card" data-anim>
         <div class="stat-label">Evolution</div>
-        <div class="stat-nb">21 <span class="stat-unit">期</span></div>
+        <div class="stat-nb">23 <span class="stat-unit">期</span></div>
         <div class="stat-note">从一个循环到一个产品</div>
       </div>
       <div class="stat-card" data-anim>
         <div class="stat-label">Model Providers</div>
-        <div class="stat-nb">5 <span class="stat-unit">家</span></div>
-        <div class="stat-note">GLM · DeepSeek · StepFun · Kimi…</div>
+        <div class="stat-nb">8 <span class="stat-unit">家</span></div>
+        <div class="stat-note">多模型 provider，运行时可切换</div>
       </div>
       <div class="stat-card" data-anim>
         <div class="stat-label">Tools</div>
-        <div class="stat-nb">61</div>
+        <div class="stat-nb">17</div>
         <div class="stat-note">内置工具 + MCP 动态注册</div>
       </div>
       <div class="stat-card" data-anim>
@@ -646,9 +648,9 @@
         <div class="stat-note">inline 流式 · 全屏 TUI · plain</div>
       </div>
       <div class="stat-card" data-anim>
-        <div class="stat-label">Agent Frameworks</div>
-        <div class="stat-nb">0</div>
-        <div class="stat-note">不依赖 LangChain，每行都看得懂</div>
+        <div class="stat-label">Safety</div>
+        <div class="stat-nb">4 <span class="stat-unit">层</span></div>
+        <div class="stat-note">HITL · 路径 · 命令 · 审计</div>
       </div>
     </div>
   </div>
@@ -775,7 +777,7 @@
     </div>
   </div>
   <div class="foot">
-    <div>Page 07 · 二十一期里的十个关键帧</div>
+    <div>Page 07 · 关键能力</div>
     <div>Evolution</div>
   </div>
 </section>
@@ -790,7 +792,7 @@
     <div class="kicker" data-anim>Act II</div>
     <h1 class="h-hero" style="font-size:8.5vw" data-anim>把它拆开</h1>
     <p class="lead" style="max-width:55vw" data-anim>
-      二十一期演进，就是一份摊开的 Agent 课程表。
+      持续演进，就是一份摊开的 Agent 课程表。
     </p>
   </div>
   <div class="foot">
@@ -988,7 +990,7 @@
     </div>
   </div>
   <div class="foot">
-    <div>ForgePilot · 二哥的 Java 进阶之路</div>
+    <div>ForgePilot · Terminal-First Agent</div>
     <div>— 等你 —</div>
   </div>
 </section>

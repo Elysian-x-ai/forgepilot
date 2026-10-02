@@ -17,16 +17,17 @@
   <!-- Navigation -->
   <nav class="nav" id="nav">
     <div class="nav-inner">
-      <a href="#" class="nav-logo">
+      <a href="../../landing/index.html" class="nav-logo">
         <img class="logo-mark" src="../../brand/forgepilot-mark.svg" alt="">
         <span class="logo-text">ForgePilot</span>
-        <span class="logo-version">v16.1</span>
+        <span class="logo-version">v16.1.0</span>
       </a>
       <div class="nav-links">
+        <a href="../../landing/index.html">首页</a>
         <a href="#features">特性</a>
-        <a href="#evolution">演进</a>
         <a href="#install">安装</a>
-        <a href="#architecture">架构</a>
+        <a href="../../demo-step/index.html">演示</a>
+        <a href="../../ppt/index.html">演讲稿</a>
         <a href="https://github.com/Elysian-x-ai/forgepilot" target="_blank" class="nav-gh" title="GitHub">
           <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/></svg>
           <span>Star</span>
@@ -41,7 +42,7 @@
       <div class="hero-content">
         <div class="hero-badge">
           <span class="badge-dot"></span>
-          第 17 期进行中 · LSP 诊断注入
+          持续交付 · 终端工程 Agent 工作台
         </div>
         <h1 class="hero-title">
           <span class="title-line">一个住在终端里的</span>
@@ -49,8 +50,8 @@
         </h1>
         <p class="hero-subtitle">
           ForgePilot 是一款基于 Java 的开源命令行智能体，为工程团队提供可控的终端工作流。
-          从 ReAct 循环出发，已完成 <strong>16.1 期迭代</strong>，演进为支持
-          多模型、多 Agent 协作、MCP 协议、浏览器自动化的完整 Agent 产品。
+          从 ReAct 循环出发，覆盖 Plan、Team、Memory、MCP、浏览器自动化与多模型协作，
+          为工程团队提供可审阅、可回滚、可审计的终端工作流。
         </p>
         <div class="hero-actions">
           <a href="#install" class="btn btn-primary">
@@ -64,19 +65,19 @@
         </div>
         <div class="hero-stats">
           <div class="stat">
+            <span class="stat-number">23</span>
+            <span class="stat-label">已交付期数</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">8</span>
+            <span class="stat-label">模型客户端</span>
+          </div>
+          <div class="stat">
             <span class="stat-number">17</span>
-            <span class="stat-label">迭代期数</span>
+            <span class="stat-label">内置工具</span>
           </div>
           <div class="stat">
-            <span class="stat-number">3+</span>
-            <span class="stat-label">LLM 模型</span>
-          </div>
-          <div class="stat">
-            <span class="stat-number">60+</span>
-            <span class="stat-label">MCP 工具</span>
-          </div>
-          <div class="stat">
-            <span class="stat-number">v16.1</span>
+            <span class="stat-number">v16.1.0</span>
             <span class="stat-label">最新版本</span>
           </div>
         </div>
@@ -118,7 +119,7 @@
         <div class="about-card">
           <div class="about-icon">🎯</div>
           <h3>可控的工程工作台</h3>
-          <p>把 ReAct、Plan、Team、Memory、MCP 与审计能力收进 Java 生态的终端工作流。从第 1 期循环开始，一路演进到完整的 Agent 产品形态。</p>
+          <p>把 ReAct、Plan、Team、Memory、MCP 与审计能力收进 Java 生态的终端工作流，持续演进为完整的 Agent 产品形态。</p>
         </div>
         <div class="about-card">
           <div class="about-icon">☕</div>
@@ -128,7 +129,7 @@
         <div class="about-card">
           <div class="about-icon">🧠</div>
           <h3>多模型支持</h3>
-          <p>内置 GLM-5.1（200K）、DeepSeek V4（1M）、StepFun（256K）三个 LLM 客户端，<code>/model</code> 命令运行时热切换。</p>
+          <p>支持多个模型 provider，使用 <code>/model</code> 命令在运行时热切换。</p>
         </div>
         <div class="about-card">
           <div class="about-icon">🛡️</div>
@@ -145,7 +146,7 @@
       <div class="section-header">
         <span class="section-label">// 能力</span>
         <h2>核心特性</h2>
-        <p class="section-desc">16.1 期已完成，21 期路线持续扩展 Agent 产品能力矩阵</p>
+        <p class="section-desc">覆盖 ReAct、Plan、Team、Memory、MCP 与浏览器自动化</p>
       </div>
       <div class="features-grid">
         <div class="feature-card">
@@ -199,7 +200,7 @@
         <div class="feature-card">
           <div class="feature-number">07</div>
           <h3>MCP 协议</h3>
-          <p>支持 stdio 子进程 + Streamable HTTP 双传输。自动注册 60+ MCP 工具，resources 双轨与 @-mention。</p>
+          <p>支持 stdio 子进程 + Streamable HTTP 双传输。自动注册 MCP 工具，支持 resources 双轨与 @-mention。</p>
           <div class="feature-tags">
             <span>stdio</span><span>Streamable HTTP</span><span>resources</span>
           </div>
@@ -253,7 +254,7 @@
     <div class="container">
       <div class="section-header">
         <span class="section-label">// 演进</span>
-        <h2>21 期路线进度</h2>
+        <h2>能力演进</h2>
         <p class="section-desc">从 ReAct 到完整 Agent 产品，每一期都是质的飞跃</p>
       </div>
       <div class="timeline">
@@ -312,7 +313,7 @@
             <div class="tl-marker"><span>08</span></div>
             <div class="tl-content">
               <h4>多模型适配</h4>
-              <p>GLM-5.1 / DeepSeek V4 / StepFun 三模型。<code>/model</code> 运行时热切换。</p>
+              <p>支持多个模型 provider，使用 <code>/model</code> 在运行时热切换。</p>
             </div>
           </div>
           <div class="tl-item">
@@ -340,7 +341,7 @@
             <div class="tl-marker"><span>12</span></div>
             <div class="tl-content">
               <h4>长上下文工程</h4>
-              <p>三种上下文模式、动态预算、prompt cache 可见化。DeepSeek V4 1M window。</p>
+              <p>动态预算、prompt cache 可见化与长上下文压缩。</p>
             </div>
           </div>
           <div class="tl-item">
@@ -371,39 +372,11 @@
               <p>Renderer 接口 + 三种实现（inline / lanterna / plain）。行内折叠、diff、状态栏。</p>
             </div>
           </div>
-          <div class="tl-item tl-item-next">
-            <div class="tl-marker tl-marker-next"><span>17</span></div>
+          <div class="tl-item">
+            <div class="tl-marker"><span>+</span></div>
             <div class="tl-content">
-              <h4>LSP 诊断注入 <span class="tl-badge">进行中</span></h4>
-              <p>Agent 改完代码后，自动收集编译诊断并在下一轮推理前注入。</p>
-            </div>
-          </div>
-          <div class="tl-item tl-item-planned">
-            <div class="tl-marker tl-marker-planned"><span>18</span></div>
-            <div class="tl-content">
-              <h4>Git Side-History 快照与回滚 <span class="tl-badge tl-badge-planned">计划</span></h4>
-              <p>Turn 粒度自动快照，支持不污染用户 Git 历史的一键恢复。</p>
-            </div>
-          </div>
-          <div class="tl-item tl-item-planned">
-            <div class="tl-marker tl-marker-planned"><span>19</span></div>
-            <div class="tl-content">
-              <h4>Prompt 分层架构 <span class="tl-badge tl-badge-planned">计划</span></h4>
-              <p>把硬编码 system prompt 拆成可维护、可覆盖的 Markdown 分层。</p>
-            </div>
-          </div>
-          <div class="tl-item tl-item-planned">
-            <div class="tl-marker tl-marker-planned"><span>20</span></div>
-            <div class="tl-content">
-              <h4>异步后台任务 + Runtime API <span class="tl-badge tl-badge-planned">计划</span></h4>
-              <p>持久化任务队列与 HTTP/SSE Runtime API，面向无头和集成场景。</p>
-            </div>
-          </div>
-          <div class="tl-item tl-item-planned">
-            <div class="tl-marker tl-marker-planned"><span>21</span></div>
-            <div class="tl-content">
-              <h4>图片复制粘贴输入 <span class="tl-badge tl-badge-planned">计划</span></h4>
-              <p>在安全网和架构就绪后，再接通截图、图片和图表的 图片输入。</p>
+              <h4>持续产品化</h4>
+              <p>LSP 诊断、Side-Git 快照、Prompt 分层、Runtime API、图片输入与微信文本通道已纳入当前工程能力。</p>
             </div>
           </div>
         </div>
@@ -460,7 +433,7 @@ mvn clean compile exec:java \
             <div class="code-block">
               <div class="code-header"><span>ForgePilot session</span></div>
               <pre><code><span class="c-dim">╔══════════════════════════════════╗
-║   ForgePilot  v16.1.0              ║
+║   ForgePilot  ·  Java 17          ║
 ╚══════════════════════════════════╝</span>
 
 ✅ <span class="c-green">API Key 已加载</span>
@@ -528,7 +501,7 @@ mvn clean compile exec:java \
         <div class="tech-tags">
           <span>Java 17</span><span>Maven</span><span>OkHttp</span><span>Jackson</span>
           <span>JLine3</span><span>SQLite</span><span>JavaParser</span><span>Ollama</span>
-          <span>GLM-5.1</span><span>DeepSeek V4</span><span>StepFun</span><span>MCP</span>
+          <span>多模型</span><span>MCP</span><span>Browser</span>
         </div>
       </div>
     </div>
@@ -620,7 +593,7 @@ mvn clean compile exec:java \
             <span>ForgePilot</span>
             <span class="logo-bracket">}</span>
           </div>
-          <p>Terminal-First Agent IDE<br>作者：<a href="https://github.com/itwanger" target="_blank">沉默王二</a></p>
+          <p>Terminal-First Agent IDE<br>作者：Hank</p>
         </div>
         <div class="footer-links">
           <h5>项目</h5>
@@ -628,6 +601,7 @@ mvn clean compile exec:java \
           <a href="https://github.com/Elysian-x-ai/forgepilot/blob/main/README.md" target="_blank">README</a>
           <a href="https://github.com/Elysian-x-ai/forgepilot/blob/main/ROADMAP.md" target="_blank">路线图</a>
           <a href="https://github.com/Elysian-x-ai/forgepilot/blob/main/AGENTS.md" target="_blank">开发者指南</a>
+          <a href="../../landing/index.html#resources">资源中心</a>
         </div>
         <div class="footer-links">
           <h5>文档</h5>
@@ -640,12 +614,12 @@ mvn clean compile exec:java \
           <h5>技术栈</h5>
           <span>Java 17</span>
           <span>Maven</span>
-          <span>GLM-5.1</span>
-          <span>DeepSeek V4</span>
+          <span>多模型 provider</span>
+          <span>MCP / Browser</span>
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2025 ForgePilot · MIT License · Built with ☕ in Java</p>
+        <p>&copy; 2026 ForgePilot · MIT License · Built with ☕ in Java</p>
       </div>
     </div>
   </footer>

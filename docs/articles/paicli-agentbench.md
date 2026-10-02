@@ -8,11 +8,11 @@ tag:
   - Java
 category:
   - AI
-author: 沉默王二
+author: Hank
 date: 2026-09-24
 ---
 
-大家好，我是二哥呀。
+大家好，我是 Hank。
 
 从 8 月底开始，我给 ForgePilot 做了一套评测集，28 道题，满分 100。DeepSeek V4 Flash 和 GLM-5.3-Flash 两个模型接进去，前前后后跑了好几轮，真实调用了两百多次模型。
 

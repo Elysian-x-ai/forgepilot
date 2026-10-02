@@ -9,11 +9,11 @@ tag:
   - Chrome DevTools
 category:
   - AI
-author: 沉默王二
+author: Hank
 date: 2026-05-06
 ---
 
-大家好，我是二哥呀。
+大家好，我是 Hank。
 
 上一期我们给 ForgePilot 接上了 Chrome DevTools MCP，Agent 终于能开浏览器了。能导航页面、截图、拿 DOM 快照，微信公众号文章也能读了。
 

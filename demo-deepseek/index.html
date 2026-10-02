@@ -1222,29 +1222,23 @@ html.dark .footer-bottom a:hover { color: var(--color-brand-light); }
 <!-- ===== Header ===== -->
 <header class="header" aria-label="网站页眉">
   <div class="header-inner">
-    <a href="/" class="logo">
+    <a href="../landing/index.html" class="logo">
       <span class="logo-icon">◆</span>
       <span class="logo-brand">ForgePilot</span>
     </a>
 
     <nav class="desktop-nav" aria-label="主导航">
-      <a href="/learn" class="nav-link active">学习</a>
-      <a href="/playground" class="nav-link">演练场</a>
-      <a href="/build" class="nav-link">配置构建</a>
-      <a href="/reference" class="nav-link">速查表</a>
+      <a href="../landing/index.html" class="nav-link">首页</a>
+      <a href="../docs/website/index.html" class="nav-link active">文档</a>
+      <a href="../demo-step/index.html" class="nav-link">互动演示</a>
+      <a href="../ppt/index.html" class="nav-link">演讲稿</a>
     </nav>
 
     <div class="header-right">
-      <button class="search-pill" aria-label="搜索 (⌘K)">
-        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 100-15 7.5 7.5 0 000 15z"/>
-        </svg>
-        <span class="search-shortcut">⌘K</span>
-      </button>
 
       <nav class="lang-switcher" aria-label="语言">
         <span class="lang-link active">中文</span>
-        <a href="#" class="lang-link">EN</a>
+        <span class="lang-link">EN</span>
       </nav>
 
       <button id="darkModeToggle" class="icon-btn" aria-label="切换深色模式">
@@ -1285,18 +1279,9 @@ html.dark .footer-bottom a:hover { color: var(--color-brand-light); }
           </svg>
         </button>
         <ul class="sidebar-nav-list">
-          <li><a href="#" class="sidebar-nav-link"><span class="sidebar-number">0</span><span class="sidebar-title">入门指南</span></a></li>
-          <li><a href="#" class="sidebar-nav-link active"><span class="sidebar-number">1</span><span class="sidebar-title">斜杠命令</span></a></li>
-          <li><a href="#" class="sidebar-nav-link"><span class="sidebar-number">2</span><span class="sidebar-title">记忆与 PAI.md</span></a></li>
-          <li><a href="#" class="sidebar-nav-link"><span class="sidebar-number">3</span><span class="sidebar-title">项目设置</span></a></li>
-          <li><a href="#" class="sidebar-nav-link"><span class="sidebar-number">4</span><span class="sidebar-title">命令深入</span></a></li>
-          <li><a href="#" class="sidebar-nav-link"><span class="sidebar-number">5</span><span class="sidebar-title">技能</span></a></li>
-          <li><a href="#" class="sidebar-nav-link"><span class="sidebar-number">6</span><span class="sidebar-title">钩子</span></a></li>
-          <li><a href="#" class="sidebar-nav-link"><span class="sidebar-number">7</span><span class="sidebar-title">MCP 服务器</span></a></li>
-          <li><a href="#" class="sidebar-nav-link"><span class="sidebar-number">8</span><span class="sidebar-title">子代理</span></a></li>
-          <li><a href="#" class="sidebar-nav-link"><span class="sidebar-number">9</span><span class="sidebar-title">高级功能</span></a></li>
-          <li><a href="#" class="sidebar-nav-link"><span class="sidebar-number">10</span><span class="sidebar-title">工作流</span></a></li>
-          <li><a href="#" class="sidebar-nav-link"><span class="sidebar-number">11</span><span class="sidebar-title">插件</span></a></li>
+          <li><a href="#main-content" class="sidebar-nav-link active"><span class="sidebar-number">1</span><span class="sidebar-title">斜杠命令</span></a></li>
+          <li><a href="#discovering-commands" class="sidebar-nav-link"><span class="sidebar-number">·</span><span class="sidebar-title">发现命令</span></a></li>
+          <li><a href="#command-categories" class="sidebar-nav-link"><span class="sidebar-number">·</span><span class="sidebar-title">命令分类</span></a></li>
         </ul>
       </div>
     </nav>
@@ -1310,9 +1295,9 @@ html.dark .footer-bottom a:hover { color: var(--color-brand-light); }
         <!-- Module header -->
         <div class="module-header">
           <nav class="breadcrumb" aria-label="面包屑导航">
-            <a href="/">首页</a>
+            <a href="../landing/index.html">首页</a>
             <span aria-hidden="true">/</span>
-            <a href="/learn">学习</a>
+            <a href="../docs/website/index.html">文档</a>
             <span aria-hidden="true">/</span>
             <span class="breadcrumb-current" aria-current="page">斜杠命令</span>
           </nav>
@@ -1401,34 +1386,8 @@ html.dark .footer-bottom a:hover { color: var(--color-brand-light); }
         </article>
 
         <!-- Report link -->
-        <a href="#" class="report-link">
-          <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"/>
-          </svg>
-          报告本模块问题
-        </a>
 
         <!-- Prev / Next -->
-        <nav class="module-nav" aria-label="模块导航">
-          <a href="#" class="module-nav-link">
-            <svg class="module-nav-arrow prev" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/>
-            </svg>
-            <div>
-              <span class="module-nav-label">上一节</span>
-              <span class="module-nav-text">入门指南</span>
-            </div>
-          </a>
-          <a href="#" class="module-nav-link next">
-            <div>
-              <span class="module-nav-label">下一节</span>
-              <span class="module-nav-text">记忆与 PAI.md</span>
-            </div>
-            <svg class="module-nav-arrow next" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
-            </svg>
-          </a>
-        </nav>
       </div>
 
       <!-- Right Panel (Desktop only) -->
@@ -1595,7 +1554,7 @@ Read `README.md`, `PAI.md`, and `package.json`, then summarize the project conve
   <div class="footer-inner">
     <div class="footer-top">
       <div class="footer-brand">
-        <a href="/" style="display:inline-flex;align-items:center;gap:0.5rem;font-size:1rem;font-weight:700;letter-spacing:-0.025em;text-decoration:none;color:var(--color-text-primary);">
+        <a href="../landing/index.html" style="display:inline-flex;align-items:center;gap:0.5rem;font-size:1rem;font-weight:700;letter-spacing:-0.025em;text-decoration:none;color:var(--color-text-primary);">
           <span class="logo-icon">◆</span>
           <span class="logo-brand">ForgePilot</span>
         </a>
@@ -1605,27 +1564,13 @@ Read `README.md`, `PAI.md`, and `package.json`, then summarize the project conve
       </div>
       <nav class="footer-nav" aria-label="页脚导航">
         <section>
-          <span class="footer-nav-section-title">从这里开始</span>
+          <span class="footer-nav-section-title">资源</span>
           <ul class="footer-nav-list">
-            <li><a href="#">学习模块</a></li>
-            <li><a href="#">找到你的水平</a></li>
-            <li><a href="#">演练场</a></li>
-          </ul>
-        </section>
-        <section>
-          <span class="footer-nav-section-title">构建与参考</span>
-          <ul class="footer-nav-list">
-            <li><a href="#">配置构建</a></li>
-            <li><a href="#">速查表</a></li>
-            <li><a href="#">功能索引</a></li>
-            <li><a href="#">资源</a></li>
-          </ul>
-        </section>
-        <section>
-          <span class="footer-nav-section-title">反馈</span>
-          <ul class="footer-nav-list">
-            <li><a href="#">反馈追踪</a></li>
-            <li><a href="#">更新日志</a></li>
+            <li><a href="../landing/index.html">统一入口</a></li>
+            <li><a href="../docs/website/index.html">官方文档</a></li>
+            <li><a href="../demo-step/index.html">互动演示</a></li>
+            <li><a href="../ppt/index.html">演讲稿</a></li>
+            <li><a href="https://github.com/Elysian-x-ai/forgepilot" target="_blank" rel="noopener">GitHub</a></li>
           </ul>
         </section>
       </nav>

@@ -8,11 +8,11 @@ tag:
   - Java
 category:
   - AI
-author: 沉默王二
+author: Hank
 date: 2026-04-20
 ---
 
-大家好，我是二哥呀。
+大家好，我是 Hank。
 
 ForgePilot 第 3 期上线的时候，Memory 系统是我写得最顺手的一块。一个门面类当总管，底下挂着短期记忆、长期记忆、压缩器、Token 预算和检索器五个组件，架构图画出来整整齐齐。
 

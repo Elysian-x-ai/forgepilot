@@ -7,11 +7,11 @@ tag:
   - ForgePilot
 category:
   - AI
-author: 沉默王二
+author: Hank
 date: 2026-04-28
 ---
 
-大家好，我是二哥呀。
+大家好，我是 Hank。
 
 上一期我们给 ForgePilot 加上了联网能力，搜索和抓取都有了。但这些工具都是我们自己实现的。
 

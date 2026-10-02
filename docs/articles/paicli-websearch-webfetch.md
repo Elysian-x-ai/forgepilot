@@ -7,11 +7,11 @@ tag:
   - ForgePilot
 category:
   - AI
-author: 沉默王二
+author: Hank
 date: 2026-04-27
 ---
 
-大家好，我是二哥呀。
+大家好，我是 Hank。
 
 大模型本身是没有联网能力的，他的知识库都是基于某一个时刻训练完成的。
 

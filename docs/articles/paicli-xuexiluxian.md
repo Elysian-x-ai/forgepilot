@@ -14,11 +14,11 @@ tag:
   - 学习路线
 category:
   - AI
-author: 沉默王二
+author: Hank
 date: 2026-06-03
 ---
 
-大家好，我是二哥呀。
+大家好，我是 Hank。
 
 星球里有个球友来问我：“二哥，ForgePilot 我想跟着学，我该从哪下手？大概要学多久才能拿出去面试？”
 

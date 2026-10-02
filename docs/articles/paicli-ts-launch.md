@@ -13,11 +13,11 @@ tag:
   - TypeScript
 category:
   - AI
-author: 沉默王二
+author: Hank
 date: 2026-07-08
 ---
 
-大家好，我是二哥呀。
+大家好，我是 Hank。
 
 ForgePilot 的 TypeScript 版本也上线了。目前 ForgePilot 已经有 Java 版、TypeScript 版和 Python 版了，三个版本的核心架构完全一致，区别只在语言和生态层面。
 

@@ -7,11 +7,11 @@ tag:
   - MCP
 category:
   - AI
-author: 沉默王二
+author: Hank
 date: 2026-04-29
 ---
 
-大家好，我是二哥呀。
+大家好，我是 Hank。
 
 上一期我们给 ForgePilot 接入了 MCP 协议的核心能力，能调用外部工具了。但用了几天之后我就发现，光能调工具还不够。
 
