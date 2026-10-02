@@ -138,15 +138,6 @@
       color: var(--text-secondary);
     }
 
-    .search-btn kbd {
-      font-family: inherit;
-      font-size: 11px;
-      padding: 2px 6px;
-      border-radius: 4px;
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border);
-    }
-
     .lang-toggle {
       display: flex;
       align-items: center;
@@ -941,7 +932,10 @@
         </nav>
       </div>
       <div class="header-right">
-        <a class="search-btn" href="../landing/index.html#resources">资源中心</a>
+        <a class="search-btn" href="../landing/index.html#resources" aria-label="打开资源中心">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+          <span>资源中心</span>
+        </a>
         <div class="lang-toggle">
           <button class="active">中</button>
           <button>EN</button>
@@ -970,9 +964,18 @@
         </button>
       </div>
       <ul class="module-list">
+        <li><a href="../docs/website/index.html#install"><span class="module-num">0</span> 入门指南</a></li>
         <li><a href="#main-content" class="active"><span class="module-num">1</span> 斜杠命令</a></li>
-        <li><a href="#discovering-commands"><span class="module-num">·</span> 发现命令</a></li>
-        <li><a href="#command-categories"><span class="module-num">·</span> 命令分类</a></li>
+        <li><a href="../docs/website/index.html#features"><span class="module-num">2</span> 记忆与 PAI.md</a></li>
+        <li><a href="../docs/website/index.html#install"><span class="module-num">3</span> 项目配置</a></li>
+        <li><a href="#command-categories"><span class="module-num">4</span> 命令详解</a></li>
+        <li><a href="../docs/website/index.html#features"><span class="module-num">5</span> 技能</a></li>
+        <li><a href="../docs/website/index.html#features"><span class="module-num">6</span> 钩子</a></li>
+        <li><a href="../docs/website/index.html#architecture"><span class="module-num">7</span> MCP 服务器</a></li>
+        <li><a href="../docs/website/index.html#architecture"><span class="module-num">8</span> 子代理</a></li>
+        <li><a href="../docs/website/index.html#evolution"><span class="module-num">9</span> 高级功能</a></li>
+        <li><a href="../docs/website/index.html#evolution"><span class="module-num">10</span> 工作流</a></li>
+        <li><a href="../docs/website/index.html#features"><span class="module-num">11</span> 插件</a></li>
       </ul>
     </aside>
 
@@ -1098,7 +1101,22 @@
               </div>
             </div>
 
-            <!-- Resource links live in the shared footer. -->
+            <!-- Feedback & Module Nav -->
+            <a href="https://github.com/Elysian-x-ai/forgepilot/issues/new" class="feedback-link" target="_blank" rel="noopener">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path></svg>
+              报告此模块问题
+            </a>
+
+            <nav class="module-nav" aria-label="学习模块导航">
+              <a href="../docs/website/index.html#install" class="nav-card">
+                <div class="nav-label">← 上一篇</div>
+                <div class="nav-title">入门指南</div>
+              </a>
+              <a href="../docs/website/index.html#features" class="nav-card next">
+                <div class="nav-label">下一篇 →</div>
+                <div class="nav-title">记忆与 PAI.md</div>
+              </a>
+            </nav>
           </div>
         </div>
       </div>

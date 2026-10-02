@@ -247,25 +247,6 @@ html.dark .nav-link.active {
   .search-pill { display: inline-flex; }
 }
 .search-pill svg { width: 16px; height: 16px; }
-.search-shortcut {
-  display: inline-block;
-  min-width: 2.5rem;
-  border-radius: 4px;
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  padding: 0.125rem 0.375rem;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  text-align: center;
-  color: var(--color-text-muted);
-}
-html.dark .search-shortcut {
-  border-color: var(--color-border-dark);
-  background: var(--color-surface-dark);
-}
-
 /* Icon button */
 .icon-btn {
   display: flex;
@@ -1235,6 +1216,12 @@ html.dark .footer-bottom a:hover { color: var(--color-brand-light); }
     </nav>
 
     <div class="header-right">
+      <a class="search-pill" href="../landing/index.html#resources" aria-label="打开资源中心">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 100-15 7.5 7.5 0 000 15z"/>
+        </svg>
+        <span>资源中心</span>
+      </a>
 
       <nav class="lang-switcher" aria-label="语言">
         <span class="lang-link active">中文</span>
@@ -1279,9 +1266,18 @@ html.dark .footer-bottom a:hover { color: var(--color-brand-light); }
           </svg>
         </button>
         <ul class="sidebar-nav-list">
+          <li><a href="#main-content" class="sidebar-nav-link"><span class="sidebar-number">0</span><span class="sidebar-title">入门指南</span></a></li>
           <li><a href="#main-content" class="sidebar-nav-link active"><span class="sidebar-number">1</span><span class="sidebar-title">斜杠命令</span></a></li>
-          <li><a href="#discovering-commands" class="sidebar-nav-link"><span class="sidebar-number">·</span><span class="sidebar-title">发现命令</span></a></li>
-          <li><a href="#command-categories" class="sidebar-nav-link"><span class="sidebar-number">·</span><span class="sidebar-title">命令分类</span></a></li>
+          <li><a href="#main-content" class="sidebar-nav-link"><span class="sidebar-number">2</span><span class="sidebar-title">记忆与 PAI.md</span></a></li>
+          <li><a href="#main-content" class="sidebar-nav-link"><span class="sidebar-number">3</span><span class="sidebar-title">项目设置</span></a></li>
+          <li><a href="#main-content" class="sidebar-nav-link"><span class="sidebar-number">4</span><span class="sidebar-title">命令深入</span></a></li>
+          <li><a href="#main-content" class="sidebar-nav-link"><span class="sidebar-number">5</span><span class="sidebar-title">技能</span></a></li>
+          <li><a href="#main-content" class="sidebar-nav-link"><span class="sidebar-number">6</span><span class="sidebar-title">钩子</span></a></li>
+          <li><a href="#main-content" class="sidebar-nav-link"><span class="sidebar-number">7</span><span class="sidebar-title">MCP 服务器</span></a></li>
+          <li><a href="#main-content" class="sidebar-nav-link"><span class="sidebar-number">8</span><span class="sidebar-title">子代理</span></a></li>
+          <li><a href="#main-content" class="sidebar-nav-link"><span class="sidebar-number">9</span><span class="sidebar-title">高级功能</span></a></li>
+          <li><a href="#main-content" class="sidebar-nav-link"><span class="sidebar-number">10</span><span class="sidebar-title">工作流</span></a></li>
+          <li><a href="#main-content" class="sidebar-nav-link"><span class="sidebar-number">11</span><span class="sidebar-title">插件</span></a></li>
         </ul>
       </div>
     </nav>
@@ -1385,9 +1381,33 @@ html.dark .footer-bottom a:hover { color: var(--color-brand-light); }
           </div>
         </article>
 
-        <!-- Report link -->
+        <a href="https://github.com/Elysian-x-ai/forgepilot/issues/new" class="report-link" target="_blank" rel="noopener">
+          <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"/>
+          </svg>
+          报告本模块问题
+        </a>
 
-        <!-- Prev / Next -->
+        <nav class="module-nav" aria-label="模块导航">
+          <a href="#main-content" class="module-nav-link">
+            <svg class="module-nav-arrow prev" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/>
+            </svg>
+            <div>
+              <span class="module-nav-label">上一节</span>
+              <span class="module-nav-text">入门指南</span>
+            </div>
+          </a>
+          <a href="#command-categories" class="module-nav-link next">
+            <div>
+              <span class="module-nav-label">下一节</span>
+              <span class="module-nav-text">命令分类</span>
+            </div>
+            <svg class="module-nav-arrow next" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
+            </svg>
+          </a>
+        </nav>
       </div>
 
       <!-- Right Panel (Desktop only) -->
@@ -1564,13 +1584,27 @@ Read `README.md`, `PAI.md`, and `package.json`, then summarize the project conve
       </div>
       <nav class="footer-nav" aria-label="页脚导航">
         <section>
-          <span class="footer-nav-section-title">资源</span>
+          <span class="footer-nav-section-title">从这里开始</span>
           <ul class="footer-nav-list">
             <li><a href="../landing/index.html">统一入口</a></li>
             <li><a href="../docs/website/index.html">官方文档</a></li>
             <li><a href="../demo-step/index.html">互动演示</a></li>
+          </ul>
+        </section>
+        <section>
+          <span class="footer-nav-section-title">继续探索</span>
+          <ul class="footer-nav-list">
             <li><a href="../ppt/index.html">演讲稿</a></li>
+            <li><a href="#templates">命令模板</a></li>
             <li><a href="https://github.com/Elysian-x-ai/forgepilot" target="_blank" rel="noopener">GitHub</a></li>
+          </ul>
+        </section>
+        <section>
+          <span class="footer-nav-section-title">项目</span>
+          <ul class="footer-nav-list">
+            <li><a href="https://github.com/Elysian-x-ai/forgepilot/issues" target="_blank" rel="noopener">问题反馈</a></li>
+            <li><a href="https://github.com/Elysian-x-ai/forgepilot" target="_blank" rel="noopener">版本记录</a></li>
+            <li><span>作者：Hank</span></li>
           </ul>
         </section>
       </nav>
