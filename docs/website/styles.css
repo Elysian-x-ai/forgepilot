@@ -183,7 +183,6 @@ img { max-width: 100%; }
   display: block;
 }
 
-.logo-bracket { color: var(--accent); }
 .logo-text { color: var(--text-primary); }
 .logo-version {
   font-size: 0.7rem;
@@ -933,9 +932,16 @@ img { max-width: 100%; }
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.footer-logo .logo-bracket { color: var(--accent); }
+.footer-mark {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
 
 .footer-brand p {
   font-size: 0.88rem;

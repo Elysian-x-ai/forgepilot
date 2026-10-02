@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ForgePilot — Java Agent CLI</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◆</text></svg>">
+<link rel="icon" href="../brand/forgepilot-mark.svg">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -53,12 +53,12 @@ a { color: inherit; text-decoration: none; }
 }
 
 .nav-pi {
-  font-family: "Georgia", "Times New Roman", serif;
-  font-size: 1.6rem;
-  font-style: italic;
-  color: #b8860b;
+  width: 24px;
+  height: 24px;
   line-height: 1;
 }
+
+.nav-pi img { width: 100%; height: 100%; display: block; }
 
 .nav-links {
   display: flex;
@@ -112,10 +112,13 @@ a { color: inherit; text-decoration: none; }
 }
 
 .hero-title .pi {
-  font-family: "Georgia", "Times New Roman", serif;
-  font-style: italic;
-  color: #b8860b;
+  display: inline-flex;
+  width: .82em;
+  height: .82em;
+  vertical-align: -.04em;
 }
+
+.hero-title .pi img { width: 100%; height: 100%; display: block; }
 
 .hero-subtitle {
   font-size: clamp(1rem, 2vw, 1.25rem);
@@ -368,8 +371,8 @@ a { color: inherit; text-decoration: none; }
 }
 
 .model-dot.glm { background: #5c6bc0; }
-.model-dot.ds { background: #26a69a; }
-.model-dot.step { background: #ec407a; }
+.model-dot.ds { background: #39D98A; }
+.model-dot.step { background: #F2B84B; }
 .model-dot.kimi { background: #ffa726; }
 .model-dot.free { background: #66bb6a; }
 
@@ -425,6 +428,7 @@ a { color: inherit; text-decoration: none; }
 
 .t-logo { color: #aaff63; font-weight: 800; }
 .t-pi { color: #aaff63; font-weight: 800; }
+.t-mark { width: 1.05em; height: 1.05em; display: inline-block; vertical-align: -.16em; }
 .t-strong { color: #fff; font-weight: 800; }
 .t-dim { color: #7c7c80; }
 .t-green { color: #aaff63; }
@@ -507,8 +511,8 @@ a { color: inherit; text-decoration: none; }
 }
 
 .arch-node.primary {
-  border-color: #b8860b;
-  background: #fdf8ed;
+  border-color: #2F6BFF;
+  background: #eef3ff;
   font-size: 1rem;
 }
 
@@ -541,7 +545,7 @@ a { color: inherit; text-decoration: none; }
   top: 4px;
   bottom: 4px;
   width: 2px;
-  background: linear-gradient(180deg, #d4a74a, #26a69a, #ec407a);
+  background: linear-gradient(180deg, #2F6BFF, #39D98A, #F2B84B);
   border-radius: 1px;
 }
 
@@ -559,12 +563,12 @@ a { color: inherit; text-decoration: none; }
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #d4a74a;
+  background: #2F6BFF;
   border: 2px solid #fcfaf8;
 }
 
-.tl-item:nth-child(even)::before { background: #26a69a; }
-.tl-item:nth-child(3n)::before { background: #ec407a; }
+.tl-item:nth-child(even)::before { background: #39D98A; }
+.tl-item:nth-child(3n)::before { background: #F2B84B; }
 
 .tl-phase {
   font-size: 0.75rem;
@@ -598,8 +602,24 @@ a { color: inherit; text-decoration: none; }
   font-size: 1.3rem;
   font-style: italic;
   font-weight: 700;
-  color: #b8860b;
+  color: #2F6BFF;
   margin-bottom: 16px;
+}
+
+.footer-mark,
+.arch-mark {
+  width: 1.25em;
+  height: 1.25em;
+  display: inline-block;
+  vertical-align: -.2em;
+  margin-right: .35em;
+}
+
+.arch-mark {
+  width: 1.15em;
+  height: 1.15em;
+  margin-right: .25em;
+  vertical-align: -.18em;
 }
 
 .footer-links {
@@ -659,7 +679,6 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* ForgePilot additions: keep the original warm visual system. */
-.nav-pi img { width: 24px; height: 24px; display: block; }
 .install-cmd { appearance: none; text-align: left; }
 .resource-grid {
   display: grid;
@@ -678,7 +697,7 @@ a { color: inherit; text-decoration: none; }
   background: #fff;
   transition: border-color 0.2s, transform 0.2s;
 }
-.resource-link:hover { border-color: #b8860b; transform: translateY(-2px); }
+.resource-link:hover { border-color: #2F6BFF; transform: translateY(-2px); }
 .resource-link strong { font-size: 0.95rem; }
 .resource-link span { color: #777; font-size: 0.8rem; line-height: 1.5; }
 
@@ -712,7 +731,7 @@ a { color: inherit; text-decoration: none; }
 <!-- HERO -->
 <section class="hero">
   <h1 class="hero-title">
-    <span class="pi">◆</span> ForgePilot
+    <span class="pi"><img src="../brand/forgepilot-mark.svg" alt=""></span> ForgePilot
   </h1>
   <p class="hero-subtitle">
     面向开发者的 Java Agent CLI，从 ReAct 到 Multi-Agent，持续交付的 Java 编程助手。
@@ -900,7 +919,7 @@ a { color: inherit; text-decoration: none; }
     </div>
     <div class="arch-arrow">→</div>
     <div class="arch-node primary">
-      ◆ ForgePilot Agent
+      <img class="arch-mark" src="../brand/forgepilot-mark.svg" alt=""> ForgePilot Agent
       <div class="arch-sub">ReAct · Plan · Multi-Agent</div>
     </div>
     <div class="arch-arrow">→</div>
@@ -997,7 +1016,7 @@ a { color: inherit; text-decoration: none; }
 
 <!-- FOOTER -->
 <footer class="footer">
-  <div class="footer-brand">◆ ForgePilot</div>
+  <div class="footer-brand"><img class="footer-mark" src="../brand/forgepilot-mark.svg" alt=""> ForgePilot</div>
   <div class="footer-links">
     <a href="#resources">资源中心</a>
     <a href="../docs/website/index.html">官方文档</a>
@@ -1031,7 +1050,7 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 // Terminal animation
 const desktopLines = [
   { t: '', d: 0 },
-  { t: '   <span class="t-logo">██████████</span>    <span class="t-strong">ForgePilot</span> <span class="t-pi">◆</span>', d: 0 },
+  { t: '   <span class="t-logo">██████████</span>    <span class="t-strong">ForgePilot</span> <img class="t-mark" src="../brand/forgepilot-mark.svg" alt="">', d: 0 },
   { t: '   <span class="t-logo">  ██  ██</span>    <span class="t-dim">Model deepseek-v4-pro (deepseek)</span>', d: 80 },
   { t: '   <span class="t-logo">  ██  ██</span>    <span class="t-dim">MCP · Skills · ReAct</span>', d: 160 },
   { t: '   <span class="t-logo">  ██  ██</span>    <span class="t-dim">ReAct · Plan · MCP · Browser · Image · Tools · Memory · RAG</span>', d: 240 },
@@ -1055,7 +1074,7 @@ const desktopLines = [
 
 const mobileLines = [
   { t: '', d: 0 },
-  { t: ' <span class="t-logo">██████████</span>  <span class="t-strong">ForgePilot</span> <span class="t-pi">◆</span>', d: 0 },
+  { t: ' <span class="t-logo">██████████</span>  <span class="t-strong">ForgePilot</span> <img class="t-mark" src="../brand/forgepilot-mark.svg" alt="">', d: 0 },
   { t: ' <span class="t-logo">  ██  ██</span>  <span class="t-dim">deepseek-v4-pro</span>', d: 80 },
   { t: ' <span class="t-logo">  ██  ██</span>  <span class="t-dim">MCP tools · ReAct</span>', d: 160 },
   { t: ' <span class="t-logo">  ██  ██</span>  <span class="t-dim">Skills · ReAct</span>', d: 240 },

@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../brand/forgepilot-mark.svg">
 <meta name="description" content="学习使用 ForgePilot 内置的斜杠命令进行上下文管理、会话控制和配置。">
 <title>斜杠命令 — ForgePilot 学习中心</title>
 
@@ -17,12 +18,12 @@
   --font-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
   --font-mono: ui-monospace, "Cascadia Code", "Fira Code", monospace;
 
-  --color-brand: #b45309;
-  --color-brand-hover: #92400e;
-  --color-brand-light: #fbbf24;
-  --color-brand-light-hover: #fcd34d;
-  --color-brand-subtle: #fef3c7;
-  --color-brand-subtle-dark: #451a03;
+  --color-brand: #2F6BFF;
+  --color-brand-hover: #2354CC;
+  --color-brand-light: #F2B84B;
+  --color-brand-light-hover: #FFD477;
+  --color-brand-subtle: #EAF0FF;
+  --color-brand-subtle-dark: #172449;
 
   --color-surface: #fafaf9;
   --color-surface-dark: #1c1917;
@@ -33,7 +34,7 @@
 
   --color-terminal-bg: #1c1917;
   --color-terminal-text: #e7e5e4;
-  --color-terminal-cursor: #fbbf24;
+  --color-terminal-cursor: #F2B84B;
   --color-terminal-selection: #44403c;
 
   --color-success: #22c55e;
@@ -83,7 +84,7 @@ html.dark {
   --color-text-secondary: #d6d3d1;
   --color-text-muted: #a8a29e;
   --color-border: #44403c;
-  --color-brand-subtle: #451a03;
+  --color-brand-subtle: #172449;
   --color-white: #292524;
   --color-stone-100: #292524;
   --color-stone-200: #44403c;
@@ -186,11 +187,11 @@ html.dark .header {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 6px;
-  background: var(--color-brand);
-  color: white;
-  font-size: 14px;
-  font-weight: 700;
+}
+.logo-icon img {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 .logo-brand { color: var(--color-brand); }
 html.dark .logo-brand { color: var(--color-brand-light); }
@@ -730,7 +731,7 @@ html.dark .section-icon.muted {
   font-family: var(--font-mono);
   font-size: 1rem;
   color: #e7e5e4;
-  caret-color: #fbbf24;
+  caret-color: #F2B84B;
 }
 @media (min-width: 64rem) {
   .terminal-input { font-size: 0.875rem; }
@@ -1204,7 +1205,7 @@ html.dark .footer-bottom a:hover { color: var(--color-brand-light); }
 <header class="header" aria-label="网站页眉">
   <div class="header-inner">
     <a href="../landing/index.html" class="logo">
-      <span class="logo-icon">◆</span>
+      <span class="logo-icon"><img src="../brand/forgepilot-mark.svg" alt=""></span>
       <span class="logo-brand">ForgePilot</span>
     </a>
 
@@ -1575,7 +1576,7 @@ Read `README.md`, `PAI.md`, and `package.json`, then summarize the project conve
     <div class="footer-top">
       <div class="footer-brand">
         <a href="../landing/index.html" style="display:inline-flex;align-items:center;gap:0.5rem;font-size:1rem;font-weight:700;letter-spacing:-0.025em;text-decoration:none;color:var(--color-text-primary);">
-          <span class="logo-icon">◆</span>
+          <span class="logo-icon"><img src="../brand/forgepilot-mark.svg" alt=""></span>
           <span class="logo-brand">ForgePilot</span>
         </a>
         <p class="footer-brand-text">
@@ -1719,7 +1720,7 @@ Read `README.md`, `PAI.md`, and `package.json`, then summarize the project conve
 
   function runStep() {
     const step = steps[currentStep];
-    outputEl.innerHTML = '<span style="color:#fbbf24;">$ ' + step.command + '</span>\n' + step.output;
+    outputEl.innerHTML = '<span style="color:#F2B84B;">$ ' + step.command + '</span>\n' + step.output;
     if (currentStep < steps.length - 1) {
       currentStep++;
       renderStep();
@@ -1767,7 +1768,7 @@ Read `README.md`, `PAI.md`, and `package.json`, then summarize the project conve
         const resp = responses[cmd] || '未知命令：' + cmd + '\n输入 /help 查看可用命令。';
         const line = document.createElement('div');
         line.style.marginBottom = '0.5rem';
-        line.innerHTML = '<span style="color:#fbbf24;">$</span> <span style="color:#e7e5e4;">' + cmd.replace(/</g,'&lt;') + '</span>\n<pre style="white-space:pre-wrap;font-family:inherit;font-size:inherit;color:#a8a29e;margin:0.25rem 0 0 0;">' + resp + '</pre>';
+        line.innerHTML = '<span style="color:#F2B84B;">$</span> <span style="color:#e7e5e4;">' + cmd.replace(/</g,'&lt;') + '</span>\n<pre style="white-space:pre-wrap;font-family:inherit;font-size:inherit;color:#a8a29e;margin:0.25rem 0 0 0;">' + resp + '</pre>';
         output.appendChild(line);
         this.value = '';
         output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
