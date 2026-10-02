@@ -12,14 +12,14 @@
       --text-primary: #e4e4e7;
       --text-secondary: #a1a1aa;
       --text-muted: #71717a;
-      --accent: #2f6bff;
-      --accent-hover: #6c8fff;
+      --accent: #6366f1;
+      --accent-hover: #818cf8;
       --border: #27272a;
       --border-hover: #3f3f46;
       --code-bg: #0d0d14;
       --success: #22c55e;
-      --warning: #f2b84b;
-      --info: #82a8ff;
+      --warning: #f59e0b;
+      --info: #3b82f6;
     }
 
     * {
@@ -909,6 +909,11 @@
       color: var(--text-secondary);
       padding: 7px 10px;
       cursor: pointer;
+    }
+
+    /* Keep the collapsible menu out of the desktop layout. */
+    .mobile-nav {
+      display: none;
     }
 
     @media (prefers-reduced-motion: reduce) {
