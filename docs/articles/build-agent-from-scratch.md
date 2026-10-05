@@ -425,7 +425,7 @@ ForgePilot 需要 Java 17 以上和 Maven，外加至少一个模型的 API Key�
 ```bash
 cp .env.example .env    # 填入 DEEPSEEK_API_KEY
 mvn clean package       # 默认跳过测试
-java -jar target/paicli-1.0-SNAPSHOT.jar
+java -jar target/paicli-16.1.0.jar
 ```
 
 启动后默认使用 DeepSeek，没配 DeepSeek 的 Key 时，会按顺序找 GLM、混元、Kimi 等其他已配置的模型，运行中也可以用 `/model` 切换。

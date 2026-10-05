@@ -222,7 +222,7 @@ public final class WechatCommandMain {
     }
 
     private static void printStartHint() {
-        System.out.println("启动: java -jar target/paicli-1.0-SNAPSHOT.jar wechat start");
+        System.out.println("启动: java -jar target/paicli-16.1.0.jar wechat start");
         System.out.println("如果已安装全局命令，也可以执行: paicli wechat start");
     }
 

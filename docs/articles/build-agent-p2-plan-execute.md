@@ -492,7 +492,7 @@ public ExecutionPlan revisePlan(ExecutionPlan current, String feedback) throws I
 
 ```bash
 mvn clean package
-java -jar target/paicli-1.0-SNAPSHOT.jar
+java -jar target/paicli-16.1.0.jar
 ```
 
 先来一个串行的例子，每一步都依赖上一步。

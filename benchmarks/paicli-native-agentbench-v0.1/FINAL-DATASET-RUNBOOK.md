@@ -92,7 +92,7 @@ PUBLIC_REPO=/Users/itwanger/Documents/GitHub/paicli
 PRIVATE_SOURCE=/private/tmp/paicli-final-owner/private-final-source-v1
 FROZEN_ROOT=/private/tmp/paicli-final-owner/frozen/final-v1-freeze-001
 
-java -cp "$PUBLIC_REPO/target/paicli-1.0-SNAPSHOT.jar" \
+java -cp "$PUBLIC_REPO/target/paicli-16.1.0.jar" \
   com.paicli.eval.benchmark.finalset.FinalDatasetFreezeMain freeze \
   --source "$PRIVATE_SOURCE" \
   --destination "$FROZEN_ROOT" \
@@ -144,7 +144,7 @@ manifest 和 marker 自身最终为 `0400`。marker 存在但 digest 不匹配�
 PUBLIC_REPO=/Users/itwanger/Documents/GitHub/paicli
 FROZEN_ROOT=/private/tmp/paicli-final-owner/frozen/final-v1-freeze-001
 
-java -cp "$PUBLIC_REPO/target/paicli-1.0-SNAPSHOT.jar" \
+java -cp "$PUBLIC_REPO/target/paicli-16.1.0.jar" \
   com.paicli.eval.benchmark.finalset.FinalDatasetFreezeMain verify \
   --frozen "$FROZEN_ROOT" \
   --public-repo "$PUBLIC_REPO"
@@ -357,8 +357,8 @@ mvn -q -DskipTests=false -Dtest=D1LiveDockerDiagnosticTest \
   -Dpaicli.test.d1.live=true \
   -Dpaicli.test.d1.output="$D1_OUTPUT" \
   -Dpaicli.test.worker.image=sha256:742ecfeab2543923dffe37aee61ae8b7e3490d88ad28b205f574a07b01754608 \
-  -Dpaicli.test.candidate.jar=/Users/itwanger/Documents/GitHub/paicli/target/paicli-1.0-SNAPSHOT.jar \
-  -Dpaicli.test.runner.jar=/Users/itwanger/Documents/GitHub/paicli/target/paicli-1.0-SNAPSHOT-agentbench-runner.jar test
+  -Dpaicli.test.candidate.jar=/Users/itwanger/Documents/GitHub/paicli/target/paicli-16.1.0.jar \
+  -Dpaicli.test.runner.jar=/Users/itwanger/Documents/GitHub/paicli/target/paicli-16.1.0-agentbench-runner.jar test
 ```
 
 示例路径是本机 checkout；其他机器应改为自己的绝对路径。镜像是现有开发 runtime，
@@ -463,8 +463,8 @@ D2_OUTPUT="$(mktemp -d /private/tmp/paicli-d2-diagnostic.XXXXXX)"
 mvn -q -DskipTests=false -Dtest=D2LiveDockerDiagnosticTest \
   -Dpaicli.test.d2.live=true -Dpaicli.test.d2.output="$D2_OUTPUT" \
   -Dpaicli.test.worker.image=sha256:742ecfeab2543923dffe37aee61ae8b7e3490d88ad28b205f574a07b01754608 \
-  -Dpaicli.test.candidate.jar=/Users/itwanger/Documents/GitHub/paicli/target/paicli-1.0-SNAPSHOT.jar \
-  -Dpaicli.test.runner.jar=/Users/itwanger/Documents/GitHub/paicli/target/paicli-1.0-SNAPSHOT-agentbench-runner.jar test
+  -Dpaicli.test.candidate.jar=/Users/itwanger/Documents/GitHub/paicli/target/paicli-16.1.0.jar \
+  -Dpaicli.test.runner.jar=/Users/itwanger/Documents/GitHub/paicli/target/paicli-16.1.0-agentbench-runner.jar test
 ```
 
 这是付费模型调用，不是普通本地回归。上述镜像仍是现有开发 runtime，不是正式 Worker
@@ -676,8 +676,8 @@ mvn -q -DskipTests=false '-Dtest=D3RelayProtocolTest,D3DockerControlTest' \
   -Dpaicli.test.d3.docker=true \
   -Dpaicli.test.d3.output=/absolute/new-private-output-directory \
   -Dpaicli.test.worker.image=sha256:742ecfeab2543923dffe37aee61ae8b7e3490d88ad28b205f574a07b01754608 \
-  -Dpaicli.test.candidate.jar=/absolute/paicli/target/paicli-1.0-SNAPSHOT.jar \
-  -Dpaicli.test.runner.jar=/absolute/paicli/target/paicli-1.0-SNAPSHOT-agentbench-runner.jar test
+  -Dpaicli.test.candidate.jar=/absolute/paicli/target/paicli-16.1.0.jar \
+  -Dpaicli.test.runner.jar=/absolute/paicli/target/paicli-16.1.0-agentbench-runner.jar test
 ```
 
 原生 Worker 的非容器回归另覆盖两组正控制、14 类反例、两种第一轮预算耗尽和第二轮
@@ -894,8 +894,8 @@ mvn -q -DskipTests=false '-Dtest=D3DockerControlTest,D3RelayProtocolTest' \
   -Dpaicli.test.d3.output=/absolute/new-private-output-directory \
   -Dpaicli.test.worker.image=sha256:742ecfeab2543923dffe37aee61ae8b7e3490d88ad28b205f574a07b01754608 \
   -Dpaicli.test.verifier.image=sha256:770224998e34bdd809f205a26d31bff62684b65e78751a3ab5c319d5791632e8 \
-  -Dpaicli.test.candidate.jar=/absolute/paicli/target/paicli-1.0-SNAPSHOT.jar \
-  -Dpaicli.test.runner.jar=/absolute/paicli/target/paicli-1.0-SNAPSHOT-agentbench-runner.jar test
+  -Dpaicli.test.candidate.jar=/absolute/paicli/target/paicli-16.1.0.jar \
+  -Dpaicli.test.runner.jar=/absolute/paicli/target/paicli-16.1.0-agentbench-runner.jar test
 ```
 
 Worker 仍使用开发控制镜像，不等于完整正式 toolchain freeze。接下来可用新生成的
@@ -921,8 +921,8 @@ mvn -q -DskipTests=false -Dtest=D3LiveDockerDiagnosticTest \
   -Dpaicli.test.d3.output=/absolute/new-private-output-directory \
   -Dpaicli.test.worker.image=sha256:742ecfeab2543923dffe37aee61ae8b7e3490d88ad28b205f574a07b01754608 \
   -Dpaicli.test.verifier.image=sha256:770224998e34bdd809f205a26d31bff62684b65e78751a3ab5c319d5791632e8 \
-  -Dpaicli.test.candidate.jar=/absolute/paicli/target/paicli-1.0-SNAPSHOT.jar \
-  -Dpaicli.test.runner.jar=/absolute/paicli/target/paicli-1.0-SNAPSHOT-agentbench-runner.jar test
+  -Dpaicli.test.candidate.jar=/absolute/paicli/target/paicli-16.1.0.jar \
+  -Dpaicli.test.runner.jar=/absolute/paicli/target/paicli-16.1.0-agentbench-runner.jar test
 ```
 
 先创建新的 0700 空目录；不可重用已有输出目录。增加 `-Dpaicli.test.d3.check=true`
@@ -2343,8 +2343,8 @@ mvn -o -B -ntp -DskipTests=false -Dtest=E1LiveDockerDiagnosticTest \
   -Dpaicli.test.e1.output="$e1_check_root" \
   -Dpaicli.test.worker.image=sha256:742ecfeab2543923dffe37aee61ae8b7e3490d88ad28b205f574a07b01754608 \
   -Dpaicli.test.verifier.image=sha256:770224998e34bdd809f205a26d31bff62684b65e78751a3ab5c319d5791632e8 \
-  -Dpaicli.test.candidate.jar=/Users/itwanger/Documents/GitHub/paicli/target/paicli-1.0-SNAPSHOT.jar \
-  -Dpaicli.test.runner.jar=/Users/itwanger/Documents/GitHub/paicli/target/paicli-1.0-SNAPSHOT-agentbench-runner.jar test
+  -Dpaicli.test.candidate.jar=/Users/itwanger/Documents/GitHub/paicli/target/paicli-16.1.0.jar \
+  -Dpaicli.test.runner.jar=/Users/itwanger/Documents/GitHub/paicli/target/paicli-16.1.0-agentbench-runner.jar test
 ```
 
 真实调用前仍需 web-access 前置选择（本次 check-deps exit 2：Chrome 已有远程调试，但尚无
@@ -2523,8 +2523,8 @@ mvn -o -B -ntp -DskipTests=false -Dtest=F4DockerControlTest \
   -Dpaicli.test.f4.docker=true -Dpaicli.test.f4.output="$f4_control_root" \
   -Dpaicli.test.worker.image=sha256:742ecfeab2543923dffe37aee61ae8b7e3490d88ad28b205f574a07b01754608 \
   -Dpaicli.test.verifier.image=sha256:770224998e34bdd809f205a26d31bff62684b65e78751a3ab5c319d5791632e8 \
-  -Dpaicli.test.candidate.jar=/Users/itwanger/Documents/GitHub/paicli/target/paicli-1.0-SNAPSHOT.jar \
-  -Dpaicli.test.runner.jar=/Users/itwanger/Documents/GitHub/paicli/target/paicli-1.0-SNAPSHOT-agentbench-runner.jar test
+  -Dpaicli.test.candidate.jar=/Users/itwanger/Documents/GitHub/paicli/target/paicli-16.1.0.jar \
+  -Dpaicli.test.runner.jar=/Users/itwanger/Documents/GitHub/paicli/target/paicli-16.1.0-agentbench-runner.jar test
 ```
 
 ### 37.3 接续要求
@@ -2641,8 +2641,8 @@ mvn -o -B -ntp -DskipTests=false -Dtest=F4FormalIntegrationTest,GeneratedFormalV
   -Dpaicli.test.f4.formal.docker=true -Dpaicli.test.f4.formal.output="$f4_formal_root" \
   -Dpaicli.test.worker.image=sha256:742ecfeab2543923dffe37aee61ae8b7e3490d88ad28b205f574a07b01754608 \
   -Dpaicli.test.verifier.image=sha256:770224998e34bdd809f205a26d31bff62684b65e78751a3ab5c319d5791632e8 \
-  -Dpaicli.test.candidate.jar=/Users/itwanger/Documents/GitHub/paicli/target/paicli-1.0-SNAPSHOT.jar \
-  -Dpaicli.test.runner.jar=/Users/itwanger/Documents/GitHub/paicli/target/paicli-1.0-SNAPSHOT-agentbench-runner.jar test
+  -Dpaicli.test.candidate.jar=/Users/itwanger/Documents/GitHub/paicli/target/paicli-16.1.0.jar \
+  -Dpaicli.test.runner.jar=/Users/itwanger/Documents/GitHub/paicli/target/paicli-16.1.0-agentbench-runner.jar test
 ```
 
 ### 38.3 后续范围
@@ -2746,8 +2746,8 @@ mvn -o -B -ntp -DskipTests=false -Dtest=F1DockerControlTest \
   -Dpaicli.test.f1.docker=true -Dpaicli.test.f1.output="$f1_control_root" \
   -Dpaicli.test.worker.image=sha256:742ecfeab2543923dffe37aee61ae8b7e3490d88ad28b205f574a07b01754608 \
   -Dpaicli.test.verifier.image=sha256:770224998e34bdd809f205a26d31bff62684b65e78751a3ab5c319d5791632e8 \
-  -Dpaicli.test.candidate.jar=/Users/itwanger/Documents/GitHub/paicli/target/paicli-1.0-SNAPSHOT.jar \
-  -Dpaicli.test.runner.jar=/Users/itwanger/Documents/GitHub/paicli/target/paicli-1.0-SNAPSHOT-agentbench-runner.jar test
+  -Dpaicli.test.candidate.jar=/Users/itwanger/Documents/GitHub/paicli/target/paicli-16.1.0.jar \
+  -Dpaicli.test.runner.jar=/Users/itwanger/Documents/GitHub/paicli/target/paicli-16.1.0-agentbench-runner.jar test
 ```
 
 ### 39.3 接续边界
@@ -2857,8 +2857,8 @@ mvn -o -B -ntp -DskipTests=false -Dtest=F1FormalIntegrationTest,GeneratedFormalV
   -Dpaicli.test.f1.formal.docker=true -Dpaicli.test.f1.formal.output="$f1_formal_root" \
   -Dpaicli.test.worker.image=sha256:742ecfeab2543923dffe37aee61ae8b7e3490d88ad28b205f574a07b01754608 \
   -Dpaicli.test.verifier.image=sha256:770224998e34bdd809f205a26d31bff62684b65e78751a3ab5c319d5791632e8 \
-  -Dpaicli.test.candidate.jar=/Users/itwanger/Documents/GitHub/paicli/target/paicli-1.0-SNAPSHOT.jar \
-  -Dpaicli.test.runner.jar=/Users/itwanger/Documents/GitHub/paicli/target/paicli-1.0-SNAPSHOT-agentbench-runner.jar test
+  -Dpaicli.test.candidate.jar=/Users/itwanger/Documents/GitHub/paicli/target/paicli-16.1.0.jar \
+  -Dpaicli.test.runner.jar=/Users/itwanger/Documents/GitHub/paicli/target/paicli-16.1.0-agentbench-runner.jar test
 ```
 
 ### 40.3 收尾审查：Candidate 工作区超限分类
@@ -3671,9 +3671,9 @@ E2 仍缺宿主真实 request/response 与逐事件 ACK、actor/system epoch、�
 
 本次构建 SHA-256：
 
-- Candidate `paicli-1.0-SNAPSHOT.jar`：
+- Candidate `paicli-16.1.0.jar`：
   `bca9ab99f46e83ea7719259dd9f826b634115254c20b3a375a0878170c2aa2ca`。
-- thin runner `paicli-1.0-SNAPSHOT-agentbench-runner.jar`：
+- thin runner `paicli-16.1.0-agentbench-runner.jar`：
   `2069dbbbf64f598d73f1216cfd016416e79692632078de7d73ca17731cbcb95f`。
 
 第 46 节 F3 check-only 使用的是上一版 jar；已在本轮证据根的 `prior-artifacts/`

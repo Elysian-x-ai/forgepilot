@@ -179,7 +179,7 @@ export PAICLI_RUNTIME_API_KEY=test_key_12345
 第二步，启动 Runtime API 服务
 
 ```
-java -jar target/paicli-1.0-SNAPSHOT.jar serve --http --port 8080
+java -jar target/paicli-16.1.0.jar serve --http --port 8080
 ```
 
 ![](https://cdn.paicoding.com/stutymore/paicli-interview-productization-20260529084302.png)

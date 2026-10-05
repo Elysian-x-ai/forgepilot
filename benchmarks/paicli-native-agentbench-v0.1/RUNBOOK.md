@@ -63,7 +63,7 @@ git status --short
 git diff --check
 
 mvn -q -DskipTests package
-shasum -a 256 target/paicli-1.0-SNAPSHOT.jar
+shasum -a 256 target/paicli-16.1.0.jar
 ```
 
 测试通过、jar 生成成功与真实模型 episode 是三类不同证据，报告中必须分开说明。dirty run 可以用于调查，但必须如实记录，不能与未来 clean final 批次混在一起。
@@ -109,7 +109,7 @@ key 不进入 Worker 的 argv 或环境变量。Worker 启动前会清空继承�
 Runner 入口不是交互式 PaiCLI 命令，而是 jar 中的 Coordinator 主类：
 
 ```bash
-java -cp target/paicli-1.0-SNAPSHOT.jar \
+java -cp target/paicli-16.1.0.jar \
   com.paicli.eval.benchmark.BenchmarkCoordinatorMain \
   --help
 ```
@@ -210,7 +210,7 @@ chmod 700 "${COORDINATOR_HOME}"
 单题用于验证 provider、tool-call、Worker、artifact 与 Docker verifier 链路。例如：
 
 ```bash
-java -Duser.home="${COORDINATOR_HOME}" -cp target/paicli-1.0-SNAPSHOT.jar \
+java -Duser.home="${COORDINATOR_HOME}" -cp target/paicli-16.1.0.jar \
   com.paicli.eval.benchmark.BenchmarkCoordinatorMain \
   --suite benchmarks/paicli-native-agentbench-v0.1/dev-suite.json \
   --provider deepseek \
@@ -235,7 +235,7 @@ java -Duser.home="${COORDINATOR_HOME}" -cp target/paicli-1.0-SNAPSHOT.jar \
 ### 7.1 DeepSeek V4 Flash
 
 ```bash
-java -Duser.home="${COORDINATOR_HOME}" -cp target/paicli-1.0-SNAPSHOT.jar \
+java -Duser.home="${COORDINATOR_HOME}" -cp target/paicli-16.1.0.jar \
   com.paicli.eval.benchmark.BenchmarkCoordinatorMain \
   --suite benchmarks/paicli-native-agentbench-v0.1/dev-suite.json \
   --provider deepseek \
@@ -253,7 +253,7 @@ java -Duser.home="${COORDINATOR_HOME}" -cp target/paicli-1.0-SNAPSHOT.jar \
 ### 7.2 混元 Hy4 preview
 
 ```bash
-java -Duser.home="${COORDINATOR_HOME}" -cp target/paicli-1.0-SNAPSHOT.jar \
+java -Duser.home="${COORDINATOR_HOME}" -cp target/paicli-16.1.0.jar \
   com.paicli.eval.benchmark.BenchmarkCoordinatorMain \
   --suite benchmarks/paicli-native-agentbench-v0.1/dev-suite.json \
   --provider hunyuan \
@@ -273,7 +273,7 @@ java -Duser.home="${COORDINATOR_HOME}" -cp target/paicli-1.0-SNAPSHOT.jar \
 ### 7.3 GLM-5.3-Flash
 
 ```bash
-java -Duser.home="${COORDINATOR_HOME}" -cp target/paicli-1.0-SNAPSHOT.jar \
+java -Duser.home="${COORDINATOR_HOME}" -cp target/paicli-16.1.0.jar \
   com.paicli.eval.benchmark.BenchmarkCoordinatorMain \
   --suite benchmarks/paicli-native-agentbench-v0.1/dev-suite.json \
   --provider glm \

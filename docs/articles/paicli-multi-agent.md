@@ -470,12 +470,12 @@ private String buildStepContext(List<ExecutionStep> steps, ExecutionStep current
 mvn clean package
 ```
 
-编译成功后会在 `target/` 目录生成 `paicli-1.0-SNAPSHOT.jar`。
+编译成功后会在 `target/` 目录生成 `paicli-16.1.0.jar`。
 
 ### 启动
 
 ```bash
-java -jar target/paicli-1.0-SNAPSHOT.jar
+java -jar target/paicli-16.1.0.jar
 ```
 
 启动后你会看到 ForgePilot v5.0.0 的 Banner 和提示信息。

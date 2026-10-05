@@ -19,8 +19,8 @@
 ```bash
 mvn -DskipTests package
 
-RUNNER_JAR=target/paicli-1.0-SNAPSHOT-agentbench-runner.jar
-CANDIDATE_JAR=target/paicli-1.0-SNAPSHOT.jar
+RUNNER_JAR=target/paicli-16.1.0-agentbench-runner.jar
+CANDIDATE_JAR=target/paicli-16.1.0.jar
 
 java -cp target/classes \
   com.paicli.eval.benchmark.BenchmarkRunnerArtifactPolicy \

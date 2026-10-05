@@ -78,7 +78,7 @@ mvn clean package
 第五步是运行。
 
 ```bash
-java -jar target/paicli-1.0-SNAPSHOT.jar
+java -jar target/paicli-16.1.0.jar
 ```
 
 跑起来之后你会看到一个 π 主题的彩色开屏，底部有个状态栏，显示当前模型、MCP 连了几个、有多少工具、当前是 ReAct 还是 Plan 模式。这一刻你就已经拥有了一个简化版的 Claude Code。

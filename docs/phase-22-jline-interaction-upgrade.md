@@ -182,4 +182,4 @@ HITL：
 - Ctrl+O、ESC、Ctrl+V、Tab、上下键正常。
 - Plan review 方向键不误判 ESC。
 - HITL 审批期间不吞输入。
-- `java -jar target/paicli-1.0-SNAPSHOT.jar` 真机验证。
+- `java -jar target/paicli-16.1.0.jar` 真机验证。

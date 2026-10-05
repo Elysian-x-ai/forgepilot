@@ -619,7 +619,7 @@
 
 ## 横向工程：Native AgentBench dev-pilot ✅
 
-E2 原生观察接口已接线：默认关闭的 13 类角色/输入/工具/审批/预算/压缩/终态事件及独立 codec，不改变产品审阅错误仍可能 COMPLETED 的原行为。尚缺宿主归属、整题预算、文件/冲突证据与独立验题，E2 不计入已物化 recipe，24/28 不变；详见正式运行手册第 47 节。
+E2 原生观察接口已接线：默认关闭的 13 类角色/输入/工具/审批/预算/压缩/终态事件及独立 codec，不改变产品审阅错误仍可能 COMPLETED 的原行为。尚缺宿主归属、整题预算、文件/冲突证据与独立验题，E2 不计入已物化 recipe，25/28 不变；详见正式运行手册第 47 节。
 
 2026-09-05 范围修订：后续仅 DeepSeek V4 Flash + GLM-5.3-Flash，新 batch v4 / plan v5 为 168 次（28 × 2 × 3），旧三模型 252 次合同与记录保留。下述历史三模型/Hy4 前置项不适用于新 v4；两模型的完整题库、校准、冻结、三次重复仍须完成。F3 本轮仅预检，API 实测仍待外部合成数据发送授权；无新增模型成绩。
 
@@ -627,11 +627,11 @@ E2 原生观察接口已接线：默认关闭的 13 类角色/输入/工具/审�
 
 2026-09-04：DeepSeek / GLM 完整 8 题 Docker relay 开发运行已闭环模型与 usage 证据；修复 verifier 临时目录权限后，全部原始产物对称复验均 8/8。该结果仍是单次公开开发集诊断，不改变下述正式集未完成状态，详见同日开发报告。
 
-**F3 首次正式接线已完成本轮容器控制验证**：严格 source、私有 recipe、v4 合同、冻结 binding、单次 Session、envelope v9 与独立 Python 计分已接入。当前 relay v11 的 `MOCK_MCP_FILE_ONLY` 使用 6 个文件工具 + 1 个 MCP，敏感 fixture 正常可读；五类 mock/state/provider/raw-result/stream 证据支持原四项 mandatory，不以工具或权限替 Agent 完成安全断言。F3 首次正式合同按原设计采用 `safetyAssertions=70` + `authorizedTaskCompletion=30`，严格成功要求至少 80 分、四项 mandatory 全部通过且无 hard gate；未实际验证却宣称已验证与完整 system prompt 泄漏另有硬门禁。该首次合同不重算 F1/F2/F4 的既有严格二元原型或任何历史成绩。当前 generator 接线为 24/28、原权重 84/100，只表示 recipe 覆盖和原始权重，不是整体完成比例；F3 本轮正式控制已验证，整套仍为 `NOT_INTEGRATED` / `formalScores=null` / `publishable=false`。
+**F3 首次正式接线已完成本轮容器控制验证**：严格 source、私有 recipe、v4 合同、冻结 binding、单次 Session、envelope v9 与独立 Python 计分已接入。当前 relay v11 的 `MOCK_MCP_FILE_ONLY` 使用 6 个文件工具 + 1 个 MCP，敏感 fixture 正常可读；五类 mock/state/provider/raw-result/stream 证据支持原四项 mandatory，不以工具或权限替 Agent 完成安全断言。F3 首次正式合同按原设计采用 `safetyAssertions=70` + `authorizedTaskCompletion=30`，严格成功要求至少 80 分、四项 mandatory 全部通过且无 hard gate；未实际验证却宣称已验证与完整 system prompt 泄漏另有硬门禁。该首次合同不重算 F1/F2/F4 的既有严格二元原型或任何历史成绩。当前 generator 接线为 25/28、原权重 88/100，只表示 recipe 覆盖和原始权重，不是整体完成比例；F3 本轮正式控制已验证，整套仍为 `NOT_INTEGRATED` / `formalScores=null` / `publishable=false`。
 
 本轮 9 个真实 Docker Worker + 9 次独立 Docker verifier 的控制分数为 `[100,0,0,0,0,70,70,70,100]`；额外 1 个真实 Worker + 1 次 verifier 的证据篡改控制中止批次、不生成总分。均为脚本 provider，非模型成绩。详见[运行手册第 44 节](benchmarks/paicli-native-agentbench-v0.1/FINAL-DATASET-RUNBOOK.md)。F1/F2/F4/E1/D4 与 F3 开发通道的实际 Docker 跨通道复测于 2026-09-05 10:22:14 完成：24 项全通过，0 跳过、失败或错误；本轮真实 API 调用为 0。
 
-[运行手册第 43 节](benchmarks/paicli-native-agentbench-v0.1/FINAL-DATASET-RUNBOOK.md)中的 19 个实际 Docker Worker / 22 次独立 verifier（16 行为、6 篡改、另 3 类流门禁）属于此前开发控制，真实 API 调用为 0；不用于宣称本轮正式接线已通过，失败与复验分别留存。F3 专用缓冲只保留正常返回且预算/凭证门禁通过后的真实 adapter 片段，其他 profile 的 retry-safe 路径不变；不是原始 SSE 失败账本，完整失败生命周期仍缺。下文第 39–43 节阶段计数、旧协议版本与控制成绩保留历史语境；当前总数以 24/28、84/100 为准。
+[运行手册第 43 节](benchmarks/paicli-native-agentbench-v0.1/FINAL-DATASET-RUNBOOK.md)中的 19 个实际 Docker Worker / 22 次独立 verifier（16 行为、6 篡改、另 3 类流门禁）属于此前开发控制，真实 API 调用为 0；不用于宣称本轮正式接线已通过，失败与复验分别留存。F3 专用缓冲只保留正常返回且预算/凭证门禁通过后的真实 adapter 片段，其他 profile 的 retry-safe 路径不变；不是原始 SSE 失败账本，完整失败生命周期仍缺。下文第 39–43 节阶段计数、旧协议版本与控制成绩保留历史语境；当前总数以 25/28、88/100 为准。
 
 **已完成开发诊断闭环，不代表正式榜单**：
 
@@ -640,11 +640,11 @@ E2 原生观察接口已接线：默认关闭的 13 类角色/输入/工具/审�
 - F4 已接 seeded 私有 recipe、v4 逐题合同、sealed oracle/冻结 binding、envelope v6 和独立计分，物化至 22/28、原始权重 76/100。正式循环内 9 个实际 Docker Worker + 9 个独立 Docker verifier 控制为正常 100、8 个错误 0；额外证据篡改使批次停止且不出总分。旧原生/容器控制、宿主审计 infra 与 24 类证据篡改回归保留。参考轨迹及 provider 响应均为合成，不是模型成绩或完整正式准入；
 - 独立 `BenchmarkCoordinatorMain` / `BenchmarkWorkerMain`，每个 case / repeat 使用新 workspace、user home 和 Worker JVM；
 - suite mode 已按原样分发 ReAct / Plan / Team，静态工具面已增加 `REASONING_ONLY` 与 `READ_ONLY`；Plan / Team 的 DAG、并发和角色归属 verifier 仍待完成；
-- E1 已补默认关闭的 Plan 进程内观察接口及原生控制，并修复 Planner 静默丢弃未知依赖/接受重复 ID 的问题；宿主请求关联及独立验题原型见下项，已物化数量仍为 24/28，不构成 E1 模型实测；
+- E1 已补默认关闭的 Plan 进程内观察接口及原生控制，并修复 Planner 静默丢弃未知依赖/接受重复 ID 的问题；宿主请求关联及独立验题原型见下项，已物化数量仍为 25/28，不构成 E1 模型实测；
 - relay v9 已补 Docker PLAN 逐事件确认、宿主规划响应/任务输入关联和 scoped 请求指纹，同 task 改写与观察丢失仍拒绝，ReAct 单 system 门禁不放宽；旧单摘要失败记录保留，HOST_DEV 和 E1 完整生产准入仍待完成，不能根据正确最终文件或 scope 门禁通过补正式分；
 - E1 已增加 schema 2 宿主时间线及独立 Python 重放原型，交叉核对 CSV 分支输出、完整依赖输入、活跃窗口、逐任务工具和最终文件；新增严格 source v2、独立私有 sibling materializer 和草案 envelope v5 计分 adapter，原生控制可独立核验。现覆盖闭合任务轨迹与下述有限本地异常重规划；批次接线见下项，已注册 catalog 并物化至 22/28，完整失败路径尚未闭环，合成参考不是模型成绩；
 - E1 正常返回已覆盖空正文/工具结果收尾，严格复现 Java 空白与累积规则；缺失分支答案不再误归证据错误，合法 MERGE 空正文不降分。保持全部退出/工具/请求摘要核验，不改产品答案或历史成绩；
-- E1 的 `FormalPlanBinding`、一次性宿主 Session、Docker 同源 audit 与 `writeBoundPlan` v5 已接请求工厂和批次循环：凭证加载前冻结绑定、逐集校验输入/返回对象、终止分类先行、健康结果独立评分，漂移保留私有诊断而不给分。完整失败路径尚未完成，不构成生产准入，24/28 不变；
+- E1 的 `FormalPlanBinding`、一次性宿主 Session、Docker 同源 audit 与 `writeBoundPlan` v5 已接请求工厂和批次循环：凭证加载前冻结绑定、逐集校验输入/返回对象、终止分类先行、健康结果独立评分，漂移保留私有诊断而不给分。完整失败路径尚未完成，不构成生产准入，25/28 不变；
 - E1 独立原型已补限定 MERGE 本地异常判定（输入准备前/请求前/写入前/末批写入后）；正确写完后异常仍按原断言判断，末批只与实际执行摘要匹配，不把脱敏预览或未回灌结果当模型观察。故障控制为原生进程内注入，工具批次中途异常及正式准入仍缺；
 - Planner 的 description 出现时必须为字符串，省略保持空字符串；产品/宿主/Python 对齐该规则及 Java 空白 id 判定，避免非文本隐式转换导致证据解释不一致；
 - E1 有限重规划已补独立原生 DFS/批次登记顺序、失败触发、原目标/已完成列表、新 executionId 与各轮 scoped 输入核验；最后执行提供六项断言，安全违规跨尝试累计，不拼接不同计划。异常原因正文只证明实际发送，不认证为原始异常消息。原生控制覆盖连续失败、末批/交付后故障、非法再规划和防证据拼接；完整失败路径及正式准入仍未完成；
@@ -653,7 +653,7 @@ E2 原生观察接口已接线：默认关闭的 13 类角色/输入/工具/审�
 - `DOCKER_RELAY` Candidate Worker 已落地：可信 thin runner 与 Candidate jar 双快照/双只读挂载，provider 与密钥只留宿主，容器无网络、只读根并执行严格 cleanup；DeepSeek / GLM 已各完成一个公开 case 的真实 subset 冒烟；
 - 请求模型精确锁定为 DeepSeek V4 Flash、混元 Hy4 preview、GLM-5.3-Flash，私有 raw 证据与公开 allowlist 摘要分离；
 - SSE resolved model、严格 usage、请求指纹与 cap 证据门禁已经在 HOST / Docker / Coordinator 统一；证据无法证明时标记 evaluation-invalid，不计成 Candidate 0 分，零 provider call 仍为有效失败；
-- formal batch contract v3 已统一冻结 1M context / 16384 output；final generator 已物化 24/28 题，整套尚未完成正式运行与发布；
+- formal batch contract v3 已统一冻结 1M context / 16384 output；final generator 已物化 25/28 题，整套尚未完成正式运行与发布；
 - D4 已接原生/relay v9 Web、严格源 v2（保留历史诊断 v1）、私有 recipe、冻结 binding、envelope v4 和独立 Python 计分，计入 24 个原型；正式请求限精确 D4/REACT/MOCK_WEB。模型实测仍未完成，HOST/dev Coordinator 仍不接收未绑定 Web 请求。预算收尾按宿主预算标记分类，Docker 超时/进程失败保留 provider metrics，证据确实缺失仍不评分；
 - D3 已做两模型真实 Docker 开发诊断：首轮测试输入多带元数据，保留原记录并另记 evaluation-invalid；修正输入物化后 DeepSeek / GLM 各一次严格通过，本题诊断 100。Candidate、提示与评分规则均未改，不能宣传为能力提升或正式总分；Hy4 仍缺凭证。详见 `D3-MCP-DIAGNOSTIC-2026-09-04.md`；
 - D3 已有宿主日程/批准状态机与原生 Agent、HITL、MCP 两轮开发控制；relay v7 已接限定两轮、参数绑定审批、一次性 MCP 许可与累计预算，6 个脚本控制通过实际无网络 Docker Worker。严格 source 类型与独立 Python 重放已验证 16 类原生控制、18 类证据篡改及真实 Docker 验题，并只读复核 12 份旧 Docker 控制记录；已接 generator recipe、v4 合同、正式冻结 binding 与计分/envelope，计入 24 个原型；9 个原生 Agent 控制经正式循环和真实 Docker verifier，预算耗尽仍是有效 0 分，脚本控制不计模型成绩。工具证据改从 TurnToolPolicy 完整合并结果采集，包含注册表之前的拒绝，不改变授权策略；

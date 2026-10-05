@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "productVersion": "16.1.0",
+  "prototypeCount": 25,
+  "prototypeTotal": 28,
+  "originalWeight": 88,
+  "originalWeightTotal": 100,
+  "missingCases": ["D5", "E3", "E4"],
+  "formalScores": null,
+  "publishable": false,
+  "runnerIntegrationStatus": "NOT_INTEGRATED",
+  "realProviderCalls": 0,
+  "source": "generator/current repository snapshot",
+  "asOf": "2026-10-05"
+}

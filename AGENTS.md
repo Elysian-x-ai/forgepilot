@@ -11,7 +11,7 @@ ForgePilot 仓库给 Agent / 新线程的首读入口，Codex 直接读取，Cla
 ## 项目快照
 
 - 面向商业使用的 Java Agent CLI，对标 Claude Code；已交付 23 期（ReAct → Plan+DAG → Memory → RAG → Multi-Agent → HITL → 并行工具 → 多模型 → 联网 → MCP → 长上下文 → Chrome DevTools → CDP 复用 → Skill → TUI → LSP 诊断 → Side-Git 快照 → Prompt 分层 → Runtime API → 图片输入 → 微信 iLink 文本 MVP）
-- Banner 版本 `v16.1.0`，Maven 产物 `paicli-1.0-SNAPSHOT.jar`（两者不一致是正常状态）
+- 产品版本统一为 `v16.1.0`，Maven 产物为 `paicli-16.1.0.jar`；benchmark thin runner 为 `paicli-16.1.0-agentbench-runner.jar`
 - `PAI.md` 是项目级记忆，启动时注入 system prompt，放团队共享的稳定规则；个人或会变化的事实用 `/save` 长期记忆
 - 下一步：MCP OAuth / sampling / recovery
 - 配套教程与面试文章的唯一源在 `docs/articles/`，改完用 `tools/sync-articles-to-javabetter.sh` 同步到 javabetter.cn 副本
@@ -32,8 +32,8 @@ Java 17+ / Maven；可选 `ripgrep`（`grep_code` 优先用，缺失时回退 Ja
 ```bash
 cp .env.example .env
 mvn clean package                           # 默认跳过测试（pom 中 skipTests=true）
-java -jar target/paicli-1.0-SNAPSHOT.jar
-java -jar target/paicli-1.0-SNAPSHOT.jar wechat setup|start
+java -jar target/paicli-16.1.0.jar
+java -jar target/paicli-16.1.0.jar wechat setup|start
 mvn test -Pquick                            # 常规回归
 mvn test -Pphase16-smoke                    # TUI 相关
 mvn test -Dtest=XxxTest -DskipTests=false   # 针对性（必须带 -DskipTests=false）

@@ -7,13 +7,15 @@
 
     <groupId>com.paicli</groupId>
     <artifactId>paicli</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>${forgepilot.version}</version>
     <packaging>jar</packaging>
 
     <name>ForgePilot</name>
     <description>A controlled engineering agent for the terminal</description>
 
     <properties>
+        <!-- Public ForgePilot release version; keep Maven coordinates and the banner aligned. -->
+        <forgepilot.version>16.1.0</forgepilot.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

@@ -40,7 +40,7 @@
 - 不实现 Anthropic `cache_control` 块
 - 不向 GLM / DeepSeek 请求体注入未确认兼容的私有 cache 字段
 - 不把 MCP resource body 自动塞进 system prompt
-- 不改变 `pom.xml` 的 Maven 产物版本，Jar 仍是 `paicli-1.0-SNAPSHOT.jar`
+- 不改变 `pom.xml` 的 Maven 产物版本，Jar 仍是 `paicli-16.1.0.jar`
 
 ## 3. 核心文件
 

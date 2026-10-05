@@ -26,13 +26,13 @@ Where the setting has a ForgePilot alias, the new name wins when both values are
 Use the new name in new scripts:
 
 ```bash
-FORGEPILOT_RENDERER=inline java -jar target/paicli-1.0-SNAPSHOT.jar
+FORGEPILOT_RENDERER=inline java -jar target/paicli-16.1.0.jar
 ```
 
 The existing form remains valid:
 
 ```bash
-PAICLI_RENDERER=inline java -jar target/paicli-1.0-SNAPSHOT.jar
+PAICLI_RENDERER=inline java -jar target/paicli-16.1.0.jar
 ```
 
 The same precedence rule applies to the system property pair `forgepilot.renderer` and `paicli.renderer`.

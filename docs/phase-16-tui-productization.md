@@ -647,19 +647,19 @@ public String highlight(String code, String language) {
 **场景 A：正常 TUI 启动**
 ```bash
 # 终端尺寸 ≥ 80×24，显式启用 TUI
-PAICLI_TUI=true java -jar target/paicli-1.0-SNAPSHOT.jar
+PAICLI_TUI=true java -jar target/paicli-16.1.0.jar
 ```
 **期望**：Lanterna 三栏窗口正常渲染，输入框可交互，可以提交任务。
 
 **场景 B：默认 CLI**
 ```bash
-java -jar target/paicli-1.0-SNAPSHOT.jar
+java -jar target/paicli-16.1.0.jar
 ```
 **期望**：进入 JLine 行编辑器，不弹 Lanterna 全屏窗口。
 
 **场景 C：CLI 强制降级**
 ```bash
-PAICLI_TUI=true NO_TUI=true java -jar target/paicli-1.0-SNAPSHOT.jar
+PAICLI_TUI=true NO_TUI=true java -jar target/paicli-16.1.0.jar
 ```
 **期望**：降级到 JLine 行编辑器，所有现有 CLI 功能正常。
 
@@ -786,7 +786,7 @@ PAICLI_TUI=true NO_TUI=true java -jar target/paicli-1.0-SNAPSHOT.jar
 
 ```
 > # 终端尺寸 79×23
-> java -jar target/paicli-1.0-SNAPSHOT.jar
+> java -jar target/paicli-16.1.0.jar
 ```
 **期望**：检测到 cols < 80 或 rows < 24 → 降级 CLI 模式，Banner 加降级提示。
 
@@ -913,7 +913,7 @@ PAICLI_TUI=true NO_TUI=true java -jar target/paicli-1.0-SNAPSHOT.jar
 - Banner v16.0.0 + 标语 + 快捷键提示
 - `pom.xml` 添加 Lanterna 依赖
 - **安装包分发**（参见 §6.7）：
-  - `mvn clean package` 产出 `target/paicli-1.0-SNAPSHOT.jar`（pom.xml 仍保持 `1.0-SNAPSHOT`，Banner 显示 `16.0.0`）
+  - 历史记录：当时 `mvn clean package` 产出 `target/paicli-1.0-SNAPSHOT.jar`，Banner 显示 `16.0.0`；当前版本见根目录 README。
   - 配置 `maven-assembly-plugin` 或 `maven-shade-plugin` 做**可执行 fat jar**（包含 Lanterna 依赖，用户 `java -jar` 即可运行）
   - 编写 `INSTALL.md`（安装说明：JDK 17 + `java -jar` 两步）
   - GitHub Actions Release workflow 留给后续分发增强
@@ -1116,7 +1116,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 ### 场景 C：TUI 降级 + HITL 弹窗
 
 ```
-> java -jar target/paicli-1.0-SNAPSHOT.jar
+> java -jar target/paicli-16.1.0.jar
 [默认 CLI 模式]
 
 > /hitl on
