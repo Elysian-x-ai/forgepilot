@@ -68,18 +68,18 @@
 - [ ] Run a scripted public-surface scan that fails on old visible brand tokens outside compatibility/history sections.
 - [ ] Commit `feat: rebrand public surfaces as ForgePilot`.
 
-### Task 3: Documentation, migration guide, and release metadata
+### Task 3: Documentation, compatibility reference, and release metadata
 
 **Files:**
-- Create: `docs/forgepilot-migration.md`
+- Create: `docs/forgepilot-compatibility.md`
 - Modify: `README.md`, `docs/articles/README.md`, selected article titles/links, `.gitignore` if needed
 - Modify: GitHub metadata through `gh repo create`, `gh repo edit`, and `git remote add origin`
 
 **Interfaces:**
-- Migration guide documents new-vs-legacy precedence, stable paths, and upgrade steps.
+- Compatibility reference documents ForgePilot-first configuration precedence and stable paths.
 - Remote repository is public, named `forgepilot`, has ForgePilot description and relevant topics.
 
-- [ ] Write the migration guide with shell examples for aliases and the stable compatibility contract.
+- [ ] Write the compatibility reference with shell examples for aliases and the stable compatibility contract.
 - [ ] Update the article index and public links without rewriting historical benchmark records.
 - [ ] Run Maven package and focused regression tests; record pre-existing failures separately.
 - [ ] Create the GitHub repository, push `main`, set description/topics, and verify the remote URL.

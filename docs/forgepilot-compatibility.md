@@ -1,17 +1,17 @@
-# ForgePilot migration guide
+# ForgePilot compatibility reference
 
-ForgePilot is the new public name for the terminal-first Java engineering agent previously presented as PaiCLI. This release changes the product identity, documentation, landing pages, and startup experience while preserving the identifiers that existing projects and benchmark evidence rely on.
+ForgePilot is the terminal-first Java engineering agent. Its public product name, positioning, documentation, landing pages, and startup experience use ForgePilot consistently. The stable identifiers below remain available so existing projects and benchmark evidence continue to work.
 
-## What changes
+## Product identity
 
 - The product is named **ForgePilot**.
 - The startup mark is `◆` and the positioning is “A controlled engineering agent for the terminal”.
 - The canonical repository is [Elysian-x-ai/forgepilot](https://github.com/Elysian-x-ai/forgepilot).
-- New examples use the ForgePilot aliases introduced in this release and ForgePilot wording.
+- Examples use ForgePilot wording and the ForgePilot configuration aliases where available.
 
-## What stays compatible
+## Stable compatibility identifiers
 
-Existing installations continue to use these stable identifiers:
+The following identifiers remain stable for existing projects, integrations, and benchmark evidence:
 
 - `com.paicli` Java packages and `com.paicli:paicli` Maven coordinates
 - `PAICLI_*` environment variables and `paicli.*` system properties
@@ -19,17 +19,17 @@ Existing installations continue to use these stable identifiers:
 - `paicli` jar/command names and benchmark evidence paths
 - `X-PaiCLI-API-Key` for Runtime API clients
 
-Where the setting has a ForgePilot alias, the new name wins when both values are present. The legacy name is used as a fallback so existing shell profiles and CI jobs keep working.
+Where a setting has a ForgePilot alias, the ForgePilot name wins when both values are present. The compatible `PAICLI_*` or `paicli.*` name remains a fallback so existing shell profiles and CI jobs keep working.
 
 ## Renderer aliases
 
-Use the new name in new scripts:
+Use the ForgePilot name in scripts:
 
 ```bash
 FORGEPILOT_RENDERER=inline java -jar target/paicli-16.1.0.jar
 ```
 
-The existing form remains valid:
+The compatible form remains valid:
 
 ```bash
 PAICLI_RENDERER=inline java -jar target/paicli-16.1.0.jar
@@ -39,9 +39,9 @@ The same precedence rule applies to the system property pair `forgepilot.rendere
 
 ## Runtime API aliases
 
-New deployments may configure the Runtime API with `FORGEPILOT_RUNTIME_API_KEY` or
-`-Dforgepilot.runtime.api.key`. Existing `PAICLI_RUNTIME_API_KEY` and
-`-Dpaicli.runtime.api.key` settings remain valid fallbacks.
+Configure the Runtime API with `FORGEPILOT_RUNTIME_API_KEY` or
+`-Dforgepilot.runtime.api.key`. `PAICLI_RUNTIME_API_KEY` and
+`-Dpaicli.runtime.api.key` remain valid fallbacks.
 
 ## Runtime API header
 
@@ -51,7 +51,7 @@ New clients may use:
 X-ForgePilot-API-Key: <key>
 ```
 
-The old `X-PaiCLI-API-Key` header is still accepted for existing integrations.
+The compatible `X-PaiCLI-API-Key` header is still accepted for existing integrations.
 
 ## Historical records
 

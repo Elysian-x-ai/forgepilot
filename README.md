@@ -4,9 +4,9 @@
 
 ForgePilot 是一款面向工程团队的 Java Agent CLI 工作台，对标 Claude Code。它把 ReAct、Plan、Team、Memory、MCP、浏览器自动化、LSP 诊断、快照回滚和审计能力收进一个可控的终端工作流中：模型负责推进任务，用户保留方向、审批和恢复权。
 
-项目原名 PaiCLI。公开品牌已迁移到 ForgePilot；现有 `com.paicli` 包名、`.paicli` 目录、`PAICLI_*` 配置和 benchmark 历史合同继续兼容，详见 [`docs/forgepilot-migration.md`](docs/forgepilot-migration.md)。
+ForgePilot 的公开产品名、定位和品牌资产统一使用 ForgePilot。为保持现有项目与评测证据可复现，`com.paicli` 包名、`.paicli` 目录、`PAICLI_*` 配置和 benchmark 历史合同继续作为稳定兼容标识，详见 [`docs/forgepilot-compatibility.md`](docs/forgepilot-compatibility.md)。
 
-[GitHub](https://github.com/Elysian-x-ai/forgepilot) · [品牌资产](brand/) · [迁移指南](docs/forgepilot-migration.md)
+[GitHub](https://github.com/Elysian-x-ai/forgepilot) · [品牌资产](brand/) · [兼容说明](docs/forgepilot-compatibility.md)
 
 当前进度：已完成第 16.1 期 inline 流式 TUI 形态修正、第 17 期 `LSP 诊断注入` MVP、第 18 期 `Git Side-History 快照与回滚` MVP、第 19 期 `Prompt 分层架构` MVP、第 20 期 `异步后台任务 + Runtime API` MVP、第 21 期 `图片复制粘贴输入` MVP、第 23 期 `微信 iLink 通道` 文本 MVP。
 
