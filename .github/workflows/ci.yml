@@ -1,0 +1,54 @@
+name: ForgePilot CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      benchmark:
+        description: Run the opt-in benchmark profile (may need fixtures or credentials)
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  product:
+    name: Java 17 product checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - name: Compile
+        run: mvn -B -DskipTests=true compile
+      - name: Core tests
+        run: mvn -B test -Pcore -DskipTests=false
+      - name: Quick tests
+        run: mvn -B test -Pquick -DskipTests=false
+      - name: Offline mock LLM E2E
+        run: mvn -B test -Dtest=MockLlmReActE2ETest -DskipTests=false
+
+  benchmark:
+    name: Opt-in benchmark profile
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.benchmark == true }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      # Benchmark execution is deliberately absent from push/PR jobs.
+      - name: Benchmark tests (explicit opt-in)
+        run: mvn -B test -Pbenchmark -DskipTests=false

@@ -24,6 +24,9 @@ mvn test -Pphase16-smoke -DskipTests=false
 # 常规快速回归，跳过 benchmark、外部进程 / 网络超时 / 命令超时类慢测试
 mvn test -Pquick -DskipTests=false
 
+# 离线、可重复的 ReAct 端到端演示（MockWebServer，不需要 API Key 或外网）
+mvn test -Dtest=MockLlmReActE2ETest -DskipTests=false
+
 # benchmark 验证（显式 opt-in；可能需要额外夹具、Docker 或 provider 凭证）
 mvn test -Pbenchmark -DskipTests=false
 
