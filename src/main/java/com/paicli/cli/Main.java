@@ -211,7 +211,8 @@ public class Main {
 
     public static void main(String[] args) {
         configureAwtForCli();
-        if (WechatCommandMain.isWechatCommand(args)) {
+        CliCommandDispatcher.LaunchMode launchMode = CliCommandDispatcher.classify(args);
+        if (launchMode == CliCommandDispatcher.LaunchMode.WECHAT) {
             configureLogging();
             int code = WechatCommandMain.run(args);
             if (code != 0) {
@@ -219,9 +220,9 @@ public class Main {
             }
             return;
         }
-        if (isRuntimeServeCommand(args)) {
+        if (launchMode == CliCommandDispatcher.LaunchMode.RUNTIME_API) {
             configureLogging();
-            startRuntimeApiAndBlock(args);
+            SessionBootstrap.startRuntimeApiAndBlock(args);
             return;
         }
 
@@ -354,7 +355,7 @@ public class Main {
             reactAgent.setConversationLedger(conversationLedger);
             reactAgent.setExternalContextSupplier(mcpServerManager::resourceIndexForPrompt);
             reactAgent.setSkillRegistry(skillRegistry);
-            DurableTaskManager taskManager = openTaskManager(llmClientRef);
+            DurableTaskManager taskManager = SessionBootstrap.openTaskManager(llmClientRef);
             taskManager.start();
             Runtime.getRuntime().addShutdownHook(new Thread(taskManager::close, "paicli-task-shutdown"));
             WechatRuntimeController wechatRuntime = new WechatRuntimeController(renderer);
@@ -1007,88 +1008,6 @@ public class Main {
         } catch (IOException e) {
             System.err.println("❌ 终端初始化失败: " + e.getMessage());
             System.exit(1);
-        }
-    }
-
-    private static boolean isRuntimeServeCommand(String[] args) {
-        return args != null
-                && args.length >= 1
-                && "serve".equalsIgnoreCase(args[0])
-                && java.util.Arrays.stream(args).anyMatch("--http"::equalsIgnoreCase);
-    }
-
-    private static void startRuntimeApiAndBlock(String[] args) {
-        PaiCliConfig config = PaiCliConfig.load();
-        LlmClient client = LlmClientFactory.createFromConfig(config);
-        if (client == null) {
-            System.err.println("❌ 错误: 未找到可用的 API Key");
-            System.exit(1);
-        }
-        int port = parseServePort(args, 8080);
-        try {
-            RuntimeThreadStore store = new RuntimeThreadStore(RuntimeThreadStore.defaultDbPath());
-            RuntimeApiServer server = new RuntimeApiServer(
-                    store,
-                    prompt -> runHeadlessTask(prompt, client),
-                    port,
-                    RuntimeApiServer.configuredApiKey());
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                server.close();
-                store.close();
-            }, "paicli-runtime-api-shutdown"));
-            server.start();
-            System.out.println("✅ ForgePilot Runtime API 已启动: http://127.0.0.1:" + server.port());
-            System.out.println("   认证: Authorization: Bearer <FORGEPILOT_RUNTIME_API_KEY>");
-            System.out.println("   兼容请求头: X-ForgePilot-API-Key（旧 X-PaiCLI-API-Key 仍可用）");
-            new CountDownLatch(1).await();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } catch (Exception e) {
-            System.err.println("❌ Runtime API 启动失败: " + e.getMessage());
-            System.exit(1);
-        }
-    }
-
-    private static int parseServePort(String[] args, int defaultPort) {
-        if (args == null) {
-            return defaultPort;
-        }
-        for (int i = 0; i < args.length - 1; i++) {
-            if ("--port".equalsIgnoreCase(args[i])) {
-                try {
-                    return Integer.parseInt(args[i + 1]);
-                } catch (NumberFormatException ignored) {
-                    return defaultPort;
-                }
-            }
-        }
-        return defaultPort;
-    }
-
-    private static String runHeadlessTask(String prompt, LlmClient llmClient) {
-        ToolRegistry registry = new ToolRegistry();
-        registry.setProjectPath(Path.of(".").toAbsolutePath().normalize().toString());
-        com.paicli.tool.CommandSandboxStatus sandboxStatus = registry.configureCommandSandbox(
-                com.paicli.tool.CommandSandboxMode.fromConfiguration(),
-                Path.of(registry.getProjectPath()));
-        if (!sandboxStatus.message().isBlank()) {
-            System.err.println(sandboxStatus.message());
-        }
-        Agent agent = new Agent(llmClient, registry);
-        try {
-            agent.setConversationLedger(ConversationLedger.openDefault(
-                    Path.of(System.getProperty("user.home"))));
-        } catch (IOException ignored) {
-            // A background task should still run if its audit directory is temporarily unavailable.
-        }
-        return agent.run(prompt);
-    }
-
-    private static DurableTaskManager openTaskManager(AtomicReference<LlmClient> llmClientRef) {
-        try {
-            return DurableTaskManager.openDefault(prompt -> runHeadlessTask(prompt, llmClientRef.get()));
-        } catch (Exception e) {
-            throw new IllegalStateException("后台任务管理器初始化失败: " + e.getMessage(), e);
         }
     }
 

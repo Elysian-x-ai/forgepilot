@@ -127,16 +127,8 @@ public class ToolRegistry {
     ToolRegistry(long commandTimeoutSeconds, long toolBatchTimeoutSeconds) {
         this.commandTimeoutSeconds = commandTimeoutSeconds;
         this.toolBatchTimeoutSeconds = toolBatchTimeoutSeconds;
-        // 注册内置工具
-        registerFileTools();
-        registerShellTools();
-        registerCodeTools();
-        registerRagTools();
-        registerWebTools();
-        registerBrowserTools();
-        registerMemoryTools();
-        registerSkillTools();
-        registerSnapshotTools();
+        // 注册内置工具；顺序集中在 BuiltinToolRegistrar，便于扩展和审计。
+        BuiltinToolRegistrar.registerAll(this);
     }
 
     /**
@@ -325,7 +317,7 @@ public class ToolRegistry {
     /**
      * 注册文件操作工具
      */
-    private void registerFileTools() {
+    void registerFileTools() {
         // read_file 工具
         tools.put("read_file", new Tool(
                 "read_file",
@@ -660,7 +652,7 @@ public class ToolRegistry {
     /**
      * 注册Shell命令工具
      */
-    private void registerShellTools() {
+    void registerShellTools() {
         tools.put("execute_command", new Tool(
                 "execute_command",
                 "在当前项目目录中执行短时 Shell 命令（默认 60 秒超时，不允许全盘扫描）",
@@ -672,7 +664,7 @@ public class ToolRegistry {
     /**
      * 注册代码相关工具
      */
-    private void registerCodeTools() {
+    void registerCodeTools() {
         tools.put("create_project", new Tool(
                 "create_project",
                 "创建新项目结构",
@@ -721,7 +713,7 @@ public class ToolRegistry {
     /**
      * 注册 RAG 检索工具
      */
-    private void registerRagTools() {
+    void registerRagTools() {
         tools.put("search_code", new Tool(
                 "search_code",
                 "RAG 语义辅助检索代码库，根据自然语言描述查找相关代码块；精确符号/字符串定位请优先用 grep_code/glob_files/read_file；默认 top_k=5，可显式指定（上限 30）",
@@ -762,7 +754,7 @@ public class ToolRegistry {
     /**
      * 注册联网工具：web_search（多 provider 抽象）+ web_fetch（HTTP + readability）
      */
-    private void registerWebTools() {
+    void registerWebTools() {
         tools.put("web_search", new Tool(
                 "web_search",
                 "搜索互联网，获取实时信息（最新版本、官方文档、技术资讯等）。" +
@@ -786,7 +778,7 @@ public class ToolRegistry {
         ));
     }
 
-    private void registerBrowserTools() {
+    void registerBrowserTools() {
         tools.put("browser_connect", new Tool(
                 "browser_connect",
                 "当浏览器页面返回登录页、权限不足或明确需要登录态时，自动连接已允许远程调试的本机 Chrome 并复用其登录态；公开页面不要提前调用。",
@@ -813,7 +805,7 @@ public class ToolRegistry {
         ));
     }
 
-    private void registerSkillTools() {
+    void registerSkillTools() {
         tools.put("load_skill", new Tool(
                 "load_skill",
                 "Load full SKILL.md instructions for a skill the system has indexed (see the \"可用 Skills\" section in this system prompt). Call this when a skill's description matches the current task. Pass the exact kebab-case skill name. The full body is appended right after this tool result, before your next step in the same turn, under \"## 已加载 Skill：<name>\". Don't reload the same skill twice in one session.",
@@ -842,7 +834,7 @@ public class ToolRegistry {
         ));
     }
 
-    private void registerMemoryTools() {
+    void registerMemoryTools() {
         tools.put("save_memory", new Tool(
                 "save_memory",
                 "当且仅当用户明确说“记一下”“记住”“以后记得”或要求保存长期偏好/稳定事实时调用，把精炼事实写入长期记忆；scope 默认 project，跨项目偏好才用 global；不要保存一次性任务请求、临时文件名或模型猜测。"
@@ -874,7 +866,7 @@ public class ToolRegistry {
         ));
     }
 
-    private void registerSnapshotTools() {
+    void registerSnapshotTools() {
         tools.put("revert_turn", new Tool(
                 "revert_turn",
                 "恢复到 Side-Git 记录的最近第 N 个 pre-turn 快照。会先记录 pre-restore 快照；属于高危写入操作，必须经 HITL 审批。",
@@ -1453,42 +1445,14 @@ public class ToolRegistry {
     /**
      * 执行同一轮 LLM 返回的多个工具调用。
      *
-     * 结果按传入顺序返回，调用方可以安全地按原 tool_call 顺序回灌消息历史。
-     * 只有无副作用的只读工具（{@link #PARALLEL_SAFE_TOOLS}）才会并行；写文件、执行命令、
-     * MCP、记忆写入、回滚和未知工具都按原顺序逐个串行，避免同一文件的并发 edit_file
-     * 互相覆盖（读-改-写丢更新）或命令与写入交错。连续的只读调用组成一段并行执行，
-     * 遇到有副作用的调用先等前面的只读段结束，再单独执行它，保持模型给出的先后语义。
-     * 含浏览器工具的批次整体串行，避免同一浏览器会话内的页面状态互相覆盖。
+     * <p>调度策略由 {@link ToolExecutionPolicy} 负责，注册表只提供工具
+     * 执行回调，因此顺序、并行白名单和超时规则可以独立测试。</p>
      */
     public List<ToolExecutionResult> executeTools(List<ToolInvocation> invocations) {
-        if (invocations == null || invocations.isEmpty()) {
-            return List.of();
-        }
-        if (CancellationContext.isCancelled()) {
-            return invocations.stream()
-                    .map(invocation -> ToolExecutionResult.failed(invocation, "用户取消了此次工具调用"))
-                    .toList();
-        }
-        if (invocations.size() == 1
-                || invocations.stream().anyMatch(invocation -> TurnToolPolicy.isBrowserToolName(invocation.name()))) {
-            return executeSerially(invocations);
-        }
-        if (invocations.stream().allMatch(invocation -> isParallelSafeTool(invocation.name()))) {
-            return executeInParallel(invocations);
-        }
-
-        List<ToolExecutionResult> results = new ArrayList<>(invocations.size());
-        List<ToolInvocation> readOnlyRun = new ArrayList<>();
-        for (ToolInvocation invocation : invocations) {
-            if (isParallelSafeTool(invocation.name())) {
-                readOnlyRun.add(invocation);
-                continue;
-            }
-            results.addAll(flushReadOnlyRun(readOnlyRun));
-            results.addAll(executeSerially(List.of(invocation)));
-        }
-        results.addAll(flushReadOnlyRun(readOnlyRun));
-        return results;
+        return ToolExecutionPolicy.executeBatch(
+                invocations,
+                invocation -> executeToolOutput(invocation.name(), invocation.argumentsJson()),
+                toolBatchTimeoutSeconds);
     }
 
     /** 无副作用、可以和同类调用并行的内置工具；不在名单里的一律串行。 */
@@ -1497,86 +1461,7 @@ public class ToolRegistry {
             "web_search", "web_fetch", "load_skill");
 
     static boolean isParallelSafeTool(String toolName) {
-        return toolName != null && PARALLEL_SAFE_TOOLS.contains(toolName);
-    }
-
-    private List<ToolExecutionResult> flushReadOnlyRun(List<ToolInvocation> readOnlyRun) {
-        if (readOnlyRun.isEmpty()) {
-            return List.of();
-        }
-        List<ToolInvocation> run = List.copyOf(readOnlyRun);
-        readOnlyRun.clear();
-        return run.size() == 1 ? executeSerially(run) : executeInParallel(run);
-    }
-
-    private List<ToolExecutionResult> executeSerially(List<ToolInvocation> invocations) {
-        List<ToolExecutionResult> results = new ArrayList<>(invocations.size());
-        for (ToolInvocation invocation : invocations) {
-            if (CancellationContext.isCancelled()) {
-                results.add(ToolExecutionResult.failed(invocation, "用户取消了此次工具调用"));
-                continue;
-            }
-            long startedAt = System.nanoTime();
-            ToolOutput output = executeToolOutput(invocation.name(), invocation.argumentsJson());
-            results.add(ToolExecutionResult.completed(invocation, output, elapsedMillis(startedAt)));
-        }
-        return results;
-    }
-
-    private List<ToolExecutionResult> executeInParallel(List<ToolInvocation> invocations) {
-        int parallelism = Math.min(invocations.size(), MAX_PARALLEL_TOOLS);
-        ExecutorService executor = Executors.newFixedThreadPool(parallelism, r -> {
-            Thread thread = new Thread(r, "paicli-tool-executor");
-            thread.setDaemon(true);
-            return thread;
-        });
-
-        try {
-            List<Callable<ToolExecutionResult>> tasks = invocations.stream()
-                    .<Callable<ToolExecutionResult>>map(invocation -> () -> {
-                        if (CancellationContext.isCancelled()) {
-                            return ToolExecutionResult.failed(invocation, "用户取消了此次工具调用");
-                        }
-                        long startedAt = System.nanoTime();
-                        ToolOutput output = executeToolOutput(invocation.name(), invocation.argumentsJson());
-                        return ToolExecutionResult.completed(invocation, output, elapsedMillis(startedAt));
-                    })
-                    .toList();
-
-            List<Future<ToolExecutionResult>> futures =
-                    executor.invokeAll(tasks, toolBatchTimeoutSeconds, TimeUnit.SECONDS);
-
-            List<ToolExecutionResult> results = new ArrayList<>();
-            for (int i = 0; i < futures.size(); i++) {
-                ToolInvocation invocation = invocations.get(i);
-                Future<ToolExecutionResult> future = futures.get(i);
-                if (future.isCancelled()) {
-                    results.add(ToolExecutionResult.timedOut(invocation, toolBatchTimeoutSeconds));
-                    continue;
-                }
-
-                try {
-                    results.add(future.get());
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    results.add(ToolExecutionResult.failed(invocation, "工具执行被中断"));
-                } catch (ExecutionException e) {
-                    Throwable cause = e.getCause();
-                    String message = cause == null || cause.getMessage() == null
-                            ? "未知错误"
-                            : cause.getMessage();
-                    results.add(ToolExecutionResult.failed(invocation, message));
-                }
-            }
-            return results;
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return invocations.stream()
-                    .map(invocation -> ToolExecutionResult.failed(invocation, "工具批次执行被中断"))
-                    .toList();
-        } finally {
-            executor.shutdownNow();
-        }
+        return ToolExecutionPolicy.isParallelSafeTool(toolName);
     }
 
     /**
@@ -1849,7 +1734,7 @@ public class ToolRegistry {
                     !timedOut && !looksLikeFailureText(result), List.of());
         }
 
-        private static ToolExecutionResult completed(ToolInvocation invocation, ToolOutput output, long elapsedMillis) {
+        static ToolExecutionResult completed(ToolInvocation invocation, ToolOutput output, long elapsedMillis) {
             return new ToolExecutionResult(
                     invocation.id(),
                     invocation.name(),
@@ -1862,15 +1747,15 @@ public class ToolRegistry {
                     output == null ? List.of() : output.discoveredUrls());
         }
 
-        private static ToolExecutionResult completed(ToolInvocation invocation, String result, long elapsedMillis) {
+        static ToolExecutionResult completed(ToolInvocation invocation, String result, long elapsedMillis) {
             return completed(invocation, classifyTextOutput(result), elapsedMillis);
         }
 
-        private static ToolExecutionResult failed(ToolInvocation invocation, String message) {
+        static ToolExecutionResult failed(ToolInvocation invocation, String message) {
             return completed(invocation, "工具执行失败: " + message, 0);
         }
 
-        private static ToolExecutionResult timedOut(ToolInvocation invocation, long timeoutSeconds) {
+        static ToolExecutionResult timedOut(ToolInvocation invocation, long timeoutSeconds) {
             return new ToolExecutionResult(
                     invocation.id(),
                     invocation.name(),
