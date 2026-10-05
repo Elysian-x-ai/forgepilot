@@ -7,6 +7,7 @@ import com.paicli.mcp.protocol.McpToolDescriptor;
 import com.paicli.web.SearchProvider;
 import com.paicli.web.SearchResult;
 import com.sun.net.httpserver.HttpServer;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -261,6 +262,7 @@ class ToolRegistryTest {
     }
 
     @Test
+    @Tag("platform-seatbelt")
     void macSandboxAllowsDevelopmentRuntimesAndDevNull(@TempDir Path tempDir) throws Exception {
         assumeMacSandboxAvailable();
         Path workspace = Files.createDirectory(tempDir.resolve("workspace"));

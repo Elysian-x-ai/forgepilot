@@ -208,6 +208,34 @@
 
     <profiles>
         <profile>
+            <id>core</id>
+            <properties>
+                <skipTests>false</skipTests>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>3.2.5</version>
+                        <configuration>
+                            <argLine>-Dfile.encoding=UTF-8</argLine>
+                            <includes>
+                                <include>**/*Test.java</include>
+                            </includes>
+                            <excludes>
+                                <!-- Benchmark validation is an explicit opt-in profile. -->
+                                <exclude>**/eval/benchmark/**</exclude>
+                            </excludes>
+                            <!-- The macOS JVM-in-Seatbelt probe is host-dependent. -->
+                            <excludedGroups>platform-seatbelt</excludedGroups>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
             <id>quick</id>
             <properties>
                 <skipTests>false</skipTests>
@@ -220,7 +248,12 @@
                         <version>3.2.5</version>
                         <configuration>
                             <argLine>-Dfile.encoding=UTF-8</argLine>
+                            <includes>
+                                <include>**/*Test.java</include>
+                            </includes>
                             <excludes>
+                                <!-- Keep the daily product suite disjoint from benchmark tests. -->
+                                <exclude>**/eval/benchmark/**</exclude>
                                 <!-- 慢测试保留给全量 mvn test；日常 quick 回归跳过外部进程 / 网络超时 / 命令超时路径。 -->
                                 <exclude>**/mcp/McpServerManagerTest.java</exclude>
                                 <exclude>**/mcp/transport/StdioTransportTest.java</exclude>
@@ -228,6 +261,29 @@
                                 <exclude>**/tool/ToolRegistryTest.java</exclude>
                                 <exclude>**/web/WebFetcherTest.java</exclude>
                             </excludes>
+                            <excludedGroups>platform-seatbelt</excludedGroups>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>benchmark</id>
+            <properties>
+                <skipTests>false</skipTests>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>3.2.5</version>
+                        <configuration>
+                            <argLine>-Dfile.encoding=UTF-8</argLine>
+                            <includes>
+                                <include>**/eval/benchmark/**/*Test.java</include>
+                            </includes>
                         </configuration>
                     </plugin>
                 </plugins>

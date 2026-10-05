@@ -12,14 +12,20 @@ ForgePilot 是一款面向工程团队的 Java Agent CLI 工作台，对标 Clau
 
 ## 测试策略
 
-日常开发不需要每次都跑全量测试。`mvn clean package` 默认跳过测试，优先产出可手工验收的 jar；需要回归时按改动范围选择：
+日常开发不需要每次都跑全量测试。`mvn clean package` 默认跳过测试，优先产出可手工验收的 jar；产品回归与 Native AgentBench 验证是两个明确入口。`core` 运行产品单元/集成测试，`quick` 是跳过慢测试的日常子集，`benchmark` 只在明确需要时选择 `com.paicli.eval.benchmark`；产品 profile 不会隐式运行 benchmark。
 
 ```bash
-# 第 16 期终端 / TUI / inline renderer 冒烟
-mvn test -Pphase16-smoke
+# 产品核心回归（排除 benchmark；跳过依赖当前 macOS Seatbelt/JVM 能力的探针）
+mvn test -Pcore -DskipTests=false
 
-# 常规快速回归，跳过外部进程 / 网络超时 / 命令超时类慢测试
-mvn test -Pquick
+# 第 16 期终端 / TUI / inline renderer 冒烟
+mvn test -Pphase16-smoke -DskipTests=false
+
+# 常规快速回归，跳过 benchmark、外部进程 / 网络超时 / 命令超时类慢测试
+mvn test -Pquick -DskipTests=false
+
+# benchmark 验证（显式 opt-in；可能需要额外夹具、Docker 或 provider 凭证）
+mvn test -Pbenchmark -DskipTests=false
 
 # 代码搜索 deterministic golden set
 mvn test -Dtest=CodeSearchGoldenSetTest -DskipTests=false
