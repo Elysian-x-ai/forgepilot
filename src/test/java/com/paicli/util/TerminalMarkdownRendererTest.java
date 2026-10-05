@@ -1,15 +1,12 @@
 package com.paicli.util;
 
+import org.jline.utils.AttributedString;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TerminalMarkdownRendererTest {
-    static {
-        System.setProperty("paicli.render.color", "false");
-    }
-
     @Test
     void rendersHeadingListTableAndCodeBlockToTerminalFriendlyText() {
         String markdown = """
@@ -101,7 +98,9 @@ class TerminalMarkdownRendererTest {
         assertTrue(rendered.contains("| 特性"));
         assertFalse(rendered.contains("https://api.deepseek.com/chat/completions |"));
         for (String line : rendered.split("\\R")) {
-            assertTrue(line.length() <= 72, "line exceeds table width: " + line);
+            // ANSI styles consume no columns; CJK characters can consume two.
+            assertTrue(AttributedString.fromAnsi(line).columnLength() <= 72,
+                    "line exceeds table width: " + line);
         }
     }
 }
