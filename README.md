@@ -4,9 +4,7 @@
 
 ForgePilot 是一款面向工程团队的 Java Agent CLI 工作台，对标 Claude Code。它把 ReAct、Plan、Team、Memory、MCP、浏览器自动化、LSP 诊断、快照回滚和审计能力收进一个可控的终端工作流中：模型负责推进任务，用户保留方向、审批和恢复权。
 
-ForgePilot 的公开产品名、定位和品牌资产统一使用 ForgePilot。为保持现有项目与评测证据可复现，`com.paicli` 包名、`.paicli` 目录、`PAICLI_*` 配置和 benchmark 历史合同继续作为稳定兼容标识，详见 [`docs/forgepilot-compatibility.md`](docs/forgepilot-compatibility.md)。
-
-[GitHub](https://github.com/Elysian-x-ai/forgepilot) · [品牌资产](brand/) · [兼容说明](docs/forgepilot-compatibility.md)
+[GitHub](https://github.com/Elysian-x-ai/forgepilot) · [品牌资产](brand/)
 
 当前进度：已完成第 16.1 期 inline 流式 TUI 形态修正、第 17 期 `LSP 诊断注入` MVP、第 18 期 `Git Side-History 快照与回滚` MVP、第 19 期 `Prompt 分层架构` MVP、第 20 期 `异步后台任务 + Runtime API` MVP、第 21 期 `图片复制粘贴输入` MVP、第 23 期 `微信 iLink 通道` 文本 MVP。
 
@@ -286,7 +284,7 @@ v16.1 抽出 `Renderer` 接口 + 三个实现：
 - 通用命令：`/mode`（或 Shift+Tab）、`/clear`、`/context`、`/memory`、`/memory clear`、`/save <事实>`、`/export`、`/better-harness`、`/hitl`、`/hitl on`、`/hitl default`、`/config`、`/exit`
 - Lanterna 的展示快照保存到 `~/.paicli/history/session_*.jsonl`
 - 原始会话账本独立保存到 `~/.paicli/history/raw/session-*.jsonl`：默认 CLI 的 ReAct / Plan / Team 共享同一个 append-only 文件，system、user、assistant、tool_call、tool_result 都保留完整 `LlmClient.Message`（含 reasoning、工具参数/结果和图片 payload）。`/clear` 和上下文压缩只改模型发送视图，不改写旧账本；POSIX 下目录为 0700、文件为 0600。账本可能包含敏感内容，请勿提交或随意分享
-- 兼容旧设置：`PAICLI_TUI=true` 自动映射为 `PAICLI_RENDERER=lanterna`（已 deprecated）
+- 别名设置：`PAICLI_TUI=true` 自动映射为 `PAICLI_RENDERER=lanterna`
 - `PAICLI_NO_STATUSBAR=true` 在 inline 模式下禁用 JLine 底部 dock（不适合 ANSI 光标控制的终端）
 - `NO_COLOR=1` 禁用所有 ANSI 颜色，保留布局
 - 代码块折叠、Ctrl+O 重绘和命令选择列表只清理自身占用的行，保留底部模式、模型名与统计数据，避免局部刷新擦掉状态栏
@@ -701,6 +699,8 @@ java -jar target/paicli-16.1.0.jar
 ```bash
 mvn clean compile exec:java -Dexec.mainClass="com.paicli.cli.Main"
 ```
+
+渲染器和 Runtime API 的配置键、优先级与请求头见[配置与接口参考](docs/forgepilot-config-reference.md)。
 
 ### 4. 如何进入 Plan 模式
 

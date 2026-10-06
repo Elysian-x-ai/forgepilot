@@ -2,7 +2,7 @@
 
 ForgePilot 仓库给 Agent / 新线程的首读入口，Codex 直接读取，Claude Code 通过 `CLAUDE.md` 的 `@AGENTS.md` 导入。这里只放每次改动都要遵守的规则；实现细节见 `docs/agents-reference.md`，评测历史见 `benchmarks/paicli-native-agentbench-v0.1/AGENTS-SNAPSHOT-ARCHIVE.md`。本文件保持在 200 行以内，新增内容优先写进上面两个文件。
 
-公开产品名是 ForgePilot，定位语是 “A controlled engineering agent for the terminal”。`com.paicli`、`.paicli`、`PAICLI_*`、`paicli.*`、`PAI.md` 和 benchmark 标识是稳定兼容契约；新品牌别名只在对应配置入口明确支持时优先使用。
+公开产品名是 ForgePilot，定位语是 “A controlled engineering agent for the terminal”。项目介绍与对外文案始终直接使用 ForgePilot，不加入历史品牌背景。`com.paicli`、`.paicli`、`PAICLI_*`、`paicli.*`、`PAI.md` 和 benchmark 标识是稳定兼容契约；ForgePilot 配置别名只在对应入口明确支持时优先使用，技术细节放在配置/API 参考中。
 
 ## 信息优先级
 

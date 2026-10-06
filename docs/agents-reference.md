@@ -223,7 +223,7 @@ scheme 白名单(http/https) / 主机黑名单(localhost/loopback/link-local/sit
 
 - 三个实现：InlineRenderer(默认) / LanternaRenderer / PlainRenderer
 - 环境变量：`PAICLI_RENDERER=inline|lanterna|plain`
-- `PAICLI_TUI=true`(旧) → lanterna + deprecation 提示
+- `PAICLI_TUI=true` → lanterna + deprecation 提示
 - `PAICLI_NO_STATUSBAR=true`：禁用底部状态栏
 - `NO_COLOR=1`：禁用 ANSI 颜色
 - 当前开屏 Banner 是无右侧盒线边框的简洁布局，避免 ANSI/CJK 字宽导致竖线错位

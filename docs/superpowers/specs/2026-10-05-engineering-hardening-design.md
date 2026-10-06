@@ -31,7 +31,7 @@ Surefire 提供三个明确入口：`core` 运行产品单元/集成测试，`qu
 
 ### CI 与版本/状态
 
-新增 GitHub Actions workflow，在 Java 17 上执行编译、core、quick 和 mock E2E；benchmark 不在 push/PR 默认任务中运行，另提供手动 workflow 或命令说明。Maven 版本集中在单一属性，Banner/README/迁移说明/AGENTS 使用同一公开版本；benchmark 状态以一份机器可读 manifest 或集中状态段为准，README 和 AGENTS 统一采用当前 25/28、88/100、`NOT_INTEGRATED`、`formalScores=null`、`publishable=false` 口径，并明确这是开发评测基础设施而非正式榜单成绩。
+新增 GitHub Actions workflow，在 Java 17 上执行编译、core、quick 和 mock E2E；benchmark 不在 push/PR 默认任务中运行，另提供手动 workflow 或命令说明。Maven 版本集中在单一属性，Banner/README/配置/API 参考/AGENTS 使用同一公开版本；benchmark 状态以一份机器可读 manifest 或集中状态段为准，README 和 AGENTS 统一采用当前 25/28、88/100、`NOT_INTEGRATED`、`formalScores=null`、`publishable=false` 口径，并明确这是开发评测基础设施而非正式榜单成绩。
 
 ## 验收标准
 
@@ -40,4 +40,3 @@ Surefire 提供三个明确入口：`core` 运行产品单元/集成测试，`qu
 3. mock LLM E2E 在无 API Key、无网络环境下重复运行结果一致。
 4. CI workflow 能在 Java 17 上执行产品验证，并把 benchmark 作为显式入口。
 5. README、AGENTS、pom、Banner 和 benchmark 状态没有互相矛盾的版本/题数/发布状态。
-

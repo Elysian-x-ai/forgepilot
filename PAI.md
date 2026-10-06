@@ -8,7 +8,7 @@
 
 ## What This Is
 
-ForgePilot 是面向商业使用的 Java Agent CLI 产品，对标 Claude Code；当前主路径是 ReAct、Plan-and-Execute、Multi-Agent 三套执行模式。`com.paicli`、`.paicli`、`PAICLI_*` 和 `paicli.*` 是稳定兼容标识，相关配置和路径继续兼容。
+ForgePilot 是面向商业使用的 Java Agent CLI 产品，对标 Claude Code；当前主路径是 ReAct、Plan-and-Execute、Multi-Agent 三套执行模式。
 
 ## Architecture
 
@@ -26,6 +26,7 @@ ForgePilot 是面向商业使用的 Java Agent CLI 产品，对标 Claude Code�
 
 ## Don't
 
+- 项目介绍直接使用 ForgePilot，不加入历史品牌背景。
 - 不提交 `.env`、真实 API Key、`target/` 产物。
 - 不把 `ROADMAP.md` 的未来计划写成已交付能力。
 - 不在交互主路径新增裸 `System.out.println`；优先走 `Renderer.stream()`。

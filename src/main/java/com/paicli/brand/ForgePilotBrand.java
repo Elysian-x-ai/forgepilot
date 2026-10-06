@@ -27,7 +27,7 @@ public final class ForgePilotBrand {
         return legacy == null || legacy.isBlank() ? null : legacy.trim();
     }
 
-    /** Creates a one-time migration hint for a legacy setting. */
+    /** Creates a one-time configuration hint for a supported alias. */
     public static synchronized String legacyNotice(String legacyKey, String modernKey) {
         String noticeKey = legacyKey + "->" + modernKey;
         if (!EMITTED_LEGACY_NOTICES.add(noticeKey)) {

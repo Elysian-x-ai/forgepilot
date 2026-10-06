@@ -40,7 +40,7 @@ java -jar target/paicli-16.1.0.jar serve --http --port 8080
 - 请求头支持：
   - `Authorization: Bearer <key>`
   - `X-ForgePilot-API-Key: <key>`
-  - `X-PaiCLI-API-Key: <key>`（兼容旧客户端）
+  - `X-PaiCLI-API-Key: <key>`
 
 端点：
 

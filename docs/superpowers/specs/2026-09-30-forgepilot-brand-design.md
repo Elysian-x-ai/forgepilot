@@ -1,4 +1,4 @@
-# ForgePilot Brand Migration Design
+# ForgePilot Brand Design
 
 **Date:** 2026-09-30  
 **Status:** Approved for implementation  
@@ -6,9 +6,9 @@
 
 ## Intent
 
-ForgePilot is the new public identity for this terminal-first Java engineering agent. The brand should make the product feel like a controlled execution cockpit: model-driven work is fast and extensible, while approvals, policy, memory, snapshots, and audit trails keep the user in control.
+ForgePilot is a terminal-first Java engineering agent. The brand should make the product feel like a controlled execution cockpit: model-driven work is fast and extensible, while approvals, policy, memory, snapshots, and audit trails keep the user in control.
 
-The migration changes the product-facing identity in one release and preserves the existing runtime and benchmark contracts needed by current users and historical evidence.
+Product introductions present ForgePilot directly. Configuration details belong in technical references; runtime and benchmark contracts remain stable.
 
 ## Brand System
 
@@ -24,7 +24,7 @@ The migration changes the product-facing identity in one release and preserves t
 - **Surface:** graphite `#10141C`
 - **Text:** cloud `#EEF2F7`
 
-The public UI, landing page, docs website, README, startup screen, and embedded skills use the new name and visual language. Historical screenshots that are evidence artifacts remain unchanged; new assets are created under `brand/` and used by new public pages.
+The public UI, landing page, docs website, README, startup screen, and embedded skills use ForgePilot and its visual language. Historical screenshots that are evidence artifacts remain unchanged; assets under `brand/` are used by public pages.
 
 ## Compatibility Contract
 
@@ -37,9 +37,9 @@ The following identifiers remain stable in this release:
 - `PAI.md`, `PAI.local.md`, and benchmark paths/JSON evidence fields
 - Existing `paicli` command and jar filename
 
-New ForgePilot aliases are additive. `FORGEPILOT_*`, `forgepilot.*`, `.forgepilot/`, and `~/.forgepilot/` are accepted where a configuration path is touched. New values have precedence; legacy values remain the fallback. The first legacy fallback in a process may emit one concise migration notice to stderr, never a repeated notice per setting.
+ForgePilot configuration aliases are additive and take precedence where implemented. `FORGEPILOT_RENDERER` and `forgepilot.renderer` select the renderer; `FORGEPILOT_RUNTIME_API_KEY` and `forgepilot.runtime.api.key` configure the Runtime API. The corresponding `PAICLI_*` and `paicli.*` settings remain valid fallbacks. Do not advertise aliases for paths or settings the implementation does not accept.
 
-The initial implementation covers the public configuration examples and central runtime directory resolver. It does not rename every internal package or historical benchmark fixture; that work would be a separate breaking migration.
+Public configuration examples must match the implemented lookup rules. Internal packages, storage directories, and historical benchmark fixtures keep their stable identifiers.
 
 ## Public Surface Changes
 
