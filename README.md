@@ -284,7 +284,7 @@ v16.1 抽出 `Renderer` 接口 + 三个实现：
 - 通用命令：`/mode`（或 Shift+Tab）、`/clear`、`/context`、`/memory`、`/memory clear`、`/save <事实>`、`/export`、`/better-harness`、`/hitl`、`/hitl on`、`/hitl default`、`/config`、`/exit`
 - Lanterna 的展示快照保存到 `~/.paicli/history/session_*.jsonl`
 - 原始会话账本独立保存到 `~/.paicli/history/raw/session-*.jsonl`：默认 CLI 的 ReAct / Plan / Team 共享同一个 append-only 文件，system、user、assistant、tool_call、tool_result 都保留完整 `LlmClient.Message`（含 reasoning、工具参数/结果和图片 payload）。`/clear` 和上下文压缩只改模型发送视图，不改写旧账本；POSIX 下目录为 0700、文件为 0600。账本可能包含敏感内容，请勿提交或随意分享
-- 别名设置：`PAICLI_TUI=true` 自动映射为 `PAICLI_RENDERER=lanterna`
+- 弃用别名：`PAICLI_TUI=true` 自动映射为 `PAICLI_RENDERER=lanterna`
 - `PAICLI_NO_STATUSBAR=true` 在 inline 模式下禁用 JLine 底部 dock（不适合 ANSI 光标控制的终端）
 - `NO_COLOR=1` 禁用所有 ANSI 颜色，保留布局
 - 代码块折叠、Ctrl+O 重绘和命令选择列表只清理自身占用的行，保留底部模式、模型名与统计数据，避免局部刷新擦掉状态栏

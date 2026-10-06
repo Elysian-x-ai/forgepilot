@@ -22,7 +22,7 @@
 
 - A new alias and a legacy alias both present: the ForgePilot value wins deterministically.
 - Only a fallback configuration alias is present: its value remains available.
-- Public copy in landing/docs/demo and the startup banner: no stale visible PaiCLI brand remains in the new surfaces.
+- Public copy in landing/docs/demo and the startup banner: all product-facing labels use ForgePilot.
 - Historical benchmark and golden-set identifiers: paths and serialized evidence remain byte-compatible.
 - GitHub publication: the remote is the requested owner/repository and the pushed branch is `main`.
 

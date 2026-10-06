@@ -31,7 +31,7 @@ The public UI, landing page, docs website, README, startup screen, and embedded 
 The following identifiers remain stable in this release:
 
 - Java package namespace `com.paicli` and package-based class names
-- Maven artifact coordinates `com.paicli:paicli:1.0-SNAPSHOT`
+- Maven artifact coordinates `com.paicli:paicli:16.1.0`
 - Existing `PAICLI_*` environment variables and `paicli.*` system properties
 - Existing `.paicli/` project directory and `~/.paicli/` user directory
 - `PAI.md`, `PAI.local.md`, and benchmark paths/JSON evidence fields

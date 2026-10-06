@@ -12,7 +12,7 @@ The following identifiers are supported by the current runtime and project tooli
 - `paicli` jar/command names and benchmark evidence paths
 - `X-PaiCLI-API-Key` for Runtime API clients
 
-When both names are set, the `FORGEPILOT_*` or `forgepilot.*` value has priority. The `PAICLI_*` and `paicli.*` values remain supported as fallbacks.
+For the renderer and Runtime API settings documented below, the `FORGEPILOT_*` or `forgepilot.*` value has priority when both names are set. The corresponding `PAICLI_*` and `paicli.*` values remain supported as fallbacks.
 
 ## Renderer aliases
 
